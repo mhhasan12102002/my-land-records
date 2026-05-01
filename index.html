@@ -1,307 +1,647 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Harvester Pro | Next-Gen Business Suite</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #6366f1;
-            --bg: #0f172a;
-            --card: rgba(30, 41, 59, 0.7);
-            --text: #f8fafc;
-            --accent: #10b981;
-            --danger: #ef4444;
-            --glass: rgba(255, 255, 255, 0.05);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <title>Harvester Pro V33 | Premium Business Suite</title>
+  <!-- GSAP + Font Awesome + Google Fonts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- html2canvas + SheetJS (XLSX) for exports -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        
-        body {
-            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
-            color: var(--text);
-            min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
-        }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at 10% 20%, rgba(10, 20, 35, 1) 0%, rgba(5, 12, 22, 1) 100%);
+      color: #eef5ff;
+      padding-bottom: 32px;
+      min-height: 100vh;
+    }
 
-        /* --- UI Components --- */
-        .header { margin-bottom: 30px; }
-        .header h1 { font-size: 24px; font-weight: 800; color: var(--primary); }
-        .header p { opacity: 0.6; font-size: 12px; }
+    /* premium glass container */
+    .app-container {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 20px 16px 90px 16px;
+    }
 
-        /* Dashboard */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 30px;
-        }
+    /* glassmorphism cards */
+    .glass-card {
+      background: rgba(20, 30, 45, 0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(72, 187, 255, 0.2);
+      border-radius: 32px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
+    }
 
-        .stat-card {
-            background: var(--card);
-            backdrop-filter: blur(10px);
-            padding: 15px;
-            border-radius: 16px;
-            border: 1px solid var(--glass);
-        }
+    /* dashboard stats row */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat-item {
+      background: rgba(12, 22, 35, 0.7);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      padding: 12px 6px;
+      text-align: center;
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      transition: transform 0.2s;
+    }
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #7ad0ff;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: 500;
+      opacity: 0.8;
+    }
 
-        .stat-card small { font-size: 10px; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; }
-        .stat-card h2 { font-size: 18px; margin-top: 5px; }
-        .stat-total { grid-column: span 2; background: linear-gradient(135deg, var(--primary), #4f46e5); }
+    /* header saas style */
+    .saas-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .logo h1 {
+      font-size: 1.7rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff, #5bc0ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .badge {
+      background: rgba(0, 160, 255, 0.3);
+      padding: 6px 12px;
+      border-radius: 60px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
 
-        /* Search & Filter */
-        .search-bar {
-            background: var(--glass);
-            border: 1px solid var(--glass);
-            padding: 12px 20px;
-            border-radius: 30px;
-            color: white;
-            width: 100%;
-            margin-bottom: 20px;
-            outline: none;
-        }
+    /* form section */
+    .form-panel {
+      padding: 18px;
+      margin-bottom: 24px;
+    }
+    .input-group {
+      margin-bottom: 14px;
+    }
+    .input-group label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      opacity: 0.8;
+      display: block;
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 12px 14px;
+      border-radius: 28px;
+      color: white;
+      font-size: 0.9rem;
+      outline: none;
+      transition: 0.2s;
+    }
+    input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 8px rgba(59,130,246,0.5);
+    }
+    .row-2col {
+      display: flex;
+      gap: 12px;
+    }
+    .row-2col > div { flex: 1; }
+    .btn-primary {
+      background: linear-gradient(95deg, #2563eb, #1e40af);
+      border: none;
+      padding: 12px;
+      border-radius: 40px;
+      font-weight: 700;
+      color: white;
+      width: 100%;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-secondary {
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid #3b82f6;
+      padding: 10px;
+      border-radius: 40px;
+      color: white;
+    }
+    .flex-btns {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
 
-        /* Record List */
-        .record-container { margin-bottom: 100px; }
-        .record-card {
-            background: var(--card);
-            padding: 15px;
-            border-radius: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid var(--primary);
-            animation: fadeIn 0.5s ease;
-        }
-        .record-info h3 { font-size: 16px; }
-        .record-info p { font-size: 12px; opacity: 0.6; }
-        .record-math { text-align: right; }
-        .due-tag { color: var(--danger); font-weight: 600; }
+    /* search + filters */
+    .search-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .search-box {
+      flex: 2;
+      background: rgba(0,0,0,0.4);
+      border-radius: 40px;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .search-box i { color: #7aa9ff; }
+    .search-box input {
+      background: transparent;
+      border: none;
+      padding: 12px 0;
+    }
+    .filter-chip {
+      background: rgba(59,130,246,0.2);
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .filter-chip.active {
+      background: #2563eb;
+      color: white;
+    }
 
-        /* FAB */
-        .fab {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
-            cursor: pointer;
-            z-index: 100;
-        }
+    /* record cards (clean, not too tall) */
+    .records-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 58vh;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .record-card {
+      background: rgba(15, 25, 40, 0.7);
+      backdrop-filter: blur(4px);
+      border-radius: 24px;
+      padding: 12px 16px;
+      border-left: 5px solid #3b82f6;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .record-info {
+      flex: 3;
+    }
+    .cust-name {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .record-meta {
+      font-size: 0.7rem;
+      opacity: 0.7;
+      display: flex;
+      gap: 12px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+    .record-actions i {
+      margin-left: 12px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: 0.2s;
+    }
+    .record-actions i:hover { opacity: 1; color: #5bc0ff; }
+    .due-badge {
+      background: rgba(220, 38, 38, 0.7);
+      padding: 2px 8px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+    }
 
-        /* Modal Sheet */
-        .modal {
-            position: fixed;
-            bottom: -100%;
-            left: 0;
-            width: 100%;
-            background: #1e293b;
-            padding: 30px;
-            border-radius: 30px 30px 0 0;
-            transition: 0.5s;
-            z-index: 200;
-        }
-        .modal.active { bottom: 0; }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 12px; margin-bottom: 5px; opacity: 0.7; }
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            background: rgba(0,0,0,0.2);
-            border: 1px solid var(--glass);
-            border-radius: 10px;
-            color: white;
-        }
+    .fab {
+      position: fixed;
+      bottom: 28px;
+      right: 20px;
+      background: #2563eb;
+      width: 56px;
+      height: 56px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      cursor: pointer;
+      z-index: 99;
+      transition: 0.2s;
+    }
+    .fab i { font-size: 28px; color: white; }
 
-        .btn {
-            width: 100%;
-            padding: 15px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-export { background: var(--glass); color: white; font-size: 12px; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+    /* modal advanced */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      width: 90%;
+      max-width: 460px;
+      background: #0f172ad9;
+      backdrop-filter: blur(20px);
+      border-radius: 40px;
+      padding: 24px;
+      border: 1px solid #3b82f6;
+    }
+    .close-modal {
+      float: right;
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+    @media (max-width: 480px) {
+      .stats-grid { gap: 8px; }
+      .stat-value { font-size: 1.3rem; }
+    }
+    /* date filter */
+    .date-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .date-row input { font-size: 0.8rem; }
+  </style>
 </head>
 <body>
 
-    <div class="header">
-        <p>Welcome Back,</p>
-        <h1>Harvester Pro <span style="font-weight: 300;">V3.3</span></h1>
+<div class="app-container">
+  <div class="saas-header">
+    <div class="logo"><h1>HARVESTER PRO <span style="font-size:0.9rem;">V33</span></h1></div>
+    <div class="badge"><i class="fas fa-chart-line"></i> PREMIUM SUITE</div>
+  </div>
+
+  <!-- Dashboard stats -->
+  <div class="stats-grid" id="dashboardStats">
+    <div class="stat-item"><div class="stat-value" id="totalGonda">0</div><div class="stat-label">Gonda</div></div>
+    <div class="stat-item"><div class="stat-value" id="totalSales">0</div><div class="stat-label">Sales (৳)</div></div>
+    <div class="stat-item"><div class="stat-value" id="totalCash">0</div><div class="stat-label">Cash</div></div>
+    <div class="stat-item"><div class="stat-value" id="totalDue">0</div><div class="stat-label">Due</div></div>
+  </div>
+
+  <!-- Add / Edit form panel -->
+  <div class="glass-card form-panel" id="formPanel">
+    <div class="input-group"><label><i class="fas fa-user"></i> Customer Name</label><input type="text" id="custName" placeholder="e.g., Raju Traders" autocomplete="off"></div>
+    <div class="row-2col">
+      <div><label>Gonda (Qty)</label><input type="number" id="gondaQty" value="0" step="1" min="0"></div>
+      <div><label>Rate (per Gonda)</label><input type="number" id="rateVal" value="0" step="any"></div>
     </div>
-
-    <div class="stats-grid">
-        <div class="stat-card stat-total">
-            <small>Total Sales</small>
-            <h2 id="dash-sales">৳ 0</h2>
-        </div>
-        <div class="stat-card">
-            <small>Cash Received</small>
-            <h2 id="dash-cash" style="color: var(--accent);">৳ 0</h2>
-        </div>
-        <div class="stat-card">
-            <small>Total Due</small>
-            <h2 id="dash-due" style="color: var(--danger);">৳ 0</h2>
-        </div>
+    <div class="row-2col">
+      <div><label>Cash Paid</label><input type="number" id="cashPaid" value="0" step="any"></div>
+      <div><label>Due Amount</label><input type="text" id="dueAuto" readonly style="background:#1f2a3e; font-weight:bold;"></div>
     </div>
-
-    <input type="text" class="search-bar" placeholder="Search customer..." oninput="searchRecords(this.value)">
-
-    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <button class="btn-export" onclick="exportExcel()">📊 Excel</button>
-        <button class="btn-export" onclick="exportPDF()">📄 PDF</button>
+    <div class="flex-btns">
+      <button class="btn-primary" id="saveBtn"><i class="fas fa-save"></i> Save Record</button>
+      <button class="btn-secondary" id="editCancelBtn" style="display:none;">Cancel Edit</button>
     </div>
+  </div>
 
-    <div class="record-container" id="recordList">
-        <!-- Records appear here -->
-    </div>
+  <!-- Smart search + due only toggle + date filter -->
+  <div class="search-filters">
+    <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Search customer..."></div>
+    <div class="filter-chip" id="dueOnlyChip"><i class="fas fa-exclamation-triangle"></i> Due Only</div>
+    <div class="filter-chip" id="resetFilterChip"><i class="fas fa-undo-alt"></i> Reset</div>
+  </div>
+  <!-- date-wise filtering -->
+  <div class="date-row">
+    <input type="date" id="startDate" placeholder="From date">
+    <input type="date" id="endDate" placeholder="To date">
+    <button class="btn-secondary" id="applyDateFilter" style="padding: 0 16px;"><i class="fas fa-calendar-alt"></i> Filter</button>
+  </div>
 
-    <div class="fab" onclick="toggleModal(true)">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-    </div>
+  <!-- Records container -->
+  <div class="records-list" id="recordsContainer"></div>
+</div>
 
-    <!-- Add Record Modal -->
-    <div class="modal" id="addModal">
-        <h2 style="margin-bottom: 20px;">Add Entry</h2>
-        <div class="input-group">
-            <label>Customer Name</label>
-            <input type="text" id="custName" placeholder="e.g. Rahim Ali">
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div class="input-group">
-                <label>Gonda</label>
-                <input type="number" id="gonda" oninput="calcTotal()">
+<div class="fab" id="exportFab"><i class="fas fa-download"></i></div>
+
+<!-- context export modal -->
+<div id="exportModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <h3 style="margin-bottom: 15px;"><i class="fas fa-file-export"></i> Export Report</h3>
+    <button id="pdfExportBtn" class="btn-primary" style="margin-bottom: 12px;"><i class="fas fa-file-pdf"></i> PDF (Corporate Report)</button>
+    <button id="excelExportBtn" class="btn-primary" style="margin-bottom: 12px; background:#1f7b4d;"><i class="fas fa-file-excel"></i> Excel (Structured)</button>
+    <button id="jpgExportBtn" class="btn-primary" style="background:#6b21a5;"><i class="fas fa-camera"></i> JPG (Financial Snapshot)</button>
+  </div>
+</div>
+
+<script>
+  // ---------- STORAGE KEYS ----------
+  let records = [];
+  let editModeId = null;
+  let dueOnlyActive = false;
+  let currentStartDate = "", currentEndDate = "";
+
+  // Load from localStorage
+  function loadData() {
+    const stored = localStorage.getItem("harvester_pro_v33");
+    if(stored) {
+      records = JSON.parse(stored);
+    } else {
+      records = [];
+    }
+    renderDashboard();
+    renderRecords();
+  }
+
+  function saveToLocal() {
+    localStorage.setItem("harvester_pro_v33", JSON.stringify(records));
+    renderDashboard();
+    renderRecords();
+  }
+
+  // calculate total, due
+  function computeDue(gonda, rate, cash) {
+    let total = gonda * rate;
+    let due = total - cash;
+    return due > 0 ? due : 0;
+  }
+
+  function updateDueField() {
+    let g = parseFloat(document.getElementById('gondaQty').value) || 0;
+    let r = parseFloat(document.getElementById('rateVal').value) || 0;
+    let c = parseFloat(document.getElementById('cashPaid').value) || 0;
+    let total = g * r;
+    let due = total - c;
+    if(due < 0) due = 0;
+    document.getElementById('dueAuto').value = due.toFixed(2);
+  }
+
+  // event listeners for live calc
+  document.getElementById('gondaQty').addEventListener('input', updateDueField);
+  document.getElementById('rateVal').addEventListener('input', updateDueField);
+  document.getElementById('cashPaid').addEventListener('input', updateDueField);
+
+  // dashboard aggregator
+  function renderDashboard() {
+    let totalGonda = 0, totalSales = 0, totalCash = 0, totalDue = 0;
+    records.forEach(rec => {
+      totalGonda += rec.gonda;
+      let saleVal = rec.gonda * rec.rate;
+      totalSales += saleVal;
+      totalCash += rec.cash;
+      totalDue += (saleVal - rec.cash > 0 ? saleVal - rec.cash : 0);
+    });
+    document.getElementById('totalGonda').innerText = totalGonda;
+    document.getElementById('totalSales').innerText = totalSales.toFixed(2);
+    document.getElementById('totalCash').innerText = totalCash.toFixed(2);
+    document.getElementById('totalDue').innerText = totalDue.toFixed(2);
+  }
+
+  // filter records (search, due only, date range)
+  function getFilteredRecords() {
+    let filtered = [...records];
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    if(searchTerm) {
+      filtered = filtered.filter(r => r.customerName.toLowerCase().includes(searchTerm));
+    }
+    if(dueOnlyActive) {
+      filtered = filtered.filter(r => {
+        let total = r.gonda * r.rate;
+        let due = total - r.cash;
+        return due > 0.01;
+      });
+    }
+    // date-wise filter
+    if(currentStartDate || currentEndDate) {
+      filtered = filtered.filter(r => {
+        if(!r.date) return false;
+        let recDate = r.date.split('T')[0];
+        if(currentStartDate && recDate < currentStartDate) return false;
+        if(currentEndDate && recDate > currentEndDate) return false;
+        return true;
+      });
+    }
+    return filtered;
+  }
+
+  // render clean record cards (optimized)
+  function renderRecords() {
+    const container = document.getElementById('recordsContainer');
+    const filtered = getFilteredRecords();
+    if(filtered.length === 0) {
+      container.innerHTML = `<div class="glass-card" style="padding:30px; text-align:center;">✨ No records found</div>`;
+      return;
+    }
+    let html = '';
+    filtered.forEach(rec => {
+      let totalVal = rec.gonda * rec.rate;
+      let dueAmount = totalVal - rec.cash;
+      if(dueAmount < 0) dueAmount = 0;
+      let dueClass = dueAmount > 0 ? 'due-badge' : '';
+      html += `
+        <div class="record-card" data-id="${rec.id}">
+          <div class="record-info">
+            <div class="cust-name">${escapeHtml(rec.customerName)}</div>
+            <div class="record-meta">
+              <span><i class="fas fa-box"></i> ${rec.gonda} Gonda</span>
+              <span><i class="fas fa-tag"></i> ৳${rec.rate}/unit</span>
+              <span><i class="fas fa-coins"></i> Total ৳${totalVal.toFixed(2)}</span>
+              <span><i class="fas fa-hand-holding-usd"></i> Cash ৳${rec.cash.toFixed(2)}</span>
+              <span class="${dueClass}"><i class="fas fa-exclamation-circle"></i> Due ৳${dueAmount.toFixed(2)}</span>
+              <span><i class="far fa-calendar-alt"></i> ${rec.date ? rec.date.split('T')[0] : 'N/A'}</span>
             </div>
-            <div class="input-group">
-                <label>Rate</label>
-                <input type="number" id="rate" oninput="calcTotal()">
-            </div>
+          </div>
+          <div class="record-actions">
+            <i class="fas fa-edit edit-record" data-id="${rec.id}"></i>
+            <i class="fas fa-trash-alt delete-record" data-id="${rec.id}"></i>
+          </div>
         </div>
-        <div class="input-group">
-            <label>Total Amount</label>
-            <input type="number" id="total" readonly>
-        </div>
-        <div class="input-group">
-            <label>Cash Payment</label>
-            <input type="number" id="cash" oninput="calcTotal()">
-        </div>
-        <button class="btn btn-primary" onclick="saveRecord()">Save Record</button>
-        <button class="btn" style="background: transparent; color: #94a3b8;" onclick="toggleModal(false)">Cancel</button>
-    </div>
-
-    <script>
-        let records = JSON.parse(localStorage.getItem('harvester_data')) || [];
-
-        function toggleModal(show) {
-            document.getElementById('addModal').classList.toggle('active', show);
+      `;
+    });
+    container.innerHTML = html;
+    // attach delete & edit events
+    document.querySelectorAll('.delete-record').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        let id = btn.getAttribute('data-id');
+        if(confirm('Delete this record?')) {
+          records = records.filter(r => r.id != id);
+          saveToLocal();
         }
-
-        function calcTotal() {
-            const g = document.getElementById('gonda').value || 0;
-            const r = document.getElementById('rate').value || 0;
-            document.getElementById('total').value = g * r;
+        e.stopPropagation();
+      });
+    });
+    document.querySelectorAll('.edit-record').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        let id = btn.getAttribute('data-id');
+        const record = records.find(r => r.id == id);
+        if(record) {
+          editModeId = id;
+          document.getElementById('custName').value = record.customerName;
+          document.getElementById('gondaQty').value = record.gonda;
+          document.getElementById('rateVal').value = record.rate;
+          document.getElementById('cashPaid').value = record.cash;
+          updateDueField();
+          document.getElementById('saveBtn').innerHTML = '<i class="fas fa-pen"></i> Update Record';
+          document.getElementById('editCancelBtn').style.display = 'block';
+          gsap.fromTo('#formPanel', {y: 10, opacity:0.8}, {y:0, opacity:1, duration:0.3});
         }
+      });
+    });
+  }
 
-        function saveRecord() {
-            const name = document.getElementById('custName').value;
-            const gonda = parseFloat(document.getElementById('gonda').value);
-            const rate = parseFloat(document.getElementById('rate').value);
-            const total = gonda * rate;
-            const cash = parseFloat(document.getElementById('cash').value) || 0;
-            const due = total - cash;
+  function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
-            if(!name || !gonda) return alert("Fill required fields");
+  // prevent duplicate (name + exact same values? better duplicate name detection)
+  function isDuplicateNameExceptEdit(name, excludeId) {
+    return records.some(r => r.customerName.toLowerCase() === name.toLowerCase() && r.id != excludeId);
+  }
 
-            const record = { id: Date.now(), name, gonda, rate, total, cash, due, date: new Date().toLocaleDateString() };
-            records.push(record);
-            updateUI();
-            toggleModal(false);
-            clearInputs();
-        }
+  // save or update
+  function saveRecord() {
+    let name = document.getElementById('custName').value.trim();
+    if(!name) { alert("Customer name required"); return; }
+    let gonda = parseFloat(document.getElementById('gondaQty').value) || 0;
+    let rate = parseFloat(document.getElementById('rateVal').value) || 0;
+    let cash = parseFloat(document.getElementById('cashPaid').value) || 0;
+    if(gonda < 0) gonda = 0;
+    if(rate < 0) rate = 0;
+    let total = gonda * rate;
+    let due = total - cash;
+    if(due < 0) due = 0;
+    let today = new Date().toISOString();
+    if(editModeId !== null) {
+      if(isDuplicateNameExceptEdit(name, editModeId)) { alert("Customer name already exists (duplicate entry prevented)."); return; }
+      let index = records.findIndex(r => r.id == editModeId);
+      if(index !== -1) {
+        records[index] = { ...records[index], customerName: name, gonda, rate, cash, date: today };
+        editModeId = null;
+      }
+    } else {
+      if(isDuplicateNameExceptEdit(name, null)) { alert("Duplicate entry! Customer already exists."); return; }
+      let newId = Date.now().toString() + Math.floor(Math.random()*1000);
+      records.push({ id: newId, customerName: name, gonda, rate, cash, date: today });
+    }
+    saveToLocal();
+    resetForm();
+    renderRecords();
+    gsap.fromTo('#recordsContainer', {opacity:0.8}, {opacity:1, duration:0.2});
+  }
 
-        function updateUI() {
-            localStorage.setItem('harvester_data', JSON.stringify(records));
-            const list = document.getElementById('recordList');
-            list.innerHTML = "";
-            
-            let tSales = 0, tCash = 0, tDue = 0;
+  function resetForm() {
+    document.getElementById('custName').value = '';
+    document.getElementById('gondaQty').value = '0';
+    document.getElementById('rateVal').value = '0';
+    document.getElementById('cashPaid').value = '0';
+    updateDueField();
+    editModeId = null;
+    document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save"></i> Save Record';
+    document.getElementById('editCancelBtn').style.display = 'none';
+  }
 
-            records.forEach(res => {
-                tSales += res.total;
-                tCash += res.cash;
-                tDue += res.due;
+  // EXPORT SYSTEMS: PDF corporate, Excel structured, JPG professional
+  async function exportAsPDF() {
+    const filtered = getFilteredRecords();
+    let totalSalesAgg = filtered.reduce((s,r)=> s+(r.gonda*r.rate),0);
+    let totalCashAgg = filtered.reduce((s,r)=> s+r.cash,0);
+    let totalDueAgg = totalSalesAgg - totalCashAgg;
+    let htmlContent = `<html><head><style>body{font-family:Inter,sans-serif;padding:30px;} h1{color:#1e3a8a;} table{border-collapse:collapse;width:100%} th,td{border:1px solid #ccc;padding:10px;text-align:left} .totals{background:#f0f4ff;margin-top:25px;padding:16px;border-radius:12px;}</style></head><body>
+      <h1>📑 HARVESTER PRO FINANCIAL REPORT</h1><p>Generated: ${new Date().toLocaleString()}</p>
+      <table><thead><tr><th>Customer</th><th>Gonda</th><th>Rate</th><th>Total (৳)</th><th>Cash (৳)</th><th>Due (৳)</th><th>Date</th></tr></thead><tbody>`;
+    filtered.forEach(r => { let ttl = r.gonda*r.rate; let due = ttl - r.cash; if(due<0) due=0;
+      htmlContent+=`<tr><td>${escapeHtml(r.customerName)}</td><td>${r.gonda}</td><td>${r.rate}</td><td>${ttl.toFixed(2)}</td><td>${r.cash.toFixed(2)}</td><td>${due.toFixed(2)}</td><td>${r.date.split('T')[0]}</td></tr>`;
+    });
+    htmlContent+=`</tbody></table><div class="totals"><strong>📊 Summary:</strong> Total Sales: ৳${totalSalesAgg.toFixed(2)} | Total Cash: ৳${totalCashAgg.toFixed(2)} | Total Due: ৳${totalDueAgg>0?totalDueAgg.toFixed(2):0}</div></body></html>`;
+    let win = window.open();
+    win.document.write(htmlContent);
+    win.document.close();
+    win.print();
+  }
 
-                list.innerHTML += `
-                    <div class="record-card">
-                        <div class="record-info">
-                            <h3>${res.name}</h3>
-                            <p>${res.gonda} Gonda × ${res.rate}</p>
-                        </div>
-                        <div class="record-math">
-                            <div>৳ ${res.total}</div>
-                            <div class="due-tag">${res.due > 0 ? 'Due: ৳' + res.due : 'Paid'}</div>
-                        </div>
-                    </div>
-                `;
-            });
+  function exportToExcel() {
+    const filtered = getFilteredRecords();
+    let sheetData = [["Customer Name", "Gonda", "Rate", "Total (৳)", "Cash (৳)", "Due (৳)", "Date"]];
+    filtered.forEach(r => {
+      let total = r.gonda * r.rate;
+      let due = total - r.cash > 0 ? total - r.cash : 0;
+      sheetData.push([r.customerName, r.gonda, r.rate, total, r.cash, due, r.date ? r.date.split('T')[0] : ""]);
+    });
+    const ws = XLSX.utils.aoa_to_sheet(sheetData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "HarvesterPro_Report");
+    XLSX.writeFile(wb, `harvester_report_${new Date().toISOString().slice(0,19)}.xlsx`);
+  }
 
-            document.getElementById('dash-sales').innerText = '৳ ' + tSales;
-            document.getElementById('dash-cash').innerText = '৳ ' + tCash;
-            document.getElementById('dash-due').innerText = '৳ ' + tDue;
-        }
+  async function exportAsJPG() {
+    let filtered = getFilteredRecords();
+    let totalSales = filtered.reduce((s,r)=>s+(r.gonda*r.rate),0);
+    let totalCashF = filtered.reduce((s,r)=>s+r.cash,0);
+    let totalDueF = totalSales - totalCashF;
+    let tempDiv = document.createElement('div');
+    tempDiv.style.position = 'absolute'; tempDiv.style.left = '-9999px'; tempDiv.style.top = '0';
+    tempDiv.style.background = '#0f172a'; tempDiv.style.color = 'white'; tempDiv.style.padding = '30px'; tempDiv.style.fontFamily = 'Inter, sans-serif'; tempDiv.style.width = '800px';
+    tempDiv.innerHTML = `<h1 style="color:#5bc0ff;">🌾 HARVESTER PRO FINANCIAL REPORT</h1><hr/><table style="width:100%; border-collapse:collapse;">${filtered.map(r=>{let ttl=r.gonda*r.rate; let due=ttl-r.cash; return `<tr><td>${r.customerName}</td><td>${r.gonda} G</td><td>Rate ${r.rate}</td><td>Total ${ttl}</td><td>Cash ${r.cash}</td><td>Due ${due>0?due:0}</td></tr>`}).join('')}</table><div style="background:#1e2a3a; margin-top:20px; padding:16px; border-radius:20px;"><strong>📌 Totals:</strong> Sales: ৳${totalSales.toFixed(2)} | Cash: ৳${totalCashF.toFixed(2)} | Due: ৳${totalDueF>0?totalDueF.toFixed(2):0}</div>`;
+    document.body.appendChild(tempDiv);
+    try {
+      let canvas = await html2canvas(tempDiv, { scale: 2, backgroundColor: '#0f172a' });
+      let link = document.createElement('a');
+      link.download = `harvester_report_${Date.now()}.jpg`;
+      link.href = canvas.toDataURL('image/jpeg', 0.95);
+      link.click();
+    } catch(e) { alert("JPG error"); }
+    document.body.removeChild(tempDiv);
+  }
 
-        function searchRecords(query) {
-            const filtered = records.filter(r => r.name.toLowerCase().includes(query.toLowerCase()));
-            // Similar to updateUI but for filtered list
-        }
+  // event listeners
+  document.getElementById('saveBtn').addEventListener('click', saveRecord);
+  document.getElementById('editCancelBtn').addEventListener('click', resetForm);
+  document.getElementById('dueOnlyChip').addEventListener('click', () => { dueOnlyActive = !dueOnlyActive; document.getElementById('dueOnlyChip').classList.toggle('active'); renderRecords(); });
+  document.getElementById('resetFilterChip').addEventListener('click', () => { dueOnlyActive = false; document.getElementById('searchInput').value = ''; currentStartDate=''; currentEndDate=''; document.getElementById('startDate').value=''; document.getElementById('endDate').value=''; document.getElementById('dueOnlyChip').classList.remove('active'); renderRecords(); });
+  document.getElementById('applyDateFilter').addEventListener('click', () => { currentStartDate = document.getElementById('startDate').value; currentEndDate = document.getElementById('endDate').value; renderRecords(); });
+  document.getElementById('searchInput').addEventListener('input', () => renderRecords());
 
-        function clearInputs() {
-            ['custName', 'gonda', 'rate', 'total', 'cash'].forEach(id => document.getElementById(id).value = '');
-        }
+  const exportFab = document.getElementById('exportFab');
+  const modal = document.getElementById('exportModal');
+  exportFab.onclick = () => { modal.style.display = 'flex'; gsap.fromTo('.modal-content',{scale:0.9},{scale:1,duration:0.2}); };
+  document.querySelector('.close-modal').onclick = () => modal.style.display = 'none';
+  window.onclick = (e) => { if(e.target === modal) modal.style.display = 'none'; };
+  document.getElementById('pdfExportBtn').onclick = () => { modal.style.display='none'; exportAsPDF(); };
+  document.getElementById('excelExportBtn').onclick = () => { modal.style.display='none'; exportToExcel(); };
+  document.getElementById('jpgExportBtn').onclick = () => { modal.style.display='none'; exportAsJPG(); };
 
-        // Export Functionality
-        function exportExcel() {
-            const ws = XLSX.utils.json_to_sheet(records);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Financial_Report");
-            XLSX.writeFile(wb, "Harvester_Pro_Report.xlsx");
-        }
-
-        async function exportPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.text("HARVESTER PRO FINANCIAL REPORT", 10, 10);
-            let y = 20;
-            records.forEach(r => {
-                doc.text(`${r.name} - Total: ${r.total} - Due: ${r.due}`, 10, y);
-                y += 10;
-            });
-            doc.save("Report.pdf");
-        }
-
-        // Initial Load
-        window.onload = () => {
-            updateUI();
-            gsap.from(".stat-card", { duration: 0.8, y: 30, opacity: 0, stagger: 0.2, ease: "back.out" });
-        };
-    </script>
+  // init animation
+  gsap.from('.app-container', { duration: 0.5, opacity:0, y:20, ease:"power2.out" });
+  loadData();
+</script>
 </body>
 </html>
