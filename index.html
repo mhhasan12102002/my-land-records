@@ -175,6 +175,9 @@ color:#94a3b8;
 display:flex;
 flex-direction:column;
 gap:14px;
+max-height:650px;
+overflow:auto;
+padding-right:4px;
 }
 
 .item{
@@ -487,14 +490,22 @@ padding:18px;
 </div>
 </div>
 
-<div class="panel">
-<div class="section">Records</div>
+<div class="panel" style="position:relative;overflow:hidden;">
+<div style="position:absolute;right:-40px;top:-40px;width:140px;height:140px;background:rgba(255,255,255,.04);border-radius:50%;"></div>
+<div class="section" style="display:flex;justify-content:space-between;align-items:center;">
+<span>Records</span>
+<span style="font-size:12px;background:rgba(255,255,255,.08);padding:8px 14px;border-radius:999px;color:#cbd5e1;">Smart List</span>
+</div>
 <input type="text" class="search" id="search" placeholder="Search customer...">
 <div class="list" id="list"></div>
 </div>
 
-<div class="panel">
-<div class="section">Export Center</div>
+<div class="panel" style="background:linear-gradient(135deg,rgba(37,99,235,.18),rgba(6,182,212,.12));border:1px solid rgba(96,165,250,.2);position:relative;overflow:hidden;">
+<div style="position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.06);"></div>
+<div class="section" style="display:flex;justify-content:space-between;align-items:center;">
+<span>Export Center</span>
+<span style="font-size:12px;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.08);color:#bfdbfe;">PRO REPORT</span>
+</div>
 <p style="color:#94a3b8;font-size:14px;margin-bottom:16px;">Professional Excel Style Export System</p>
 <div class="export-grid">
 <button class="export-btn pdf" onclick="exportPDF()">EXPORT PDF</button>
@@ -523,7 +534,19 @@ padding:18px;
 <input type="number" class="input" id="gondaInput" placeholder="Gonda">
 <input type="number" class="input" id="rate" placeholder="Rate">
 <input type="number" class="input" id="cashInput" placeholder="Cash Paid">
-<input type="text" class="input" id="phone" placeholder="Phone Number">
+<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);padding:18px;border-radius:22px;margin-bottom:14px;">
+<div style="font-size:13px;color:#94a3b8;font-weight:800;margin-bottom:10px;">LIVE CALCULATION</div>
+<div style="display:flex;justify-content:space-between;align-items:center;">
+<div>
+<div style="font-size:12px;color:#94a3b8;">TOTAL AMOUNT</div>
+<div id="liveTotal" style="font-size:32px;font-weight:900;color:#60a5fa;">৳ 0</div>
+</div>
+<div>
+<div style="font-size:12px;color:#94a3b8;">DUE</div>
+<div id="liveDue" style="font-size:28px;font-weight:900;color:#f87171;text-align:right;">৳ 0</div>
+</div>
+</div>
+</div>
 
 <button class="save" onclick="saveRecord()">SAVE RECORD</button>
 </div>
@@ -590,9 +613,25 @@ modal.classList.remove('active');
 });
 
 function clearForm(){
-['name','gondaInput','rate','cashInput','phone'].forEach(id=>{
+['name','gondaInput','rate','cashInput'].forEach(id=>{
 document.getElementById(id).value = '';
 });
+}
+
+document.getElementById('gondaInput').addEventListener('input',liveCalculation);
+document.getElementById('rate').addEventListener('input',liveCalculation);
+document.getElementById('cashInput').addEventListener('input',liveCalculation);
+
+function liveCalculation(){
+const gonda = Number(document.getElementById('gondaInput').value || 0);
+const rate = Number(document.getElementById('rate').value || 0);
+const cash = Number(document.getElementById('cashInput').value || 0);
+
+const total = gonda * rate;
+const due = total - cash;
+
+document.getElementById('liveTotal').innerText = '৳ ' + total;
+document.getElementById('liveDue').innerText = '৳ ' + due;
 }
 
 function saveRecord(){
@@ -603,7 +642,7 @@ name: document.getElementById('name').value,
 gonda: Number(document.getElementById('gondaInput').value),
 rate: Number(document.getElementById('rate').value),
 cash: Number(document.getElementById('cashInput').value || 0),
-phone: document.getElementById('phone').value
+phone: ''
 };
 
 if(!data.name || !data.gonda || !data.rate){
@@ -741,11 +780,21 @@ const totalDue = totalSales - totalCash;
 
 let report = `
 <div id="pdfSheet" style="width:1200px;background:white;padding:40px;font-family:Arial;color:black;">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;">
+<div>
+<div style="font-size:42px;font-weight:900;color:#2563eb;">HARVESTER</div>
+<div style="font-size:16px;color:#555;font-weight:bold;">Professional Business Report</div>
+</div>
+<div style="text-align:right;">
+<div style="font-size:14px;color:#666;">Generated Report</div>
+<div style="font-size:18px;font-weight:900;">"+new Date().toLocaleDateString()+"</div>
+</div>
+</div>
 <h1 style="text-align:center;font-size:38px;font-weight:900;margin-bottom:30px;border-bottom:4px solid black;padding-bottom:15px;">
 HARVESTER PROFESSIONAL REPORT
 </h1>
 
-<table style="width:100%;border-collapse:collapse;font-size:18px;">
+<table style="width:100%;border-collapse:collapse;font-size:18px;box-shadow:0 10px 30px rgba(0,0,0,.08);overflow:hidden;border-radius:18px;">
 <tr>
 <th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Name</th>
 <th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Gonda</th>
@@ -777,7 +826,7 @@ report += `
 report += `
 </table>
 
-<div style="margin-top:30px;border:3px solid black;padding:20px;display:flex;justify-content:space-between;font-size:22px;font-weight:900;">
+<div style="margin-top:35px;background:#eff6ff;border:2px solid #2563eb;padding:24px;display:flex;justify-content:space-between;font-size:22px;font-weight:900;border-radius:20px;box-shadow:0 10px 20px rgba(37,99,235,.1);">
 <div>Total Sales: ৳ ${totalSales}</div>
 <div>Total Cash: ৳ ${totalCash}</div>
 <div>Total Due: ৳ ${totalDue}</div>
