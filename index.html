@@ -3,118 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Land Admin Pro - Offline Version</title>
+    <title>Land Pro - Professional Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700;900&display=swap');
-        body { font-family: 'Noto Sans Bengali', sans-serif; background: #f3f4f6; color: #1f2937; }
+        body { font-family: 'Noto Sans Bengali', sans-serif; background: #f8fafc; }
         
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; }
             .print-area { border: 2px solid #000 !important; width: 100% !important; box-shadow: none !important; border-radius: 0 !important; }
-            table { width: 100% !important; border-collapse: collapse !important; }
-            th, td { border: 1.5px solid #000 !important; padding: 8px !important; color: black !important; }
-            /* প্রিন্টের সময় গোল বক্সের বদলে ড্যাশ লাইন দিয়ে সামারি */
-            .summary-text-print { display: block !important; border-top: 2px dashed #000; padding: 15px 0; margin-top: 20px; font-weight: 900; font-size: 18px; }
+            table { width: 100% !important; border-collapse: collapse !important; border: 2px solid #000 !important; }
+            /* লেখা বড় করা */
+            th { border: 2px solid #000 !important; padding: 15px 5px !important; font-size: 20px !important; background: #eee !important; color: #000 !important; }
+            td { border: 1.5px solid #000 !important; padding: 12px 5px !important; font-size: 18px !important; color: #000 !important; font-weight: 900 !important; }
+            .summary-text-print { display: flex !important; justify-content: space-between; padding: 20px; font-weight: 900; font-size: 22px; border-top: 2px solid #000; }
             @page { size: A4 landscape; margin: 10mm; }
         }
         
-        .input-box { border: none; background: transparent; width: 100%; text-align: center; font-weight: 700; outline: none; }
-        .summary-text-print { display: none; } /* ব্রাউজারে এটি লুকানো থাকবে */
+        /* ইনপুট বক্সের লেখা বড় করা */
+        .input-box { border: none; background: transparent; width: 100%; text-align: center; font-weight: 900; outline: none; font-size: 18px; }
+        .summary-text-print { display: none; }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
     <div class="max-w-6xl mx-auto">
-        <div class="bg-slate-900 text-white p-6 rounded-2xl mb-6 flex flex-wrap justify-between items-center gap-4 no-print shadow-xl">
-            <div>
-                <h1 class="text-2xl font-black tracking-tight">LAND ADMIN RECORDS</h1>
-                <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Offline Secure Storage</p>
-            </div>
+        <div class="bg-gray-900 text-white p-6 rounded-2xl mb-6 flex flex-wrap justify-between items-center gap-4 no-print shadow-2xl">
+            <h1 class="text-2xl font-black italic">LAND ADMIN SYSTEM</h1>
             <div class="flex gap-2">
-                <button onclick="window.print()" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg font-bold text-xs">🖨️ PRINT</button>
-                <button onclick="exportImg('png')" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-bold text-xs">💾 SAVE PNG</button>
-                <button onclick="exportImg('jpg')" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-lg font-bold text-xs">📸 SAVE JPG</button>
-                <button onclick="createNewFile()" class="bg-rose-600 hover:bg-rose-700 px-4 py-2 rounded-lg font-bold text-xs">🗑️ RESET</button>
+                <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg font-bold text-sm">🖨️ প্রিন্ট টেবিল</button>
+                <button onclick="exportImg('captureArea', 'png')" class="bg-indigo-600 hover:bg-indigo-700 px-5 py-2 rounded-lg font-bold text-sm">💾 PNG সেভ</button>
+                <button onclick="exportImg('captureArea', 'jpg')" class="bg-emerald-600 hover:bg-emerald-700 px-5 py-2 rounded-lg font-bold text-sm">📸 JPG সেভ</button>
+                <button onclick="createNewFile()" class="bg-red-600 px-5 py-2 rounded-lg font-bold text-sm">🗑️ নতুন ফাইল</button>
             </div>
         </div>
 
-        <div id="captureArea" class="bg-white border-2 border-gray-200 rounded-xl overflow-hidden shadow-lg print-area">
+        <div id="captureArea" class="bg-white border shadow-xl rounded-xl overflow-hidden print-area">
             <div class="p-6 bg-gray-50 border-b flex justify-between items-center">
-                <h2 class="text-xl font-black text-gray-800">জমির হিসাব তালিকা</h2>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs font-bold text-gray-400">তারিখ:</span>
-                    <input type="date" id="dateInput" onchange="saveDate(this.value)" class="font-bold text-blue-700 outline-none border rounded px-2 py-1">
-                </div>
+                <h2 class="text-2xl font-black">জমির হিসাব তালিকা</h2>
+                <input type="date" id="dateInput" onchange="saveDate(this.value)" class="font-black text-xl border rounded px-3 py-1 text-blue-700">
             </div>
 
             <table class="w-full text-center">
-                <thead class="bg-gray-800 text-white text-[11px] uppercase tracking-widest">
+                <thead class="bg-gray-800 text-white">
                     <tr>
-                        <th class="p-4 border-r border-gray-700">নাম</th>
-                        <th class="p-4 border-r border-gray-700">জমি (গন্ডা)</th>
-                        <th class="p-4 border-r border-gray-700">রেট</th>
-                        <th class="p-4 border-r border-gray-700">মোট টাকা</th>
-                        <th class="p-4 border-r border-gray-700 text-green-400">নগদ</th>
-                        <th class="p-4 text-red-400">বাকি</th>
-                        <th class="p-4 no-print">#</th>
+                        <th class="p-5 border-r border-gray-700 text-xl">নাম</th>
+                        <th class="p-5 border-r border-gray-700 text-xl">জমি (গন্ডা)</th>
+                        <th class="p-5 border-r border-gray-700 text-xl">রেট</th>
+                        <th class="p-5 border-r border-gray-700 text-xl">মোট টাকা</th>
+                        <th class="p-5 border-r border-gray-700 text-green-400 text-xl">নগদ</th>
+                        <th class="p-5 text-red-400 text-xl">বাকি</th>
+                        <th class="p-5 no-print">#</th>
                     </tr>
                 </thead>
                 <tbody id="mainTableBody"></tbody>
             </table>
 
-            <div class="summary-text-print p-6">
-                <div class="flex justify-between border-b border-black pb-2">
-                    <span>মোট বিক্রি: <span id="printTotal">0</span></span>
-                    <span>মোট নগদ: <span id="printCash">0</span></span>
-                    <span>মোট বাকি: <span id="printDue">0</span></span>
-                </div>
-            </div>
-
-            <div class="p-6 bg-gray-50 border-t no-print">
-                <div class="grid grid-cols-3 gap-4">
-                    <div class="bg-blue-50 p-4 rounded-xl text-center border border-blue-100">
-                        <p class="text-[10px] font-black text-blue-400 uppercase mb-1">মোট বিক্রি</p>
-                        <p id="sumTotal" class="text-xl font-black text-blue-800">0</p>
-                    </div>
-                    <div class="bg-green-50 p-4 rounded-xl text-center border border-green-100">
-                        <p class="text-[10px] font-black text-green-400 uppercase mb-1">মোট নগদ</p>
-                        <p id="sumCash" class="text-xl font-black text-green-800">0</p>
-                    </div>
-                    <div class="bg-red-50 p-4 rounded-xl text-center border border-red-100">
-                        <p class="text-[10px] font-black text-red-400 uppercase mb-1">মোট বাকি</p>
-                        <p id="sumDue" class="text-xl font-black text-red-800">0</p>
-                    </div>
-                </div>
+            <div class="summary-text-print">
+                <span>মোট বিক্রি: <span id="printTotal">0</span></span>
+                <span>মোট নগদ: <span id="printCash">0</span></span>
+                <span>মোট বাকি: <span id="printDue">0</span></span>
             </div>
         </div>
 
-        <button onclick="addRow()" class="w-full p-4 bg-white border-2 border-dashed border-gray-300 text-gray-500 font-black hover:bg-gray-50 no-print mt-4 rounded-xl uppercase text-xs">
-            + নতুন এন্ট্রি যোগ করুন
+        <button onclick="addRow()" class="w-full p-5 bg-white border-4 border-dashed border-gray-200 text-gray-400 font-black hover:bg-gray-50 no-print mt-6 rounded-2xl text-lg">
+            + নতুন কাস্টমার এন্ট্রি করুন
         </button>
 
-        <div class="mt-10 bg-white rounded-2xl shadow-xl border-2 border-red-50 no-print">
-            <div class="p-5 bg-red-50 border-b flex justify-between items-center">
-                <h3 class="text-lg font-black text-red-800 tracking-tight italic">বাকি টাকার অ্যাডমিন হিস্ট্রি</h3>
-                <span class="text-[10px] bg-red-200 text-red-700 px-3 py-1 rounded-full font-black uppercase">Pending List</span>
+        <div id="dueCaptureArea" class="mt-12 bg-white rounded-3xl shadow-2xl border-2 border-red-200 overflow-hidden print-area">
+            <div class="p-6 bg-red-600 text-white flex justify-between items-center no-print">
+                <h3 class="text-xl font-black italic">আজকের বাকি টাকা</h3>
+                <div class="flex gap-2">
+                    <button onclick="printSection('dueCaptureArea')" class="bg-white text-red-600 px-4 py-1 rounded-lg font-black text-xs">🖨️ প্রিন্ট</button>
+                    <button onclick="exportImg('dueCaptureArea', 'png')" class="bg-blue-500 text-white px-4 py-1 rounded-lg font-black text-xs">PNG</button>
+                    <button onclick="exportImg('dueCaptureArea', 'jpg')" class="bg-emerald-500 text-white px-4 py-1 rounded-lg font-black text-xs">JPG</button>
+                </div>
             </div>
-            <div id="dueListView" class="p-2 max-h-64 overflow-y-auto">
+            <div id="dueListView" class="p-4 bg-white">
                 </div>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('land_local_v11')) || [];
-        let curDate = localStorage.getItem('land_date_v11') || new Date().toISOString().split('T')[0];
+        let db = JSON.parse(localStorage.getItem('land_pro_v12')) || [];
+        let curDate = localStorage.getItem('land_date_v12') || new Date().toISOString().split('T')[0];
 
         function init() {
             document.getElementById('dateInput').value = curDate;
             if(db.length === 0) addRow(); else render();
         }
 
-        function saveDate(v) { localStorage.setItem('land_date_v11', v); render(); }
+        function saveDate(v) { localStorage.setItem('land_date_v12', v); render(); }
 
         function addRow() {
             db.push({ id: Date.now(), n: '', j: '', r: '', a: '' });
@@ -124,13 +105,15 @@
         function update(id, f, v) {
             let i = db.findIndex(x => x.id === id);
             db[i][f] = v;
-            localStorage.setItem('land_local_v11', JSON.stringify(db));
+            localStorage.setItem('land_pro_v12', JSON.stringify(db));
             calc();
         }
 
         function calc() {
             let tS = 0, tC = 0, tD = 0;
-            let dueHTML = "";
+            let dueHTML = `<table class="w-full border-collapse">
+                <tr class="bg-gray-100"><th class="p-3 border">তারিখ</th><th class="p-3 border">নাম</th><th class="p-3 border">বাকি টাকা</th></tr>`;
+            
             db.forEach(item => {
                 const j = parseFloat(item.j) || 0, r = parseFloat(item.r) || 0, a = parseFloat(item.a) || 0;
                 const tot = j * r, due = tot - a;
@@ -143,19 +126,21 @@
                 }
 
                 if(due > 0) {
-                    dueHTML += `
-                        <div class="flex justify-between p-3 border-b border-gray-50 hover:bg-gray-50 transition">
-                            <span class="font-bold text-gray-700 text-sm">${curDate} — ${item.n || 'N/A'}</span>
-                            <span class="font-black text-red-600 text-sm">${due.toLocaleString()} ৳</span>
-                        </div>`;
+                    dueHTML += `<tr class="text-center font-bold text-lg">
+                        <td class="p-3 border">${curDate}</td>
+                        <td class="p-3 border">${item.n || 'N/A'}</td>
+                        <td class="p-3 border text-red-600">${due.toLocaleString()} ৳</td>
+                    </tr>`;
                 }
             });
-            // Update UI
-            const elements = ['sumTotal', 'printTotal', 'sumCash', 'printCash', 'sumDue', 'printDue'];
-            const values = [tS, tS, tC, tC, tD, tD];
-            elements.forEach((id, i) => document.getElementById(id).innerText = values[i].toLocaleString());
+            dueHTML += `</table>`;
             
-            document.getElementById('dueListView').innerHTML = dueHTML || "<p class='p-6 text-center text-gray-300 font-bold'>সব হিসাব পরিশোধিত আছে।</p>";
+            ['sumTotal', 'printTotal', 'sumCash', 'printCash', 'sumDue', 'printDue'].forEach((id, i) => {
+                const val = [tS, tS, tC, tC, tD, tD][i];
+                document.getElementById(id).innerText = val.toLocaleString();
+            });
+            
+            document.getElementById('dueListView').innerHTML = tD > 0 ? dueHTML : "<p class='p-10 text-center text-gray-400 font-bold'>আজ কোনো বাকি নেই।</p>";
         }
 
         function render() {
@@ -164,34 +149,41 @@
             db.forEach(item => {
                 const tot = (parseFloat(item.j)||0)*(parseFloat(item.r)||0), due = tot-(parseFloat(item.a)||0);
                 const tr = document.createElement('tr');
-                tr.className = "border-b font-bold hover:bg-gray-50 transition";
                 tr.setAttribute('data-id', item.id);
                 tr.innerHTML = `
-                    <td class="p-3 border-r"><input type="text" value="${item.n}" oninput="update(${item.id}, 'n', this.value)" class="input-box" placeholder="..."></td>
-                    <td class="p-3 border-r"><input type="number" value="${item.j}" oninput="update(${item.id}, 'j', this.value)" class="input-box" placeholder="0"></td>
-                    <td class="p-3 border-r"><input type="number" value="${item.r}" oninput="update(${item.id}, 'r', this.value)" class="input-box" placeholder="0"></td>
-                    <td class="p-3 border-r bg-gray-50 rt text-gray-800">${tot.toLocaleString()}</td>
-                    <td class="p-3 border-r"><input type="number" value="${item.a}" oninput="update(${item.id}, 'a', this.value)" class="input-box text-green-700" placeholder="0"></td>
-                    <td class="p-3 text-red-600 rd">${due.toLocaleString()}</td>
-                    <td class="p-3 no-print"><button onclick="removeRow(${item.id})" class="text-gray-300 hover:text-red-500 transition">✖</button></td>
+                    <td class="p-4 border-r"><input type="text" value="${item.n}" oninput="update(${item.id}, 'n', this.value)" class="input-box" placeholder="..."></td>
+                    <td class="p-4 border-r"><input type="number" value="${item.j}" oninput="update(${item.id}, 'j', this.value)" class="input-box" placeholder="0"></td>
+                    <td class="p-4 border-r"><input type="number" value="${item.r}" oninput="update(${item.id}, 'r', this.value)" class="input-box" placeholder="0"></td>
+                    <td class="p-4 border-r font-black rt text-xl">${tot.toLocaleString()}</td>
+                    <td class="p-4 border-r"><input type="number" value="${item.a}" oninput="update(${item.id}, 'a', this.value)" class="input-box text-green-700" placeholder="0"></td>
+                    <td class="p-4 font-black text-red-600 rd text-xl">${due.toLocaleString()}</td>
+                    <td class="p-4 no-print"><button onclick="removeRow(${item.id})" class="text-gray-300 hover:text-red-500">✖</button></td>
                 `;
                 container.appendChild(tr);
             });
             calc();
         }
 
-        function removeRow(id) { if(confirm('ডিলিট করবেন?')) { db = db.filter(x => x.id !== id); localStorage.setItem('land_local_v11', JSON.stringify(db)); render(); } }
-        function createNewFile() { if(confirm('সব ডাটা মুছে যাবে! আপনি কি নিশ্চিত?')) { db=[]; localStorage.removeItem('land_local_v11'); addRow(); } }
+        function removeRow(id) { if(confirm('মুছবেন?')) { db = db.filter(x => x.id !== id); localStorage.setItem('land_pro_v12', JSON.stringify(db)); render(); } }
+        function createNewFile() { if(confirm('সব ডাটা মুছে যাবে!')) { db=[]; localStorage.removeItem('land_pro_v12'); addRow(); } }
 
-        // Image Export System
-        function exportImg(format) {
-            const area = document.getElementById('captureArea');
-            html2canvas(area, { scale: 2 }).then(canvas => {
+        function exportImg(areaId, format) {
+            html2canvas(document.getElementById(areaId), { scale: 3 }).then(canvas => {
                 let link = document.createElement('a');
-                link.download = `Land_Record_${curDate}.${format}`;
-                link.href = canvas.toDataURL(format === 'png' ? "image/png" : "image/jpeg", 0.9);
+                link.download = `Land_Record_${Date.now()}.${format}`;
+                link.href = canvas.toDataURL(format === 'png' ? "image/png" : "image/jpeg", 1.0);
                 link.click();
             });
+        }
+
+        function printSection(elId) {
+            const content = document.getElementById(elId).innerHTML;
+            const win = window.open('', '', 'height=700,width=900');
+            win.document.write('<html><head><title>Print Section</title><style>table{width:100%;border-collapse:collapse;}th,td{border:1px solid #000;padding:10px;text-align:center;font-family:sans-serif;}.no-print{display:none;}</style></head><body>');
+            win.document.write(content);
+            win.document.write('</body></html>');
+            win.document.close();
+            win.print();
         }
 
         init();
