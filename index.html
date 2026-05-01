@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Harvester v29 - Ultra Clarity</title>
+    <title>Harvester v30 - Modular Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -13,156 +13,160 @@
         * { box-sizing: border-box; }
         body { 
             font-family: 'Hind Siliguri', sans-serif;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80');
+            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80');
             background-size: cover; background-attachment: fixed; min-height: 100vh; margin: 0; padding: 15px; display: flex; justify-content: center;
         }
 
         .main-card {
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px);
-            border-radius: 40px; padding: 25px; width: 100%; max-width: 850px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.5); border: 1.5px solid rgba(255,255,255,0.5);
+            background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(30px);
+            border-radius: 45px; padding: 30px; width: 100%; max-width: 850px;
+            box-shadow: 0 45px 90px rgba(0,0,0,0.6); border: 1.5px solid rgba(255,255,255,0.5);
         }
 
-        /* রাউন্ডেড কন্ট্রোলস */
         .round-box {
             display: flex; align-items: center; background: white;
             border: 2px solid #cbd5e1; border-radius: 25px;
             margin-bottom: 12px; padding: 5px 20px; height: 60px;
         }
+        
         .header-bar {
-            background: #0f172a; color: white; border-radius: 30px; /* High Rounding */
-            padding: 18px; font-weight: 800; text-align: center; margin-bottom: 10px; font-size: 16px;
+            background: #0f172a; color: white; border-radius: 35px;
+            padding: 20px; font-weight: 800; text-align: center; margin-bottom: 15px; font-size: 16px;
         }
 
-        /* কাস্টমার ডিটেইলস - বড় ও স্পষ্ট */
         .data-in { flex: 1; border: none; outline: none; font-size: 20px; font-weight: 800; color: #000; background: transparent; }
         .edit-field { width: 100%; border: none; text-align: center; font-weight: 800; font-size: 18px; outline: none; background: transparent; color: #000; }
 
-        /* টেবিল কন্টেন্ট */
         .content-row { 
-            display: grid; padding: 15px; border-bottom: 1.5px solid #e2e8f0; 
-            text-align: center; font-weight: 800; font-size: 18px; color: #000;
+            display: grid; padding: 18px; border-bottom: 2px solid #f1f5f9; 
+            text-align: center; font-weight: 800; font-size: 19px; color: #000;
         }
 
-        /* হাই-ডেফিনিশন এক্সপোর্ট লেআউট */
-        .export-layout { background: white !important; padding: 40px !important; width: 1100px !important; position: absolute; left: -9999px; }
-        .export-layout table { border: 3px solid black !important; width: 100% !important; border-collapse: collapse; }
-        .export-layout th, .export-layout td { border: 2px solid black !important; color: black !important; padding: 15px !important; font-size: 22px !important; font-weight: 900 !important; text-align: center; }
-        .export-title { border-bottom: 5px double black; margin-bottom: 25px; padding-bottom: 15px; text-align: center; font-weight: 900; font-size: 36px; }
-        .export-summary { border: 3px solid black; border-top: none; display: flex; justify-content: space-between; padding: 20px; font-weight: 900; font-size: 24px; }
+        /* প্রফেশনাল এক্সপোর্ট স্টাইল */
+        .export-layout { background: white !important; padding: 50px !important; width: 1150px !important; position: absolute; left: -9999px; }
+        .export-layout table { border: 3px solid black !important; width: 100% !important; border-collapse: collapse; margin-top: 20px; }
+        .export-layout th, .export-layout td { border: 2.5px solid black !important; color: black !important; padding: 18px !important; font-size: 24px !important; font-weight: 900 !important; text-align: center; }
+        .export-header-text { border-bottom: 6px double black; padding-bottom: 15px; text-align: center; font-weight: 900; font-size: 40px; margin-bottom: 30px; }
     </style>
 </head>
 <body>
 
     <div class="main-card">
         <div class="flex justify-between items-center mb-10 no-print">
-            <h1 class="text-3xl font-black text-slate-900 tracking-tighter">HARVESTER <span class="text-blue-700">V29 PRO</span></h1>
-            <div class="flex gap-3">
-                <button onclick="doExport('pdf')" class="bg-blue-600 text-white px-7 py-3 rounded-full font-black shadow-2xl hover:scale-105 active:scale-95 transition-all">SAVE PDF</button>
-                <button onclick="doExport('jpg')" class="bg-slate-900 text-white px-7 py-3 rounded-full font-black shadow-2xl hover:scale-105 active:scale-95 transition-all">SAVE JPG</button>
-            </div>
+            <h1 class="text-3xl font-black text-slate-900 tracking-tighter">HARVESTER <span class="text-blue-700">V30</span></h1>
+            <span class="bg-slate-200 px-4 py-1 rounded-full text-sm font-bold">Modular Export System</span>
         </div>
 
-        <div class="no-print space-y-2">
-            <div class="round-box"><span class="w-24 font-black text-slate-600">তারিখ :</span><input type="date" id="fDate" class="data-in"></div>
-            <div class="round-box"><span class="w-24 font-black text-slate-600">নাম :</span><input type="text" id="fName" class="data-in" placeholder="..."></div>
+        <div class="no-print space-y-3">
+            <div class="round-box"><span class="w-24 font-black text-slate-500">তারিখ :</span><input type="date" id="fDate" class="data-in"></div>
+            <div class="round-box"><span class="w-24 font-black text-slate-500">নাম :</span><input type="text" id="fName" class="data-in" placeholder="..."></div>
             <div class="grid grid-cols-2 gap-4">
-                <div class="round-box"><span class="w-24 font-black text-slate-600">গন্ডা :</span><input type="number" id="fGonda" class="data-in" placeholder="0"></div>
-                <div class="round-box"><span class="w-24 font-black text-slate-600">রেট :</span><input type="number" id="fRate" class="data-in" placeholder="0"></div>
+                <div class="round-box"><span class="w-24 font-black text-slate-500">গন্ডা :</span><input type="number" id="fGonda" class="data-in" placeholder="0"></div>
+                <div class="round-box"><span class="w-24 font-black text-slate-500">রেট :</span><input type="number" id="fRate" class="data-in" placeholder="0"></div>
             </div>
-            <div class="round-box"><span class="w-24 font-black text-slate-600">নগদ :</span><input type="number" id="fCash" class="data-in text-emerald-700" placeholder="0"></div>
+            <div class="round-box"><span class="w-24 font-black text-slate-500">নগদ :</span><input type="number" id="fCash" class="data-in text-emerald-700" placeholder="0"></div>
             
-            <button onclick="add()" class="w-full bg-slate-900 text-white py-6 rounded-[30px] text-3xl font-black shadow-2xl mt-5 hover:bg-blue-700 transition-all">
-                + SAVE DATA
+            <button onclick="add()" class="w-full bg-slate-900 text-white py-6 rounded-[35px] text-3xl font-black shadow-2xl mt-6 hover:bg-blue-700 transition-all active:scale-95">
+                + SAVE TO RECORD
             </button>
         </div>
 
-        <div class="mt-12">
-            <h3 class="text-xl font-black mb-4 text-slate-800 ml-3">১. বিক্রয় বিবরণী</h3>
-            <div class="header-bar grid grid-cols-6 shadow-xl">
+        <div class="mt-14">
+            <div class="flex justify-between items-center mb-4 px-2">
+                <h3 class="text-xl font-black text-slate-800">বিক্রয় বিবরণী</h3>
+                <div class="flex gap-2 no-print">
+                    <button onclick="exportModule('sales', 'pdf')" class="bg-blue-600 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg">Save Sales PDF</button>
+                    <button onclick="exportModule('sales', 'jpg')" class="bg-slate-800 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg">Save Sales JPG</button>
+                </div>
+            </div>
+            <div class="header-bar grid grid-cols-6 shadow-2xl">
                 <span>নাম</span><span>গন্ডা</span><span>মোট</span><span>নগদ</span><span>বাকি</span><span class="no-print">✕</span>
             </div>
-            <div id="tableBody" class="bg-white rounded-3xl overflow-hidden shadow-inner border border-slate-100"></div>
+            <div id="tableBody" class="bg-white rounded-3xl overflow-hidden border border-slate-200"></div>
         </div>
 
-        <div class="mt-10">
-            <h3 class="text-xl font-black mb-4 text-rose-700 ml-3">২. বকেয়া তালিকা</h3>
-            <div class="header-bar grid grid-cols-3 !bg-rose-700 shadow-xl">
+        <div class="mt-12">
+            <div class="flex justify-between items-center mb-4 px-2">
+                <h3 class="text-xl font-black text-rose-700">বকেয়া তালিকা</h3>
+                <div class="flex gap-2 no-print">
+                    <button onclick="exportModule('due', 'pdf')" class="bg-rose-600 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg">Save Due PDF</button>
+                    <button onclick="exportModule('due', 'jpg')" class="bg-slate-800 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg">Save Due JPG</button>
+                </div>
+            </div>
+            <div class="header-bar grid grid-cols-3 !bg-rose-700 shadow-2xl">
                 <span>ক্রেতার নাম</span><span>গন্ডা</span><span>বকেয়া টাকা</span>
             </div>
-            <div id="dueBody" class="bg-white rounded-3xl overflow-hidden shadow-inner border border-rose-100"></div>
+            <div id="dueBody" class="bg-white rounded-3xl overflow-hidden border border-rose-200"></div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 no-print">
-            <div class="bg-white p-6 rounded-[30px] border-b-8 border-slate-300 shadow-xl text-center">
-                <p class="text-[12px] font-black text-slate-400 uppercase">মোট গন্ডা</p>
-                <h4 id="sG" class="text-2xl font-black text-slate-900">0</h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-14 no-print">
+            <div class="bg-white p-6 rounded-[35px] border-b-8 border-slate-300 shadow-2xl text-center">
+                <p class="text-[12px] font-black text-slate-400 uppercase">গন্ডা</p>
+                <h4 id="sG" class="text-2xl font-black">0</h4>
             </div>
-            <div class="bg-white p-6 rounded-[30px] border-b-8 border-blue-600 shadow-xl text-center">
-                <p class="text-[12px] font-black text-blue-400 uppercase">মোট বিক্রি</p>
+            <div class="bg-white p-6 rounded-[35px] border-b-8 border-blue-600 shadow-2xl text-center">
+                <p class="text-[12px] font-black text-blue-400 uppercase">বিক্রি</p>
                 <h4 id="s1" class="text-2xl font-black text-blue-700">0</h4>
             </div>
-            <div class="bg-white p-6 rounded-[30px] border-b-8 border-emerald-600 shadow-xl text-center">
-                <p class="text-[12px] font-black text-emerald-400 uppercase">মোট নগদ</p>
+            <div class="bg-white p-6 rounded-[35px] border-b-8 border-emerald-600 shadow-2xl text-center">
+                <p class="text-[12px] font-black text-emerald-400 uppercase">নগদ</p>
                 <h4 id="s2" class="text-2xl font-black text-emerald-800">0</h4>
             </div>
-            <div class="bg-white p-6 rounded-[30px] border-b-8 border-rose-600 shadow-xl text-center">
-                <p class="text-[12px] font-black text-rose-400 uppercase">মোট বাকি</p>
+            <div class="bg-white p-6 rounded-[35px] border-b-8 border-rose-600 shadow-2xl text-center">
+                <p class="text-[12px] font-black text-rose-400 uppercase">বাকি</p>
                 <h4 id="s3" class="text-2xl font-black text-rose-800">0</h4>
             </div>
         </div>
     </div>
 
-    <div id="exportContainer" class="export-layout">
-        <div class="export-title">জমির হিসাব ও বকেয়া বিবরণী</div>
-        <p style="font-size: 24px; margin-bottom: 15px; font-weight: bold;">তারিখ: <span id="expDate"></span></p>
-        
-        <p style="font-weight: 900; font-size: 28px; margin-top: 20px;">১. বিক্রয় বিবরণী</p>
+    <div id="salesExport" class="export-layout">
+        <div class="export-header-text">জমির হিসাব বিবরণী</div>
+        <p style="font-size: 26px; font-weight: bold; margin-bottom: 20px;">তারিখ: <span class="expDate"></span></p>
         <table>
             <thead><tr><th>নাম</th><th>গন্ডা</th><th>মোট টাকা</th><th>নগদ</th><th>বাকি</th></tr></thead>
-            <tbody id="eSales"></tbody>
+            <tbody id="eSalesBody"></tbody>
         </table>
+        <div id="salesSummary" style="margin-top: 30px; font-size: 28px; font-weight: 900; border: 3px solid black; padding: 20px; display: flex; justify-content: space-between;"></div>
+    </div>
 
-        <p style="font-weight: 900; font-size: 28px; margin-top: 40px;">২. বকেয়া তালিকা</p>
+    <div id="dueExport" class="export-layout">
+        <div class="export-header-text">বকেয়া পাওনা তালিকা</div>
+        <p style="font-size: 26px; font-weight: bold; margin-bottom: 20px;">তারিখ: <span class="expDate"></span></p>
         <table>
             <thead><tr><th>ক্রেতার নাম</th><th>গন্ডা</th><th>বকেয়া টাকা</th></tr></thead>
-            <tbody id="eDue"></tbody>
+            <tbody id="eDueBody"></tbody>
         </table>
-
-        <div class="export-summary">
-            <div id="es1"></div><div id="es2"></div><div id="es3"></div><div id="es4"></div>
-        </div>
+        <div id="dueSummary" style="margin-top: 30px; font-size: 28px; font-weight: 900; border: 3px solid black; padding: 20px; text-align: right;"></div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('land_v29_db')) || [];
+        let db = JSON.parse(localStorage.getItem('land_v30_db')) || [];
 
         function init() {
-            const d = localStorage.getItem('v29_date') || new Date().toISOString().split('T')[0];
-            document.getElementById('fDate').value = d;
+            document.getElementById('fDate').value = new Date().toISOString().split('T')[0];
             render();
         }
 
         function add() {
             const n = document.getElementById('fName').value, g = document.getElementById('fGonda').value,
                   r = document.getElementById('fRate').value, c = document.getElementById('fCash').value;
-            if(!n || !g || !r) return alert("তথ্য পূরণ করুন!");
+            if(!n || !g || !r) return alert("অসম্পূর্ণ তথ্য!");
             db.push({ id: Date.now(), n, g, r, c });
-            localStorage.setItem('land_v29_db', JSON.stringify(db));
+            localStorage.setItem('land_v30_db', JSON.stringify(db));
             ['fName','fGonda','fRate','fCash'].forEach(i => document.getElementById(i).value = '');
             render();
         }
 
         function update(id, k, v) {
             const idx = db.findIndex(x => x.id === id); db[idx][k] = v;
-            localStorage.setItem('land_v29_db', JSON.stringify(db)); render();
+            localStorage.setItem('land_v30_db', JSON.stringify(db)); render();
         }
 
         function render() {
             const body = document.getElementById('tableBody'); body.innerHTML = '';
             const dueBody = document.getElementById('dueBody'); dueBody.innerHTML = '';
-            const eSales = document.getElementById('eSales'); eSales.innerHTML = '';
-            const eDue = document.getElementById('eDue'); eDue.innerHTML = '';
+            const eSales = document.getElementById('eSalesBody'); eSales.innerHTML = '';
+            const eDue = document.getElementById('eDueBody'); eDue.innerHTML = '';
             let mG=0, mT=0, mC=0, mD=0;
 
             db.forEach(item => {
@@ -175,9 +179,8 @@
                     <span>${total.toLocaleString()}</span>
                     <input class="edit-field text-emerald-800" value="${item.c}" onchange="update(${item.id},'c',this.value)">
                     <span class="text-rose-700">${due.toLocaleString()}</span>
-                    <button onclick="del(${item.id})" class="text-slate-300 hover:text-red-600 no-print">✕</button>
+                    <button onclick="del(${item.id})" class="text-slate-300 no-print">✕</button>
                 </div>`;
-                
                 eSales.innerHTML += `<tr><td>${item.n}</td><td>${item.g}</td><td>${total}</td><td>${cash}</td><td>${due}</td></tr>`;
 
                 if(due > 0) {
@@ -188,25 +191,26 @@
 
             document.getElementById('sG').innerText = mG; document.getElementById('s1').innerText = mT.toLocaleString();
             document.getElementById('s2').innerText = mC.toLocaleString(); document.getElementById('s3').innerText = mD.toLocaleString();
-            document.getElementById('es1').innerText = "গন্ডা: "+mG; document.getElementById('es2').innerText = "বিক্রি: "+mT;
-            document.getElementById('es3').innerText = "নগদ: "+mC; document.getElementById('es4').innerText = "বাকি: "+mD;
-            document.getElementById('expDate').innerText = document.getElementById('fDate').value;
+            
+            document.getElementById('salesSummary').innerHTML = `<span>গন্ডা: ${mG}</span><span>বিক্রি: ${mT}</span><span>নগদ: ${mC}</span><span>বাকি: ${mD}</span>`;
+            document.getElementById('dueSummary').innerText = `মোট বকেয়া: ${mD} টাকা`;
+            document.querySelectorAll('.expDate').forEach(el => el.innerText = document.getElementById('fDate').value);
         }
 
-        function del(id) { if(confirm('Delete?')) { db = db.filter(x => x.id !== id); localStorage.setItem('land_v29_db', JSON.stringify(db)); render(); } }
+        function del(id) { if(confirm('মুছে ফেলবেন?')) { db = db.filter(x => x.id !== id); localStorage.setItem('land_v30_db', JSON.stringify(db)); render(); } }
 
-        function doExport(type) {
-            const target = document.getElementById('exportContainer');
-            html2canvas(target, { scale: 4, logging: false }).then(canvas => {
+        function exportModule(module, type) {
+            const target = document.getElementById(module === 'sales' ? 'salesExport' : 'dueExport');
+            html2canvas(target, { scale: 4 }).then(canvas => {
                 if(type === 'pdf') {
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF('p', 'mm', 'a4');
                     const w = doc.internal.pageSize.getWidth();
                     const h = (canvas.height * w) / canvas.width;
                     doc.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, w, h);
-                    doc.save('Final_Report_v29.pdf');
+                    doc.save(`${module}_report.pdf`);
                 } else {
-                    const a = document.createElement('a'); a.download = 'Clear_Report.jpg'; a.href = canvas.toDataURL('image/jpeg', 1.0); a.click();
+                    const a = document.createElement('a'); a.download = `${module}_report.jpg`; a.href = canvas.toDataURL('image/jpeg', 1.0); a.click();
                 }
             });
         }
