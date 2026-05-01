@@ -3,210 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Titan Land Admin v16</title>
+    <title>Signature Gold Admin v17</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f8fafc; color: #1e293b; }
-        
-        /* Mobile Premium UI */
-        .admin-card { background: white; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-        .input-box { border: none; background: transparent; width: 100%; text-align: center; font-weight: 700; font-size: 16px; outline: none; padding: 12px 2px; color: #334155; }
-        .input-box:focus { background: #f0f7ff; border-radius: 12px; color: #2563eb; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f3f4f6; color: #111827; }
 
-        /* Print-Perfect System */
+        /* স্ক্রিন ডিজাইন */
+        .glass-header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .input-box { border: none; background: transparent; width: 100%; text-align: center; font-weight: 700; font-size: 16px; outline: none; color: #1e293b; padding: 10px 0; }
+        .input-box:focus { background: #eff6ff; border-radius: 8px; }
+
+        /* প্রিন্ট ফিক্স - সম্পূর্ণ গাঢ় কালো লেখা */
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; padding: 0 !important; }
-            .admin-card { border: none !important; box-shadow: none !important; border-radius: 0 !important; }
-            table { width: 100% !important; border-collapse: collapse !important; border: 3px solid #000 !important; }
-            th { background: #000 !important; color: #fff !important; border: 2px solid #000 !important; padding: 15px !important; font-size: 20px !important; }
-            td { border: 2px solid #000 !important; padding: 12px !important; font-size: 18px !important; font-weight: 900 !important; color: black !important; }
-            .print-header { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 3px double #000; padding-bottom: 10px; }
-            .signature-area { display: flex !important; justify-content: space-between; margin-top: 80px; }
-            .sig-box { border-top: 2px solid #000; width: 200px; text-align: center; font-weight: 900; }
-            @page { size: A4 landscape; margin: 10mm; }
+            .print-container { width: 100% !important; border: none !important; }
+            table { width: 100% !important; border-collapse: collapse !important; border: 2.5px solid #000 !important; }
+            th { border: 2px solid #000 !important; color: #000 !important; background: #f0f0f0 !important; font-size: 18px !important; padding: 12px 5px !important; white-space: nowrap; }
+            td { border: 1.5px solid #000 !important; color: #000 !important; font-size: 16px !important; font-weight: 800 !important; padding: 10px 5px !important; }
+            .p-total-row { border: 2.5px solid #000; border-top: none; padding: 15px; display: flex !important; justify-content: space-around; font-weight: 900; font-size: 18px; color: #000 !important; }
+            .print-title { display: block !important; text-align: center; border-bottom: 2px solid #000; margin-bottom: 20px; padding-bottom: 10px; }
+            .signature-box { display: flex !important; justify-content: space-between; margin-top: 70px; padding: 0 40px; }
+            .sig-line { border-top: 2px solid #000; width: 180px; text-align: center; font-weight: 900; padding-top: 5px; }
+            @page { size: A4 landscape; margin: 8mm; }
         }
-        .print-header, .signature-area { display: none; }
+        .print-title, .p-total-row, .signature-box { display: none; }
     </style>
 </head>
-<body class="p-2 md:p-10">
+<body class="p-2 md:p-8">
 
     <div class="max-w-6xl mx-auto">
-        <div class="bg-slate-900 p-6 rounded-[35px] mb-8 flex flex-wrap justify-between items-center gap-4 no-print shadow-2xl">
+        <div class="glass-header p-6 rounded-[30px] mb-8 flex flex-wrap justify-between items-center gap-4 no-print shadow-2xl">
             <div class="flex items-center gap-4">
-                <div class="h-12 w-12 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg">T</div>
+                <div class="h-14 w-14 bg-yellow-500 rounded-2xl flex items-center justify-center text-slate-900 font-black text-2xl shadow-inner">S</div>
                 <div>
-                    <h1 class="text-white text-xl font-black tracking-tight">TITAN ADMIN</h1>
-                    <p class="text-blue-400 text-[9px] font-bold uppercase tracking-[4px]">Advanced Records v16</p>
+                    <h1 class="text-white text-xl font-black italic">SIGNATURE GOLD</h1>
+                    <p class="text-yellow-500 text-[9px] font-bold uppercase tracking-[4px]">Elite Land Management</p>
                 </div>
             </div>
             <div class="flex gap-2">
-                <button onclick="window.print()" class="bg-slate-800 p-3 rounded-2xl hover:bg-slate-700 transition">🖨️</button>
-                <button onclick="saveHighDef('png')" class="bg-blue-600 hover:bg-blue-700 px-5 py-2.5 rounded-2xl font-black text-xs text-white shadow-xl">SAVE PNG</button>
-                <button onclick="saveHighDef('jpg')" class="bg-emerald-600 hover:bg-emerald-700 px-5 py-2.5 rounded-2xl font-black text-xs text-white shadow-xl">SAVE JPG</button>
+                <button onclick="window.print()" class="bg-slate-700 text-white p-3 rounded-2xl hover:bg-slate-600 transition">🖨️</button>
+                <button onclick="saveImage('png')" class="bg-blue-600 text-white px-5 py-2.5 rounded-2xl font-black text-xs shadow-lg active:scale-95 transition">SAVE PNG</button>
+                <button onclick="saveImage('jpg')" class="bg-emerald-600 text-white px-5 py-2.5 rounded-2xl font-black text-xs shadow-lg active:scale-95 transition">SAVE JPG</button>
             </div>
         </div>
 
-        <div id="captureNode" class="admin-card overflow-hidden bg-white">
-            <div class="print-header">
-                <h1 style="font-size: 32px; font-weight: 900;">জমির হিসাব ও বিক্রয় রশিদ</h1>
-                <p style="font-size: 16px;">তারিখ: <span id="pDateText"></span></p>
+        <div id="masterReport" class="bg-white rounded-[32px] shadow-xl overflow-hidden print-container">
+            <div class="print-title">
+                <h1 style="font-size: 28px; font-weight: 900; margin-bottom: 5px;">জমির হিসাব ও বিক্রয় বিবরণী</h1>
+                <p style="font-size: 14px; font-weight: 700;">তারিখ: <span id="printDate"></span></p>
             </div>
 
-            <div class="p-6 bg-slate-50 border-b flex justify-between items-center no-print">
-                <h2 class="text-xl font-black text-slate-800">কাস্টমার হিসাব তালিকা</h2>
-                <input type="date" id="dateSelect" onchange="setDate(this.value)" class="bg-white border rounded-xl px-4 py-2 font-bold text-blue-600 outline-none shadow-sm cursor-pointer">
+            <div class="p-6 bg-slate-50/50 border-b flex justify-between items-center no-print">
+                <h2 class="text-lg font-black text-slate-700">দৈনিক হিসাব তালিকা</h2>
+                <input type="date" id="dateControl" onchange="updateDate(this.value)" class="bg-white border-2 border-slate-200 rounded-xl px-4 py-2 font-bold text-blue-600 outline-none cursor-pointer">
             </div>
 
             <div class="overflow-x-auto">
                 <table class="w-full text-center">
-                    <thead class="bg-slate-900 text-white text-xs uppercase tracking-widest">
+                    <thead class="bg-slate-900 text-white text-[11px] uppercase tracking-wider">
                         <tr>
-                            <th class="p-5 border-r border-slate-700 min-w-[180px]">ক্রেতার নাম</th>
-                            <th class="p-5 border-r border-slate-700">জমি (গন্ডা)</th>
-                            <th class="p-5 border-r border-slate-700">রেট</th>
-                            <th class="p-5 border-r border-slate-700 bg-blue-900/20 text-blue-400">মোট টাকা</th>
-                            <th class="p-5 border-r border-slate-700 bg-emerald-900/20 text-emerald-400">নগদ</th>
-                            <th class="p-5 bg-rose-900/20 text-rose-400">বাকি</th>
-                            <th class="p-5 no-print">#</th>
+                            <th class="p-4 border-r border-slate-700 min-w-[180px]">ক্রেতার নাম</th>
+                            <th class="p-4 border-r border-slate-700 w-28">জমি (গন্ডা)</th>
+                            <th class="p-4 border-r border-slate-700 w-28">রেট</th>
+                            <th class="p-4 border-r border-slate-700">মোট টাকা</th>
+                            <th class="p-4 border-r border-slate-700 text-emerald-400">নগদ সংগ্রহ</th>
+                            <th class="p-4 text-rose-400">বাকি টাকা</th>
+                            <th class="p-4 no-print w-12">✕</th>
                         </tr>
                     </thead>
-                    <tbody id="tableRows" class="divide-y divide-slate-100"></tbody>
+                    <tbody id="rowContainer" class="divide-y divide-slate-100"></tbody>
                 </table>
             </div>
 
-            <div class="p-8 bg-slate-50 grid grid-cols-1 md:grid-cols-3 gap-6 no-print">
-                <div class="bg-white p-6 rounded-[25px] border-b-4 border-blue-500 shadow-sm">
-                    <p class="text-[10px] font-black text-slate-400 uppercase mb-1">সর্বমোট বিক্রি</p>
-                    <h3 id="dashTotal" class="text-3xl font-black text-slate-900">0</h3>
+            <div class="p-total-row">
+                <span>মোট বিক্রি: <span id="pt1">0</span></span>
+                <span>মোট নগদ: <span id="pt2">0</span></span>
+                <span>মোট বাকি: <span id="pt3">0</span></span>
+            </div>
+
+            <div class="p-8 bg-slate-900 grid grid-cols-1 md:grid-cols-3 gap-4 no-print">
+                <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">সর্বমোট বিক্রি</p>
+                    <h3 id="sTotal" class="text-2xl font-black text-white">0</h3>
                 </div>
-                <div class="bg-white p-6 rounded-[25px] border-b-4 border-emerald-500 shadow-sm">
-                    <p class="text-[10px] font-black text-emerald-400 uppercase mb-1">সর্বমোট নগদ</p>
-                    <h3 id="dashCash" class="text-3xl font-black text-emerald-600">0</h3>
+                <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700">
+                    <p class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-1">সর্বমোট নগদ</p>
+                    <h3 id="sCash" class="text-2xl font-black text-emerald-500">0</h3>
                 </div>
-                <div class="bg-white p-6 rounded-[25px] border-b-4 border-rose-500 shadow-sm">
-                    <p class="text-[10px] font-black text-rose-400 uppercase mb-1">সর্বমোট বাকি</p>
-                    <h3 id="dashDue" class="text-3xl font-black text-rose-600">0</h3>
+                <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700">
+                    <p class="text-[9px] font-bold text-rose-400 uppercase tracking-widest mb-1">সর্বমোট বাকি</p>
+                    <h3 id="sDue" class="text-2xl font-black text-rose-500">0</h3>
                 </div>
             </div>
 
-            <div class="signature-area px-10 pb-10">
-                <div class="sig-box">ক্রেতার স্বাক্ষর</div>
-                <div class="sig-box">অ্যাডমিন স্বাক্ষর</div>
+            <div class="signature-box">
+                <div class="sig-line">ক্রেতার স্বাক্ষর</div>
+                <div class="sig-line">অ্যাডমিন স্বাক্ষর</div>
             </div>
         </div>
 
-        <div class="mt-8 flex gap-4 no-print">
-            <button onclick="addNewRow()" class="flex-1 bg-slate-900 text-white p-5 rounded-[25px] font-black tracking-widest shadow-2xl active:scale-95 transition">+ নতুন কাস্টমার এন্ট্রি</button>
-            <button onclick="clearAll()" class="bg-white text-rose-500 border border-rose-100 px-8 rounded-[25px] font-bold text-xs uppercase">Reset</button>
-        </div>
-
-        <div id="dueVisualCard" class="mt-12 admin-card border-rose-100 overflow-hidden no-print">
-            <div class="p-6 bg-rose-50 border-b border-rose-100 flex justify-between items-center">
-                <h3 class="font-black text-rose-700 italic">পেন্ডিং কালেকশন লিস্ট</h3>
-                <button onclick="saveHighDef('png', 'dueVisualCard')" class="text-[10px] font-black bg-rose-600 text-white px-4 py-1.5 rounded-full">সেভ লিস্ট</button>
-            </div>
-            <div id="dueListContent" class="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-                </div>
+        <div class="mt-6 flex gap-3 no-print">
+            <button onclick="addRow()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white p-5 rounded-2xl font-black shadow-xl transition-all active:scale-95 uppercase text-xs tracking-widest">+ কাস্টমার এন্ট্রি করুন</button>
+            <button onclick="fullReset()" class="bg-white text-slate-400 hover:text-rose-500 px-6 rounded-2xl font-bold text-[10px] border border-slate-200 transition">Reset</button>
         </div>
     </div>
 
     <script>
-        let storage = JSON.parse(localStorage.getItem('titan_v16_data')) || [];
-        let activeDate = localStorage.getItem('titan_v16_date') || new Date().toISOString().split('T')[0];
+        let db = JSON.parse(localStorage.getItem('gold_v17_db')) || [];
+        let dVal = localStorage.getItem('gold_v17_date') || new Date().toISOString().split('T')[0];
 
         function init() {
-            document.getElementById('dateSelect').value = activeDate;
-            document.getElementById('pDateText').innerText = activeDate;
-            if(storage.length === 0) addNewRow(); else render();
+            document.getElementById('dateControl').value = dVal;
+            document.getElementById('printDate').innerText = dVal;
+            if(db.length === 0) addRow(); else render();
         }
 
-        function setDate(v) { localStorage.setItem('titan_v16_date', v); location.reload(); }
+        function updateDate(v) { localStorage.setItem('gold_v17_date', v); location.reload(); }
 
-        function addNewRow() {
-            storage.push({ id: Date.now(), n: '', j: '', r: '', a: '' });
+        function addRow() {
+            db.push({ id: Date.now(), n: '', j: '', r: '', a: '' });
             render();
         }
 
-        function updateVal(id, key, val) {
-            let idx = storage.findIndex(x => x.id === id);
-            storage[idx][key] = val;
-            localStorage.setItem('titan_v16_data', JSON.stringify(storage));
-            calculate();
+        function edit(id, k, v) {
+            let i = db.findIndex(x => x.id === id);
+            db[i][k] = v;
+            localStorage.setItem('gold_v17_db', JSON.stringify(db));
+            calc();
         }
 
-        function calculate() {
-            let totalSell = 0, totalCash = 0, totalDue = 0;
-            let dueHTML = "";
-
-            storage.forEach(item => {
-                const sell = (parseFloat(item.j)||0) * (parseFloat(item.r)||0);
+        function calc() {
+            let t1=0, t2=0, t3=0;
+            db.forEach(item => {
+                const total = (parseFloat(item.j)||0) * (parseFloat(item.r)||0);
                 const cash = parseFloat(item.a)||0;
-                const due = sell - cash;
-                
-                totalSell += sell; totalCash += cash; totalDue += due;
+                const due = total - cash;
+                t1 += total; t2 += cash; t3 += due;
 
                 const row = document.querySelector(`[data-id="${item.id}"]`);
                 if(row) {
-                    row.querySelector('.c-total').innerText = sell.toLocaleString();
+                    row.querySelector('.c-total').innerText = total.toLocaleString();
                     row.querySelector('.c-due').innerText = due.toLocaleString();
-                }
-
-                if(due > 0) {
-                    dueHTML += `<div class="flex justify-between p-4 bg-rose-50/50 rounded-2xl border border-rose-100">
-                        <span class="font-bold text-slate-700">${item.n || 'নতুন ক্রেতা'}</span>
-                        <span class="font-black text-rose-600">${due.toLocaleString()} ৳</span>
-                    </div>`;
                 }
             });
 
-            document.getElementById('dashTotal').innerText = totalSell.toLocaleString();
-            document.getElementById('dashCash').innerText = totalCash.toLocaleString();
-            document.getElementById('dashDue').innerText = totalDue.toLocaleString();
-            document.getElementById('dueListContent').innerHTML = dueHTML || "<p class='col-span-full p-10 text-center text-slate-300 font-bold'>সব বাকি পরিশোধিত।</p>";
+            const ids = ['sTotal','sCash','sDue','pt1','pt2','pt3'];
+            const vals = [t1, t2, t3, t1, t2, t3];
+            ids.forEach((id, i) => document.getElementById(id).innerText = vals[i].toLocaleString() + " ৳");
         }
 
         function render() {
-            const body = document.getElementById('tableRows');
-            body.innerHTML = '';
-            storage.forEach(item => {
-                const sell = (parseFloat(item.j)||0) * (parseFloat(item.r)||0);
-                const due = sell - (parseFloat(item.a)||0);
+            const container = document.getElementById('rowContainer');
+            container.innerHTML = '';
+            db.forEach(item => {
+                const total = (parseFloat(item.j)||0) * (parseFloat(item.r)||0);
+                const due = total - (parseFloat(item.a)||0);
                 const tr = document.createElement('tr');
                 tr.setAttribute('data-id', item.id);
-                tr.className = "hover:bg-slate-50 transition-colors";
+                tr.className = "hover:bg-blue-50/30 transition-colors";
                 tr.innerHTML = `
-                    <td class="p-2 border-r border-slate-50"><input type="text" value="${item.n}" oninput="updateVal(${item.id},'n',this.value)" class="input-box" placeholder="..."></td>
-                    <td class="p-2 border-r border-slate-50"><input type="number" value="${item.j}" oninput="updateVal(${item.id},'j',this.value)" class="input-box" placeholder="0"></td>
-                    <td class="p-2 border-r border-slate-50"><input type="number" value="${item.r}" oninput="updateVal(${item.id},'r',this.value)" class="input-box" placeholder="0"></td>
-                    <td class="p-2 border-r border-slate-50 font-black text-blue-600 c-total text-lg">${sell.toLocaleString()}</td>
-                    <td class="p-2 border-r border-slate-50"><input type="number" value="${item.a}" oninput="updateVal(${item.id},'a',this.value)" class="input-box text-emerald-600" placeholder="0"></td>
-                    <td class="p-2 font-black text-rose-600 c-due text-lg">${due.toLocaleString()}</td>
-                    <td class="p-2 no-print"><button onclick="deleteRow(${item.id})" class="text-slate-300 hover:text-rose-500 px-3">✕</button></td>
+                    <td class="border-r border-slate-100"><input type="text" value="${item.n}" oninput="edit(${item.id},'n',this.value)" class="input-box" placeholder="নাম লিখুন"></td>
+                    <td class="border-r border-slate-100"><input type="number" value="${item.j}" oninput="edit(${item.id},'j',this.value)" class="input-box" placeholder="0"></td>
+                    <td class="border-r border-slate-100"><input type="number" value="${item.r}" oninput="edit(${item.id},'r',this.value)" class="input-box" placeholder="0"></td>
+                    <td class="border-r border-slate-100 font-black text-blue-600 c-total text-lg">${total.toLocaleString()}</td>
+                    <td class="border-r border-slate-100"><input type="number" value="${item.a}" oninput="edit(${item.id},'a',this.value)" class="input-box text-emerald-600" placeholder="0"></td>
+                    <td class="font-black text-rose-600 c-due text-lg">${due.toLocaleString()}</td>
+                    <td class="no-print"><button onclick="del(${item.id})" class="text-slate-300 hover:text-rose-500 px-3 transition">✕</button></td>
                 `;
-                body.appendChild(tr);
+                container.appendChild(tr);
             });
-            calculate();
+            calc();
         }
 
-        function deleteRow(id) { if(confirm('ডিলিট করবেন?')) { storage = storage.filter(x => x.id !== id); localStorage.setItem('titan_v16_data', JSON.stringify(storage)); render(); } }
-        function clearAll() { if(confirm('সব ডাটা মুছে যাবে!')) { storage = []; localStorage.removeItem('titan_v16_data'); addNewRow(); } }
+        function del(id) { if(confirm('ডিলিট করবেন?')) { db = db.filter(x => x.id !== id); localStorage.setItem('gold_v17_db', JSON.stringify(db)); render(); } }
+        function fullReset() { if(confirm('সব ডাটা মুছে যাবে! নিশ্চিত?')) { db=[]; localStorage.removeItem('gold_v17_db'); addRow(); } }
 
-        // Advanced High-Def Image Capture Fix
-        function saveHighDef(format, elementId = 'captureNode') {
-            const el = document.getElementById(elementId);
+        function saveImage(fmt) {
+            const el = document.getElementById('masterReport');
             html2canvas(el, {
-                scale: 4, // 4X Resolution
+                scale: 4,
+                backgroundColor: "#ffffff",
                 useCORS: true,
-                backgroundColor: "#ffffff", // লিনাক্স/এন্ড্রয়েড গ্যালারিতে কালো আসা বন্ধ করবে
-                windowWidth: 1200 
+                windowWidth: 1200
             }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `Land_Report_${Date.now()}.${format}`;
-                link.href = canvas.toDataURL(format === 'png' ? 'image/png' : 'image/jpeg', 1.0);
-                link.click();
+                const a = document.createElement('a');
+                a.download = `Land_Admin_Record_${Date.now()}.${fmt}`;
+                a.href = canvas.toDataURL(fmt === 'png' ? 'image/png' : 'image/jpeg', 1.0);
+                a.click();
             });
         }
 
