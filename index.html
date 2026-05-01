@@ -735,27 +735,135 @@ window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function exportPDF(){
-html2canvas(document.body,{scale:2}).then(canvas=>{
+const totalSales = database.reduce((sum,item)=>sum + (item.gonda * item.rate),0);
+const totalCash = database.reduce((sum,item)=>sum + item.cash,0);
+const totalDue = totalSales - totalCash;
+
+let report = `
+<div id="pdfSheet" style="width:1200px;background:white;padding:40px;font-family:Arial;color:black;">
+<h1 style="text-align:center;font-size:38px;font-weight:900;margin-bottom:30px;border-bottom:4px solid black;padding-bottom:15px;">
+HARVESTER PROFESSIONAL REPORT
+</h1>
+
+<table style="width:100%;border-collapse:collapse;font-size:18px;">
+<tr>
+<th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Name</th>
+<th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Gonda</th>
+<th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Rate</th>
+<th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Total</th>
+<th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Cash</th>
+<th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Due</th>
+<th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Date</th>
+</tr>
+`;
+
+database.forEach(item=>{
+const total = item.gonda * item.rate;
+const due = total - item.cash;
+
+report += `
+<tr>
+<td style="border:1px solid black;padding:12px;font-weight:bold;">${item.name}</td>
+<td style="border:1px solid black;padding:12px;font-weight:bold;text-align:center;">${item.gonda}</td>
+<td style="border:1px solid black;padding:12px;font-weight:bold;text-align:center;">${item.rate}</td>
+<td style="border:1px solid black;padding:12px;font-weight:bold;color:#2563eb;text-align:center;">${total}</td>
+<td style="border:1px solid black;padding:12px;font-weight:bold;color:#10b981;text-align:center;">${item.cash}</td>
+<td style="border:1px solid black;padding:12px;font-weight:bold;color:#ef4444;text-align:center;">${due}</td>
+<td style="border:1px solid black;padding:12px;font-weight:bold;text-align:center;">${item.date}</td>
+</tr>
+`;
+});
+
+report += `
+</table>
+
+<div style="margin-top:30px;border:3px solid black;padding:20px;display:flex;justify-content:space-between;font-size:22px;font-weight:900;">
+<div>Total Sales: ৳ ${totalSales}</div>
+<div>Total Cash: ৳ ${totalCash}</div>
+<div>Total Due: ৳ ${totalDue}</div>
+</div>
+</div>
+`;
+
+const temp = document.createElement('div');
+temp.innerHTML = report;
+document.body.appendChild(temp);
+
+html2canvas(document.getElementById('pdfSheet'),{scale:3}).then(canvas=>{
 const { jsPDF } = window.jspdf;
-const pdf = new jsPDF('p','mm','a4');
+const pdf = new jsPDF('l','mm','a4');
 const width = pdf.internal.pageSize.getWidth();
 const height = canvas.height * width / canvas.width;
 
 pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,width,height);
-pdf.save('harvester-report.pdf');
+pdf.save('harvester-professional-report.pdf');
 
-showToast('PDF Saved');
+document.body.removeChild(temp);
+showToast('Professional PDF Saved');
 });
 }
 
 function exportJPG(){
-html2canvas(document.body,{scale:2}).then(canvas=>{
+const totalSales = database.reduce((sum,item)=>sum + (item.gonda * item.rate),0);
+const totalCash = database.reduce((sum,item)=>sum + item.cash,0);
+const totalDue = totalSales - totalCash;
+
+let report = `
+<div id="jpgSheet" style="width:1200px;background:white;padding:40px;font-family:Arial;color:black;">
+<h1 style="text-align:center;font-size:38px;font-weight:900;margin-bottom:30px;border-bottom:4px solid black;padding-bottom:15px;">
+HARVESTER EXCEL SHEET REPORT
+</h1>
+
+<table style="width:100%;border-collapse:collapse;font-size:18px;">
+<tr>
+<th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Customer</th>
+<th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Gonda</th>
+<th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Rate</th>
+<th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Total</th>
+<th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Cash</th>
+<th style="border:2px solid black;padding:14px;background:#2563eb;color:white;">Due</th>
+</tr>
+`;
+
+database.forEach(item=>{
+const total = item.gonda * item.rate;
+const due = total - item.cash;
+
+report += `
+<tr>
+<td style="border:1px solid black;padding:12px;font-weight:bold;">${item.name}</td>
+<td style="border:1px solid black;padding:12px;text-align:center;">${item.gonda}</td>
+<td style="border:1px solid black;padding:12px;text-align:center;">${item.rate}</td>
+<td style="border:1px solid black;padding:12px;color:#2563eb;font-weight:bold;text-align:center;">${total}</td>
+<td style="border:1px solid black;padding:12px;color:#10b981;font-weight:bold;text-align:center;">${item.cash}</td>
+<td style="border:1px solid black;padding:12px;color:#ef4444;font-weight:bold;text-align:center;">${due}</td>
+</tr>
+`;
+});
+
+report += `
+</table>
+
+<div style="margin-top:30px;font-size:24px;font-weight:900;border:3px solid black;padding:20px;display:flex;justify-content:space-between;">
+<div>Sales: ৳ ${totalSales}</div>
+<div>Cash: ৳ ${totalCash}</div>
+<div>Due: ৳ ${totalDue}</div>
+</div>
+</div>
+`;
+
+const temp = document.createElement('div');
+temp.innerHTML = report;
+document.body.appendChild(temp);
+
+html2canvas(document.getElementById('jpgSheet'),{scale:3}).then(canvas=>{
 const a = document.createElement('a');
 a.href = canvas.toDataURL('image/jpeg',1);
-a.download = 'harvester-report.jpg';
+a.download = 'harvester-excel-report.jpg';
 a.click();
 
-showToast('JPG Saved');
+document.body.removeChild(temp);
+showToast('Professional JPG Saved');
 });
 }
 
