@@ -3,111 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Land Records Pro</title>
+    <title>Land Records Pro - Perfect Print</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700;900&display=swap');
-        body { font-family: 'Noto Sans Bengali', sans-serif; background: #f1f5f9; }
+        body { font-family: 'Noto Sans Bengali', sans-serif; background: #f8fafc; }
+
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; padding: 0 !important; }
-            .container { max-width: 100% !important; border: none !important; box-shadow: none !important; }
-            table { width: 100% !important; border-collapse: collapse !important; table-layout: auto !important; }
-            th, td { border: 2px solid #000 !important; padding: 12px 6px !important; font-size: 14px !important; color: black !important; font-weight: bold !important; }
-            .summary-box { display: flex !important; flex-direction: row !important; justify-content: space-around !important; border: 3px solid #000 !important; margin-top: 30px !important; padding: 15px !important; }
-            @page { size: A4 landscape; margin: 10mm; }
+            .container { max-width: 100% !important; border: none !important; margin: 0 !important; padding: 5mm !important; }
+            
+            /* টেবিল কলাম চওড়া করা */
+            table { width: 100% !important; border-collapse: collapse !important; table-layout: fixed !important; border: 2px solid #000 !important; }
+            th, td { border: 1.5px solid #000 !important; padding: 12px 5px !important; font-size: 15px !important; color: #000 !important; overflow: hidden; }
+            
+            /* নিচের ৩টি বক্স টেবিলের সাথে যুক্ত করা */
+            .summary-row { display: table-row !important; }
+            .summary-cell { display: table-cell !important; border: 1.5px solid #000 !important; padding: 20px !important; background: #f0f0f0 !important; text-align: center !important; }
+            
+            /* রাউন্ড কোণা বাদ দেওয়া */
+            .rounded-3xl, .rounded-[30px] { border-radius: 0 !important; }
+            @page { size: A4 landscape; margin: 5mm; }
         }
-        .input-cell { border: none; background: transparent; width: 100%; text-align: center; outline: none; font-weight: 700; }
-        .input-cell:focus { border-bottom: 2px solid #2563eb; }
+
+        .input-cell { border: none; background: transparent; width: 100%; text-align: center; outline: none; font-weight: 700; font-size: 16px; }
     </style>
 </head>
-<body class="p-4 md:p-10 pb-40">
+<body class="p-2 md:p-8">
+
     <div class="max-w-6xl mx-auto container">
-        <div class="bg-gray-900 text-white p-6 rounded-3xl shadow-2xl flex justify-between items-center mb-8 no-print">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-xl font-black">A</div>
-                <h1 class="text-xl font-black uppercase tracking-widest text-white">Admin Records</h1>
-            </div>
-            <div class="flex gap-3">
-                <button onclick="window.print()" class="bg-white text-black px-6 py-2 rounded-xl font-black hover:bg-gray-200">PRINT</button>
-                <button onclick="createNewFile()" class="bg-red-600 text-white px-6 py-2 rounded-xl font-black hover:bg-red-700">+ NEW</button>
+        <div class="bg-gray-900 text-white p-6 rounded-3xl mb-6 flex justify-between items-center no-print shadow-xl">
+            <h1 class="text-xl font-black uppercase tracking-widest">Admin Panel</h1>
+            <div class="flex gap-4">
+                <button onclick="window.print()" class="bg-white text-black px-6 py-2 rounded-xl font-black hover:bg-gray-200">🖨️ PRINT</button>
+                <button onclick="createNewFile()" class="bg-red-600 text-white px-6 py-2 rounded-xl font-black">+ NEW</button>
             </div>
         </div>
-        <div class="bg-white rounded-[30px] shadow-xl border overflow-hidden">
-            <div class="p-8 bg-gray-50 border-b flex justify-between items-center">
+
+        <div class="bg-white border-2 border-gray-200 overflow-hidden">
+            <div class="p-6 bg-gray-50 border-b flex justify-between items-center">
                 <h2 class="text-2xl font-black text-gray-800">জমির হিসাব তালিকা</h2>
-                <div class="flex items-center gap-2 bg-white px-4 py-2 rounded-xl border-2 border-gray-100">
+                <div class="bg-white px-4 py-2 border flex items-center gap-2">
                     <span class="text-xs font-black text-gray-400">তারিখ:</span>
                     <input type="date" id="dateInput" onchange="saveDate(this.value)" class="font-black text-blue-600 outline-none">
                 </div>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-center">
-                    <thead class="bg-gray-800 text-white text-[11px] uppercase tracking-widest">
-                        <tr>
-                            <th class="p-5 border-r border-gray-700">নাম</th>
-                            <th class="p-5 border-r border-gray-700">জমি (গন্ডা)</th>
-                            <th class="p-5 border-r border-gray-700">রেট</th>
-                            <th class="p-5 border-r border-gray-700">মোট টাকা</th>
-                            <th class="p-5 border-r border-gray-700 text-green-400">অগ্রিম</th>
-                            <th class="p-5 text-red-400">বাকি</th>
-                            <th class="p-5 no-print">#</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody"></tbody>
-                </table>
-            </div>
-            <button onclick="addRow()" class="w-full p-5 bg-blue-50 text-blue-500 font-black hover:bg-blue-100 no-print uppercase text-xs">+ নতুন রো যোগ করুন</button>
-        </div>
-        <div class="mt-10 grid grid-cols-3 gap-6 summary-box">
-            <div class="bg-indigo-600 p-8 rounded-3xl text-white shadow-lg text-center">
-                <p class="text-[10px] font-black uppercase opacity-60 mb-1">মোট বিক্রি</p>
-                <p id="tSale" class="text-3xl font-black text-white">0</p>
-            </div>
-            <div class="bg-emerald-600 p-8 rounded-3xl text-white shadow-lg text-center">
-                <p class="text-[10px] font-black uppercase opacity-60 mb-1">মোট নগদ</p>
-                <p id="tCash" class="text-3xl font-black text-white">0</p>
-            </div>
-            <div class="bg-rose-600 p-8 rounded-3xl text-white shadow-lg text-center">
-                <p class="text-[10px] font-black uppercase opacity-60 mb-1">মোট বাকি</p>
-                <p id="tDue" class="text-3xl font-black text-white">0</p>
-            </div>
+
+            <table class="w-full text-center">
+                <thead class="bg-gray-800 text-white text-[12px] uppercase">
+                    <tr>
+                        <th style="width: 20%;">নাম</th>
+                        <th style="width: 15%;">জমি (গন্ডা)</th>
+                        <th style="width: 15%;">রেট</th>
+                        <th style="width: 20%;">মোট টাকা</th>
+                        <th style="width: 15%;" class="text-green-400">অগ্রিম</th>
+                        <th style="width: 15%;" class="text-red-400">বাকি</th>
+                        <th style="width: 40px;" class="no-print">#</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                    </tbody>
+                <tfoot>
+                    <tr class="summary-row bg-gray-100 font-black">
+                        <td colspan="2" class="summary-cell">
+                            <div class="text-[10px] uppercase text-gray-500">মোট বিক্রি</div>
+                            <div id="tSale" class="text-xl">0</div>
+                        </td>
+                        <td colspan="2" class="summary-cell">
+                            <div class="text-[10px] uppercase text-gray-500">মোট নগদ</div>
+                            <div id="tCash" class="text-xl text-green-700">0</div>
+                        </td>
+                        <td colspan="2" class="summary-cell">
+                            <div class="text-[10px] uppercase text-gray-500">মোট বাকি</div>
+                            <div id="tDue" class="text-xl text-red-700">0</div>
+                        </td>
+                        <td class="no-print"></td>
+                    </tr>
+                </tfoot>
+            </table>
+            
+            <button onclick="addRow()" class="w-full p-4 bg-blue-50 text-blue-600 font-black no-print uppercase text-xs border-t">
+                + নতুন ক্রেতা যোগ করুন
+            </button>
         </div>
     </div>
+
     <script>
-        let db = JSON.parse(localStorage.getItem('gh_land_db')) || [];
-        let d = localStorage.getItem('gh_land_date') || new Date().toISOString().split('T')[0];
-        function init() { document.getElementById('dateInput').value = d; if(db.length === 0) addRow(); else render(); }
-        function saveDate(v) { localStorage.setItem('gh_land_date', v); }
-        function addRow() { db.push({ id: Date.now(), n: '', j: '', r: '', a: '' }); render(); }
-        function update(id, f, v) {
-            let i = db.findIndex(x => x.id === id); db[i][f] = v;
-            localStorage.setItem('gh_land_db', JSON.stringify(db)); calc();
+        let db = JSON.parse(localStorage.getItem('land_app_v8')) || [];
+        let d = localStorage.getItem('land_app_v8_date') || new Date().toISOString().split('T')[0];
+
+        function init() {
+            document.getElementById('dateInput').value = d;
+            if(db.length === 0) addRow(); else render();
         }
+
+        function saveDate(v) { localStorage.setItem('land_app_v8_date', v); }
+
+        function addRow() {
+            db.push({ id: Date.now(), n: '', j: '', r: '', a: '' });
+            render();
+        }
+
+        function update(id, f, v) {
+            let i = db.findIndex(x => x.id === id);
+            db[i][f] = v;
+            localStorage.setItem('land_app_v8', JSON.stringify(db));
+            calc();
+        }
+
         function calc() {
             let s=0, c=0, du=0;
             db.forEach(r => {
                 const tot = (parseFloat(r.j)||0)*(parseFloat(r.r)||0), rem = tot-(parseFloat(r.a)||0);
                 s+=tot; c+=parseFloat(r.a)||0; du+=rem;
                 const row = document.querySelector(`[data-id="${r.id}"]`);
-                if(row) { row.querySelector('.rt').innerText = tot.toLocaleString(); row.querySelector('.rd').innerText = rem.toLocaleString(); }
+                if(row) {
+                    row.querySelector('.rt').innerText = tot.toLocaleString();
+                    row.querySelector('.rd').innerText = rem.toLocaleString();
+                }
             });
             document.getElementById('tSale').innerText = s.toLocaleString();
             document.getElementById('tCash').innerText = c.toLocaleString();
             document.getElementById('tDue').innerText = du.toLocaleString();
         }
+
         function render() {
-            const body = document.getElementById('tbody'); body.innerHTML = '';
+            const body = document.getElementById('tbody');
+            body.innerHTML = '';
             db.forEach(r => {
                 const t = (parseFloat(r.j)||0)*(parseFloat(r.r)||0), d = t-(parseFloat(r.a)||0);
-                const tr = document.createElement('tr'); tr.className = "border-b font-bold"; tr.setAttribute('data-id', r.id);
-                tr.innerHTML = `<td class="p-4"><input type="text" value="${r.n}" oninput="update(${r.id}, 'n', this.value)" class="input-cell font-black" placeholder="নাম"></td><td class="p-4"><input type="number" value="${r.j}" oninput="update(${r.id}, 'j', this.value)" class="input-cell" placeholder="0"></td><td class="p-4"><input type="number" value="${r.r}" oninput="update(${r.id}, 'r', this.value)" class="input-cell" placeholder="0"></td><td class="p-4 bg-gray-50 rt font-black text-gray-800">${t.toLocaleString()}</td><td class="p-4"><input type="number" value="${r.a}" oninput="update(${r.id}, 'a', this.value)" class="input-cell text-green-600 font-black" placeholder="0"></td><td class="p-4 text-red-600 rd font-black">${d.toLocaleString()}</td><td class="p-4 no-print"><button onclick="delRow(${r.id})" class="text-gray-300 hover:text-red-500">✖</button></td>`;
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-id', r.id);
+                tr.innerHTML = `
+                    <td><input type="text" value="${r.n}" oninput="update(${r.id}, 'n', this.value)" class="input-cell" placeholder="..."></td>
+                    <td><input type="number" value="${r.j}" oninput="update(${r.id}, 'j', this.value)" class="input-cell" placeholder="0"></td>
+                    <td><input type="number" value="${r.r}" oninput="update(${r.id}, 'r', this.value)" class="input-cell" placeholder="0"></td>
+                    <td class="bg-gray-50 rt font-black">${t.toLocaleString()}</td>
+                    <td><input type="number" value="${r.a}" oninput="update(${r.id}, 'a', this.value)" class="input-cell text-green-700" placeholder="0"></td>
+                    <td class="text-red-700 rd font-black">${d.toLocaleString()}</td>
+                    <td class="no-print"><button onclick="delRow(${r.id})" class="text-gray-300 hover:text-red-500">✖</button></td>
+                `;
                 body.appendChild(tr);
             });
             calc();
         }
-        function delRow(id) { if(confirm('মুছবেন?')) { db = db.filter(x => x.id !== id); localStorage.setItem('gh_land_db', JSON.stringify(db)); render(); } }
-        function createNewFile() { if(confirm('নতুন ফাইল?')) { db = []; localStorage.removeItem('gh_land_db'); addRow(); } }
+
+        function delRow(id) { if(confirm('মুছবেন?')) { db = db.filter(x => x.id !== id); localStorage.setItem('land_app_v8', JSON.stringify(db)); render(); } }
+        function createNewFile() { if(confirm('সব ডাটা মুছে যাবে। নিশ্চিত?')) { db = []; localStorage.removeItem('land_app_v8'); addRow(); } }
+
         init();
     </script>
 </body>
