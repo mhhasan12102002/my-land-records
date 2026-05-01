@@ -3,215 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Elite Land Admin v14</title>
+    <title>Ultra Land Admin v15</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; background: #f1f5f9; color: #334155; overflow-x: hidden; }
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #0f172a; color: #f8fafc; margin: 0; padding-bottom: 50px; }
         
-        /* Premium Card & Inputs */
-        .glass-card { background: white; border-radius: 24px; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.05); }
-        .input-cell { border: none; background: transparent; width: 100%; text-align: center; font-weight: 700; outline: none; font-size: 16px; padding: 12px 4px; }
+        .app-container { max-width: 800px; margin: auto; padding: 15px; }
+        .glass-card { background: #1e293b; border: 1px solid #334155; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         
-        /* Mobile Optimization */
-        @media (max-width: 768px) {
-            .input-cell { font-size: 14px; padding: 8px 2px; }
-            th { font-size: 12px !important; padding: 10px 4px !important; }
-        }
+        /* Input Styling */
+        .input-field { background: transparent; border: none; color: white; width: 100%; text-align: center; font-weight: 700; font-size: 16px; outline: none; padding: 10px 2px; }
+        .input-field:focus { background: rgba(59, 130, 246, 0.1); border-radius: 8px; }
 
-        /* Ultimate Print Engine */
+        /* Table & Print Fix */
         @media print {
             .no-print { display: none !important; }
-            body { background: white !important; }
-            .print-area { border: 2.5px solid #000 !important; border-radius: 0 !important; width: 100% !important; margin: 0 !important; }
-            table { width: 100% !important; border-collapse: collapse !important; border: 2px solid #000 !important; }
-            th { background: #f1f5f9 !important; color: black !important; border: 2px solid #000 !important; font-size: 16px !important; padding: 10px !important; }
-            td { border: 1.5px solid #000 !important; font-size: 15px !important; font-weight: 700 !important; padding: 8px !important; color: black !important; }
-            .summary-footer { display: flex !important; justify-content: space-around; border-top: 2px solid #000; padding: 15px; font-weight: 900; font-size: 18px; color: black !important; }
+            body { background: white !important; color: black !important; padding: 0 !important; }
+            .app-container { max-width: 100% !important; padding: 0 !important; }
+            .glass-card { border: 2.5px solid #000 !important; border-radius: 0 !important; box-shadow: none !important; background: white !important; }
+            table { width: 100% !important; border-collapse: collapse !important; }
+            th { border: 2px solid #000 !important; color: black !important; background: #f1f5f9 !important; padding: 12px !important; font-size: 18px !important; }
+            td { border: 1.5px solid #000 !important; color: black !important; padding: 10px !important; font-size: 16px !important; font-weight: 900 !important; }
+            .print-summary { display: flex !important; justify-content: space-around; border-top: 3px solid #000; padding: 20px; font-weight: 900; font-size: 20px; }
             @page { size: A4 landscape; margin: 5mm; }
         }
-        .summary-footer { display: none; }
+        .print-summary { display: none; }
+        .mobile-scroll { overflow-x: auto; scrollbar-width: none; }
+        .mobile-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="pb-10">
+<body>
 
-    <div class="max-w-5xl mx-auto px-2 md:px-0 mt-4 md:mt-8">
-        <div class="bg-[#0f172a] text-white p-5 rounded-[28px] mb-6 flex flex-wrap justify-between items-center gap-4 no-print shadow-xl border-b-4 border-indigo-500">
+    <div class="app-container">
+        <div class="flex justify-between items-center mb-6 no-print">
             <div>
-                <h1 class="text-xl font-black tracking-tight">ELITE ADMIN <span class="text-indigo-400">v14</span></h1>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Secure Land Records</p>
+                <h1 class="text-2xl font-black text-blue-500 tracking-tighter">ULTRA ADMIN</h1>
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[3px]">Digital Land System</p>
             </div>
             <div class="flex gap-2">
-                <button onclick="window.print()" class="bg-slate-800 p-2.5 rounded-xl hover:bg-slate-700 transition">🖨️</button>
-                <button onclick="exportHighRes('mainReport', 'png')" class="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-xl font-bold text-xs shadow-lg">SAVE PNG</button>
-                <button onclick="exportHighRes('mainReport', 'jpg')" class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl font-bold text-xs shadow-lg">SAVE JPG</button>
+                <button onclick="window.print()" class="bg-slate-800 p-3 rounded-2xl hover:bg-slate-700 transition shadow-lg">🖨️</button>
+                <button onclick="saveImage('png')" class="bg-blue-600 px-4 py-2 rounded-2xl font-bold text-xs shadow-lg shadow-blue-500/20 active:scale-95 transition">PNG</button>
+                <button onclick="saveImage('jpg')" class="bg-emerald-600 px-4 py-2 rounded-2xl font-bold text-xs shadow-lg shadow-emerald-500/20 active:scale-95 transition">JPG</button>
             </div>
         </div>
 
-        <div id="mainReport" class="glass-card overflow-hidden print-area">
-            <div class="p-5 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                <h2 class="text-lg font-black text-slate-800">জমির হিসাব তালিকা</h2>
-                <div class="bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm">
-                    <input type="date" id="dateInput" onchange="saveDate(this.value)" class="font-bold text-indigo-600 outline-none text-sm cursor-pointer">
+        <div id="captureArea" class="glass-card overflow-hidden">
+            <div class="p-6 bg-slate-800/50 flex justify-between items-center border-b border-slate-700">
+                <div class="flex flex-col">
+                    <span class="text-[10px] font-bold text-blue-400 uppercase">মোট হিসাব</span>
+                    <h2 class="text-xl font-black" id="topTotal">0 ৳</h2>
+                </div>
+                <div class="bg-slate-900 px-4 py-2 rounded-2xl border border-slate-700">
+                    <input type="date" id="dateInput" onchange="updateDate(this.value)" class="bg-transparent border-none text-blue-500 font-bold text-sm outline-none">
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="mobile-scroll">
                 <table class="w-full text-center">
-                    <thead class="bg-slate-800 text-white text-[11px] uppercase tracking-wider">
+                    <thead class="bg-slate-900 text-[11px] text-slate-400 uppercase tracking-widest border-b border-slate-700">
                         <tr>
-                            <th class="p-4 border-r border-slate-700 min-w-[150px]">নাম</th>
-                            <th class="p-4 border-r border-slate-700 w-24">জমি</th>
-                            <th class="p-4 border-r border-slate-700 w-24">রেট</th>
-                            <th class="p-4 border-r border-slate-700">মোট টাকা</th>
-                            <th class="p-4 border-r border-slate-700 text-emerald-400">নগদ</th>
+                            <th class="p-4 min-w-[150px]">ক্রেতার নাম</th>
+                            <th class="p-4 w-20">জমি</th>
+                            <th class="p-4 w-20">রেট</th>
+                            <th class="p-4">মোট</th>
+                            <th class="p-4 text-emerald-400">নগদ</th>
                             <th class="p-4 text-rose-400">বাকি</th>
-                            <th class="p-4 no-print w-10">✕</th>
+                            <th class="p-4 no-print">#</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody" class="bg-white"></tbody>
+                    <tbody id="dataRows" class="divide-y divide-slate-800"></tbody>
                 </table>
             </div>
 
-            <div class="summary-footer">
-                <span>মোট বিক্রি: <span id="pTotal">0</span></span>
-                <span>মোট নগদ: <span id="pCash">0</span></span>
-                <span>মোট বাকি: <span id="pDue">0</span></span>
+            <div class="print-summary text-black">
+                <div>মোট বিক্রি: <span id="pTotal">0</span></div>
+                <div>মোট নগদ: <span id="pCash">0</span></div>
+                <div>মোট বাকি: <span id="pDue">0</span></div>
             </div>
 
-            <div class="p-6 bg-slate-50 border-t no-print">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 flex justify-between items-center shadow-sm">
-                        <span class="text-[10px] font-black text-slate-400 uppercase">মোট বিক্রি</span>
-                        <span id="sTotal" class="text-xl font-black text-slate-900">0</span>
+            <div class="p-6 bg-slate-900/50 no-print">
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="text-center">
+                        <p class="text-[9px] font-bold text-slate-500 uppercase">নগদ সংগ্রহ</p>
+                        <p class="text-lg font-black text-emerald-500" id="bottomCash">0</p>
                     </div>
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 flex justify-between items-center shadow-sm">
-                        <span class="text-[10px] font-black text-emerald-400 uppercase">মোট নগদ</span>
-                        <span id="sCash" class="text-xl font-black text-emerald-600">0</span>
+                    <div class="text-center border-x border-slate-700 px-2">
+                        <p class="text-[9px] font-bold text-slate-500 uppercase">বাকি টাকা</p>
+                        <p class="text-lg font-black text-rose-500" id="bottomDue">0</p>
                     </div>
-                    <div class="bg-white p-4 rounded-2xl border border-rose-100 flex justify-between items-center shadow-sm">
-                        <span class="text-[10px] font-black text-rose-400 uppercase">মোট বাকি</span>
-                        <span id="sDue" class="text-xl font-black text-rose-600">0</span>
+                    <div class="text-center">
+                        <p class="text-[9px] font-bold text-slate-500 uppercase">মোট এন্ট্রি</p>
+                        <p class="text-lg font-black text-blue-500" id="rowCount">0</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="flex gap-3 no-print">
-            <button onclick="addRow()" class="flex-1 mt-4 p-4 bg-indigo-600 text-white font-black hover:bg-indigo-700 rounded-2xl shadow-lg transition active:scale-95 uppercase text-xs">
-                + নতুন এন্ট্রি যোগ করুন
-            </button>
-            <button onclick="createNewFile()" class="mt-4 p-4 bg-rose-50 text-rose-600 font-bold rounded-2xl border border-rose-100 uppercase text-[10px]">
-                Reset
-            </button>
+        <div class="flex gap-4 mt-6 no-print">
+            <button onclick="addRow()" class="flex-1 bg-blue-600 hover:bg-blue-500 p-4 rounded-[20px] font-black text-sm shadow-xl shadow-blue-600/20 active:scale-95 transition tracking-widest">+ নতুন এন্ট্রি</button>
+            <button onclick="resetData()" class="bg-slate-800 text-slate-500 hover:text-rose-500 px-6 rounded-[20px] font-bold text-xs border border-slate-700">রিসেট</button>
         </div>
 
-        <div id="dueReport" class="mt-10 glass-card overflow-hidden border-2 border-rose-50">
-            <div class="p-5 bg-rose-600 text-white flex justify-between items-center no-print">
-                <h3 class="text-base font-black italic">আজকের বাকি তালিকা</h3>
-                <div class="flex gap-2">
-                    <button onclick="exportHighRes('dueReport', 'png')" class="bg-white/20 p-1.5 rounded-lg text-[10px] font-bold">SAVE PNG</button>
-                </div>
+        <div id="dueHistoryArea" class="mt-10 glass-card border-rose-500/20 overflow-hidden">
+            <div class="p-5 bg-rose-500/10 border-b border-rose-500/20 flex justify-between items-center no-print">
+                <h3 class="text-sm font-black text-rose-500 italic">পেন্ডিং বাকি তালিকা</h3>
+                <button onclick="saveDueImage()" class="text-[10px] bg-rose-600 text-white px-3 py-1 rounded-lg font-bold">সেভ লিস্ট</button>
             </div>
-            <div id="dueList" class="p-2 bg-white">
+            <div id="dueListView" class="p-2 space-y-2">
                 </div>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('land_elite_v14')) || [];
-        let date = localStorage.getItem('land_date_v14') || new Date().toISOString().split('T')[0];
+        let db = JSON.parse(localStorage.getItem('land_v15_db')) || [];
+        let dateVal = localStorage.getItem('land_v15_date') || new Date().toISOString().split('T')[0];
 
         function init() {
-            document.getElementById('dateInput').value = date;
+            document.getElementById('dateInput').value = dateVal;
             if(db.length === 0) addRow(); else render();
         }
 
-        function saveDate(v) { localStorage.setItem('land_date_v14', v); render(); }
+        function updateDate(v) { localStorage.setItem('land_v15_date', v); render(); }
 
         function addRow() {
             db.push({ id: Date.now(), n: '', j: '', r: '', a: '' });
             render();
         }
 
-        function update(id, f, v) {
+        function edit(id, key, val) {
             let i = db.findIndex(x => x.id === id);
-            db[i][f] = v;
-            localStorage.setItem('land_elite_v14', JSON.stringify(db));
+            db[i][key] = val;
+            localStorage.setItem('land_v15_db', JSON.stringify(db));
             calc();
         }
 
         function calc() {
-            let tS = 0, tC = 0, tD = 0;
-            let dueHTML = `<table class="w-full text-sm font-bold text-center border-collapse">
-                <tr class="bg-rose-50 text-rose-800"><th class="p-3 border">নাম</th><th class="p-3 border">বাকি টাকা</th></tr>`;
-            
+            let tTotal = 0, tCash = 0, tDue = 0;
+            let dueListHTML = "";
+
             db.forEach(item => {
-                const j = parseFloat(item.j) || 0, r = parseFloat(item.r) || 0, a = parseFloat(item.a) || 0;
-                const total = j * r, due = total - a;
-                tS += total; tC += a; tD += due;
+                const total = (parseFloat(item.j)||0) * (parseFloat(item.r)||0);
+                const cash = parseFloat(item.a)||0;
+                const due = total - cash;
                 
+                tTotal += total; tCash += cash; tDue += due;
+
                 const row = document.querySelector(`[data-id="${item.id}"]`);
                 if(row) {
-                    row.querySelector('.total-cell').innerText = total.toLocaleString();
-                    row.querySelector('.due-cell').innerText = due.toLocaleString();
+                    row.querySelector('.row-total').innerText = total.toLocaleString();
+                    row.querySelector('.row-due').innerText = due.toLocaleString();
                 }
 
                 if(due > 0) {
-                    dueHTML += `<tr><td class="p-3 border text-slate-700">${item.n || 'নতুন কাস্টমার'}</td>
-                    <td class="p-3 border text-rose-600 font-black">${due.toLocaleString()} ৳</td></tr>`;
+                    dueListHTML += `<div class="flex justify-between p-4 bg-slate-900/50 rounded-xl border border-slate-800">
+                        <span class="font-bold text-slate-300">${item.n || 'N/A'}</span>
+                        <span class="font-black text-rose-500">${due.toLocaleString()} ৳</span>
+                    </div>`;
                 }
             });
-            dueHTML += `</table>`;
+
+            document.getElementById('topTotal').innerText = tTotal.toLocaleString() + " ৳";
+            document.getElementById('bottomCash').innerText = tCash.toLocaleString();
+            document.getElementById('bottomDue').innerText = tDue.toLocaleString();
+            document.getElementById('rowCount').innerText = db.length;
             
-            ['sTotal','pTotal','sCash','pCash','sDue','pDue'].forEach((id, i) => {
-                const val = [tS, tS, tC, tC, tD, tD][i];
-                document.getElementById(id).innerText = val.toLocaleString();
-            });
+            document.getElementById('pTotal').innerText = tTotal.toLocaleString();
+            document.getElementById('pCash').innerText = tCash.toLocaleString();
+            document.getElementById('pDue').innerText = tDue.toLocaleString();
             
-            document.getElementById('dueList').innerHTML = tD > 0 ? dueHTML : "<p class='p-8 text-center text-slate-300 font-bold'>সব পরিশোধিত</p>";
+            document.getElementById('dueListView').innerHTML = dueListHTML || "<p class='p-8 text-center text-slate-600 font-bold'>সব বাকি পরিশোধিত।</p>";
         }
 
         function render() {
-            const container = document.getElementById('tableBody');
-            container.innerHTML = '';
+            const body = document.getElementById('dataRows');
+            body.innerHTML = '';
             db.forEach(item => {
-                const total = (parseFloat(item.j)||0)*(parseFloat(item.r)||0), due = total-(parseFloat(item.a)||0);
+                const total = (parseFloat(item.j)||0) * (parseFloat(item.r)||0);
+                const due = total - (parseFloat(item.a)||0);
                 const tr = document.createElement('tr');
                 tr.setAttribute('data-id', item.id);
-                tr.className = "border-b border-slate-100 hover:bg-slate-50";
+                tr.className = "hover:bg-slate-800/30 transition";
                 tr.innerHTML = `
-                    <td class="border-r border-slate-100"><input type="text" value="${item.n}" oninput="update(${item.id}, 'n', this.value)" class="input-cell" placeholder="..."></td>
-                    <td class="border-r border-slate-100"><input type="number" value="${item.j}" oninput="update(${item.id}, 'j', this.value)" class="input-cell" placeholder="0"></td>
-                    <td class="border-r border-slate-100"><input type="number" value="${item.r}" oninput="update(${item.id}, 'r', this.value)" class="input-cell" placeholder="0"></td>
-                    <td class="border-r border-slate-100 font-black total-cell text-indigo-900">${total.toLocaleString()}</td>
-                    <td class="border-r border-slate-100"><input type="number" value="${item.a}" oninput="update(${item.id}, 'a', this.value)" class="input-cell text-emerald-600" placeholder="0"></td>
-                    <td class="font-black text-rose-600 due-cell">${due.toLocaleString()}</td>
-                    <td class="no-print"><button onclick="deleteRow(${item.id})" class="text-slate-300 hover:text-rose-500 transition">✕</button></td>
+                    <td class="p-2"><input type="text" value="${item.n}" oninput="edit(${item.id},'n',this.value)" class="input-field" placeholder="..."></td>
+                    <td class="p-2"><input type="number" value="${item.j}" oninput="edit(${item.id},'j',this.value)" class="input-field" placeholder="0"></td>
+                    <td class="p-2"><input type="number" value="${item.r}" oninput="edit(${item.id},'r',this.value)" class="input-field" placeholder="0"></td>
+                    <td class="p-2 font-black text-blue-400 row-total">${total.toLocaleString()}</td>
+                    <td class="p-2"><input type="number" value="${item.a}" oninput="edit(${item.id},'a',this.value)" class="input-field text-emerald-500" placeholder="0"></td>
+                    <td class="p-2 font-black text-rose-500 row-due">${due.toLocaleString()}</td>
+                    <td class="p-2 no-print"><button onclick="removeRow(${item.id})" class="text-slate-600 hover:text-rose-500 transition px-2">✕</button></td>
                 `;
-                container.appendChild(tr);
+                body.appendChild(tr);
             });
             calc();
         }
 
-        function deleteRow(id) { if(confirm('মুছতে চান?')) { db = db.filter(x => x.id !== id); localStorage.setItem('land_elite_v14', JSON.stringify(db)); render(); } }
-        function createNewFile() { if(confirm('আগের সব ডাটা মুছে যাবে। নিশ্চিত?')) { db=[]; localStorage.removeItem('land_elite_v14'); addRow(); } }
+        function removeRow(id) { if(confirm('ডিলিট করবেন?')) { db = db.filter(x => x.id !== id); localStorage.setItem('land_v15_db', JSON.stringify(db)); render(); } }
+        function resetData() { if(confirm('সব ডাটা মুছে যাবে!')) { db = []; localStorage.removeItem('land_v15_db'); addRow(); } }
 
-        // High Resolution Export Fix
-        function exportHighRes(elId, format) {
-            const el = document.getElementById(elId);
-            // ইমেজ সেভ করার সময় রেজোলিউশন বাড়ানোর জন্য scale: 3 ব্যবহার করা হয়েছে
-            html2canvas(el, { 
-                scale: 3, 
-                backgroundColor: "#ffffff",
-                logging: false,
-                useCORS: true
+        // Advanced High-Res Image Save
+        function saveImage(format) {
+            const area = document.getElementById('captureArea');
+            html2canvas(area, {
+                scale: 4, // Higher scale for clear text
+                useCORS: true,
+                backgroundColor: "#1e293b",
+                windowWidth: 1000 // Force a desktop-like rendering for consistency
             }).then(canvas => {
-                let a = document.createElement('a');
-                a.download = `Land_Record_${Date.now()}.${format}`;
-                a.href = canvas.toDataURL(format === 'png' ? "image/png" : "image/jpeg", 1.0);
-                a.click();
+                const link = document.createElement('a');
+                link.download = `Report_${Date.now()}.${format}`;
+                link.href = canvas.toDataURL(format === 'png' ? 'image/png' : 'image/jpeg', 1.0);
+                link.click();
+            });
+        }
+
+        function saveDueImage() {
+             html2canvas(document.getElementById('dueHistoryArea'), { scale: 3, backgroundColor: "#0f172a" }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `Due_List.png`;
+                link.href = canvas.toDataURL();
+                link.click();
             });
         }
 
