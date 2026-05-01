@@ -3,103 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Harvester Ultra-Clean v24</title>
+    <title>Harvester Premium v25</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        * { box-sizing: border-box; border-radius: 0 !important; font-family: 'Hind Siliguri', sans-serif; }
-        
         body { 
+            font-family: 'Hind Siliguri', sans-serif;
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80');
-            background-size: cover; background-attachment: fixed; min-height: 100vh; margin: 0; padding: 20px;
+            background-size: cover; background-attachment: fixed;
+            min-height: 100vh; margin: 0; padding: 20px;
         }
 
-        /* Premium UI: Ultra Clean Glass */
-        .glass-container {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            padding: 35px; border: 1px solid rgba(255, 255, 255, 0.3);
-            max-width: 850px; margin: auto; box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        /* v22 Premium Round UI */
+        .ui-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            max-width: 800px; margin: auto;
         }
 
-        .input-group-row {
-            display: flex; align-items: center; background: white; 
-            border-radius: 12px !important; /* স্ক্রিনে রাউন্ড দেখাবে */
-            margin-bottom: 12px; border: 1px solid #e2e8f0; overflow: hidden;
+        .input-row {
+            display: flex; align-items: center;
+            background: white; border-radius: 15px;
+            margin-bottom: 12px; padding: 5px 15px;
+            border: 1px solid #e2e8f0;
         }
-        .label-tag { width: 110px; padding: 15px; background: #f1f5f9; font-weight: 700; color: #475569; font-size: 16px; }
-        .main-data-input { flex: 1; padding: 15px; font-size: 18px; font-weight: 700; border: none; outline: none; }
 
-        /* টেবিল ডিজাইন: ক্লিন এবং প্রফেশনাল */
-        .clean-table { width: 100%; border-collapse: collapse; margin-top: 25px; background: white; }
-        .clean-table th { background: #1e293b; color: white; padding: 14px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
-        .clean-table td { border: 1px solid #f1f5f9; padding: 12px; text-align: center; font-weight: 600; }
+        .label-text { width: 100px; font-weight: 700; color: #475569; }
+        .data-input { flex: 1; border: none; padding: 12px; font-size: 18px; font-weight: 700; outline: none; background: transparent; }
+
+        /* টেবিল ও এডিট মোড */
+        .excel-table { width: 100%; border-collapse: collapse; background: white; margin-top: 15px; }
+        .excel-table th { background: #1e293b; color: white; padding: 12px; border-radius: 0 !important; }
+        .excel-table td { border: 1px solid #f1f5f9; padding: 10px; text-align: center; font-weight: 700; }
         
-        /* এডিট ইনপুট: কোনো বাড়তি বর্ডার নেই */
-        .inline-edit { width: 100%; border: none; text-align: center; font-weight: 800; color: #1e293b; background: transparent; outline: none; }
-        .inline-edit:focus { background: #eff6ff; color: #2563eb; }
+        .inline-edit { width: 100%; border: none; text-align: center; font-weight: 800; background: transparent; outline: none; }
+        .inline-edit:focus { background: #f0f7ff; color: #2563eb; }
 
-        /* প্রিন্ট ইঞ্জিন: একদম এক্সেল শিট স্টাইল */
+        /* এক্সেল প্রিন্ট ইঞ্জিন (Sharp Borders) */
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; padding: 0 !important; }
-            .glass-container { background: white !important; max-width: 100% !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
-            table { width: 100% !important; border: 1px solid black !important; }
-            th, td { border: 1px solid black !important; color: black !important; padding: 8px !important; font-size: 13px !important; }
-            .print-only-head { display: block !important; text-align: left; border-bottom: 2px solid black; margin-bottom: 15px; }
-            .summary-excel { display: flex !important; border: 1px solid black; border-top: none; padding: 10px; font-weight: bold; font-size: 14px; justify-content: space-between; }
+            .ui-card { background: white !important; max-width: 100% !important; border-radius: 0 !important; padding: 0 !important; box-shadow: none !important; }
+            .excel-table { border: 1px solid black !important; }
+            .excel-table th, .excel-table td { border: 1px solid black !important; color: black !important; border-radius: 0 !important; }
+            .print-title { display: block !important; text-align: left; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 15px; }
+            .summary-excel { display: flex !important; border: 1px solid black; border-top: none; padding: 10px; justify-content: space-between; font-weight: bold; }
             * { border-radius: 0 !important; }
         }
-        .print-only-head, .summary-excel { display: none; }
+
+        .print-title, .summary-excel { display: none; }
+        .export-mode-active .excel-table { border: 1px solid black !important; }
+        .export-mode-active .excel-table th, .export-mode-active .excel-table td { border: 1px solid black !important; border-radius: 0 !important; color: black !important; }
     </style>
 </head>
 <body>
 
-    <div class="glass-container">
-        <div class="flex justify-between items-center mb-10 no-print border-b-2 border-slate-100 pb-5">
-            <h1 class="text-2xl font-black text-slate-800 tracking-tighter">HARVESTER <span class="text-blue-600 italic">PRO v24</span></h1>
-            <div class="flex gap-3">
-                <button onclick="window.print()" class="bg-blue-600 text-white px-6 py-2 font-black text-sm rounded-lg !border-radius-8">PRINT</button>
-                <button onclick="saveImage()" class="bg-slate-800 text-white px-6 py-2 font-black text-sm rounded-lg !border-radius-8">SAVE IMAGE</button>
+    <div class="ui-card">
+        <div class="flex justify-between items-center mb-8 no-print border-b-2 border-slate-100 pb-5">
+            <h1 class="text-2xl font-black text-slate-800 tracking-tight">Harvester Pro <span class="text-blue-600">v25</span></h1>
+            <div class="flex gap-2">
+                <button onclick="window.print()" class="bg-blue-600 text-white px-6 py-2 rounded-full font-bold shadow-lg">Print</button>
+                <button onclick="saveImage()" class="bg-slate-800 text-white px-6 py-2 rounded-full font-bold shadow-lg">Save PNG</button>
             </div>
         </div>
 
-        <div class="no-print space-y-1">
-            <div class="input-group-row"><span class="label-tag">তারিখ</span><input type="date" id="fDate" class="main-data-input" onchange="localStorage.setItem('v24_d', this.value)"></div>
-            <div class="input-group-row"><span class="label-tag">নাম</span><input type="text" id="fName" class="main-data-input" placeholder="..."></div>
+        <div class="no-print space-y-2">
+            <div class="input-row"><span class="label-text">তারিখ :</span><input type="date" id="iDate" class="data-input" onchange="localStorage.setItem('v25_date', this.value)"></div>
+            <div class="input-row"><span class="label-text">নাম :</span><input type="text" id="iName" class="data-input" placeholder="..."></div>
             <div class="grid grid-cols-2 gap-2">
-                <div class="input-group-row"><span class="label-tag">গন্ডা</span><input type="number" id="fGonda" class="main-data-input" placeholder="0"></div>
-                <div class="input-group-row"><span class="label-tag">রেট</span><input type="number" id="fRate" class="main-data-input" placeholder="0"></div>
+                <div class="input-row"><span class="label-text">গন্ডা :</span><input type="number" id="iGonda" class="data-input" placeholder="0"></div>
+                <div class="input-row"><span class="label-text">রেট :</span><input type="number" id="iRate" class="data-input" placeholder="0"></div>
             </div>
-            <div class="input-group-row"><span class="label-tag">নগদ</span><input type="number" id="fCash" class="main-data-input text-emerald-600" placeholder="0"></div>
+            <div class="input-row"><span class="label-text">নগদ :</span><input type="number" id="iCash" class="data-input text-emerald-600" placeholder="0"></div>
             
-            <button onclick="save()" class="w-full bg-slate-900 text-white py-5 text-2xl font-black mt-4 hover:bg-blue-600 transition shadow-xl">
-                + SAVE TO SHEET
+            <button onclick="add()" class="w-full bg-emerald-500 text-white py-5 rounded-[20px] text-2xl font-black shadow-xl active:scale-95 transition-all mt-4">
+                + SAVE DATA TO SHEET
             </button>
         </div>
 
-        <div id="exportBox" class="bg-white p-2 mt-5">
-            <div class="print-only-head">
-                <h2 style="font-size: 22px;">জমির হিসাব বিবরণী</h2>
+        <div id="exportTarget" class="mt-8 bg-white p-2">
+            <div class="print-title">
+                <h2 style="font-size: 22px; font-weight: 900;">জমির হিসাব ও বকেয়া রিপোর্ট</h2>
                 <p>তারিখ: <span id="pDate"></span></p>
             </div>
 
-            <table class="clean-table">
-                <thead>
-                    <tr>
-                        <th class="w-1/3">ক্রেতার নাম</th>
-                        <th>গন্ডা</th>
-                        <th>রেট</th>
-                        <th>মোট টাকা</th>
-                        <th>নগদ</th>
-                        <th>বাকি টাকা</th>
-                        <th class="no-print">#</th>
-                    </tr>
-                </thead>
-                <tbody id="sheetBody"></tbody>
-            </table>
+            <div class="overflow-x-auto">
+                <table class="excel-table">
+                    <thead>
+                        <tr>
+                            <th class="w-1/3">নাম</th>
+                            <th>গন্ডা</th>
+                            <th>রেট</th>
+                            <th>মোট</th>
+                            <th>নগদ</th>
+                            <th>বাকি</th>
+                            <th class="no-print">✕</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
 
             <div class="summary-excel">
                 <div id="ex1"></div><div id="ex2"></div><div id="ex3"></div><div id="ex4"></div>
@@ -107,66 +115,65 @@
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-8 no-print">
-            <div class="bg-white p-5 border-b-4 border-slate-300">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">মোট গন্ডা</p>
-                <h4 id="statG" class="text-xl font-black text-slate-700">0</h4>
+            <div class="bg-white p-4 rounded-2xl text-center border-b-4 border-slate-400 shadow-md">
+                <p class="text-[10px] font-bold text-slate-500 uppercase">মোট গন্ডা</p>
+                <h4 id="sG" class="text-lg font-black">0</h4>
             </div>
-            <div class="bg-white p-5 border-b-4 border-blue-500">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">মোট বিক্রি</p>
-                <h4 id="statT" class="text-xl font-black text-blue-600">0</h4>
+            <div class="bg-white p-4 rounded-2xl text-center border-b-4 border-blue-500 shadow-md">
+                <p class="text-[10px] font-bold text-slate-500 uppercase">মোট বিক্রি</p>
+                <h4 id="sT" class="text-lg font-black text-blue-600">0</h4>
             </div>
-            <div class="bg-white p-5 border-b-4 border-emerald-500">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">মোট নগদ</p>
-                <h4 id="statC" class="text-xl font-black text-emerald-600">0</h4>
+            <div class="bg-white p-4 rounded-2xl text-center border-b-4 border-emerald-500 shadow-md">
+                <p class="text-[10px] font-bold text-slate-500 uppercase">মোট নগদ</p>
+                <h4 id="sC" class="text-lg font-black text-emerald-600">0</h4>
             </div>
-            <div class="bg-white p-5 border-b-4 border-rose-500">
-                <p class="text-[10px] font-bold text-slate-400 uppercase">মোট বাকি</p>
-                <h4 id="statD" class="text-xl font-black text-rose-600">0</h4>
+            <div class="bg-white p-4 rounded-2xl text-center border-b-4 border-rose-500 shadow-md">
+                <p class="text-[10px] font-bold text-slate-500 uppercase">মোট বাকি</p>
+                <h4 id="sD" class="text-lg font-black text-rose-600">0</h4>
             </div>
         </div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('land_v24_db')) || [];
+        let db = JSON.parse(localStorage.getItem('land_v25_db')) || [];
 
         function init() {
-            const d = localStorage.getItem('v24_d') || new Date().toISOString().split('T')[0];
-            document.getElementById('fDate').value = d;
+            const d = localStorage.getItem('v25_date') || new Date().toISOString().split('T')[0];
+            document.getElementById('iDate').value = d;
             document.getElementById('pDate').innerText = d;
             render();
         }
 
-        function save() {
-            const n = document.getElementById('fName').value;
-            const g = document.getElementById('fGonda').value;
-            const r = document.getElementById('fRate').value;
-            const c = document.getElementById('fCash').value;
-
+        function add() {
+            const n = document.getElementById('iName').value;
+            const g = document.getElementById('iGonda').value;
+            const r = document.getElementById('iRate').value;
+            const c = document.getElementById('iCash').value;
             if(!n || !g || !r) return;
 
             db.push({ id: Date.now(), n, g, r, c });
-            localStorage.setItem('land_v24_db', JSON.stringify(db));
-            ['fName','fGonda','fRate','fCash'].forEach(id => document.getElementById(id).value = '');
+            localStorage.setItem('land_v25_db', JSON.stringify(db));
+            ['iName','iGonda','iRate','iCash'].forEach(id => document.getElementById(id).value = '');
             render();
         }
 
         function update(id, key, val) {
             const idx = db.findIndex(x => x.id === id);
             db[idx][key] = val;
-            localStorage.setItem('land_v24_db', JSON.stringify(db));
+            localStorage.setItem('land_v25_db', JSON.stringify(db));
             render();
         }
 
         function render() {
-            const body = document.getElementById('sheetBody');
+            const body = document.getElementById('tableBody');
             body.innerHTML = '';
-            let mG=0, mT=0, mC=0, mD=0;
+            let tG=0, tT=0, tC=0, tD=0;
 
             db.forEach(item => {
                 const total = item.g * item.r;
                 const cash = parseFloat(item.c) || 0;
                 const due = total - cash;
-                mG += parseFloat(item.g); mT += total; mC += cash; mD += due;
+                tG += parseFloat(item.g); tT += total; tC += cash; tD += due;
 
                 body.innerHTML += `
                     <tr>
@@ -176,30 +183,33 @@
                         <td>${total.toLocaleString()}</td>
                         <td><input class="inline-edit text-emerald-600" type="number" value="${item.c}" onchange="update(${item.id}, 'c', this.value)"></td>
                         <td class="text-rose-600">${due.toLocaleString()}</td>
-                        <td class="no-print"><button onclick="del(${item.id})" class="text-slate-300 hover:text-rose-500 font-bold">✕</button></td>
+                        <td class="no-print"><button onclick="del(${item.id})" class="text-slate-300 hover:text-red-500 font-bold">✕</button></td>
                     </tr>
                 `;
             });
 
-            document.getElementById('statG').innerText = mG;
-            document.getElementById('statT').innerText = mT.toLocaleString();
-            document.getElementById('statC').innerText = mC.toLocaleString();
-            document.getElementById('statD').innerText = mD.toLocaleString();
+            document.getElementById('sG').innerText = tG;
+            document.getElementById('sT').innerText = tT.toLocaleString();
+            document.getElementById('sC').innerText = tC.toLocaleString();
+            document.getElementById('sD').innerText = tD.toLocaleString();
             
-            document.getElementById('ex1').innerText = "মোট গন্ডা: " + mG;
-            document.getElementById('ex2').innerText = "বিক্রি: " + mT.toLocaleString();
-            document.getElementById('ex3').innerText = "নগদ: " + mC.toLocaleString();
-            document.getElementById('ex4').innerText = "বাকি: " + mD.toLocaleString();
+            document.getElementById('ex1').innerText = "মোট গন্ডা: " + tG;
+            document.getElementById('ex2').innerText = "বিক্রি: " + tT.toLocaleString();
+            document.getElementById('ex3').innerText = "নগদ: " + tC.toLocaleString();
+            document.getElementById('ex4').innerText = "বাকি: " + tD.toLocaleString();
         }
 
-        function del(id) { if(confirm('ডিলিট করবেন?')) { db = db.filter(x => x.id !== id); localStorage.setItem('land_v24_db', JSON.stringify(db)); render(); } }
+        function del(id) { if(confirm('ডিলিট?')) { db = db.filter(x => x.id !== id); localStorage.setItem('land_v25_db', JSON.stringify(db)); render(); } }
 
         function saveImage() {
-            html2canvas(document.getElementById('exportBox'), { scale: 4, backgroundColor: "#ffffff" }).then(canvas => {
+            const target = document.getElementById('exportTarget');
+            target.classList.add('export-mode-active');
+            html2canvas(target, { scale: 4, backgroundColor: "#ffffff" }).then(canvas => {
                 const a = document.createElement('a');
-                a.download = `Report_${Date.now()}.png`;
+                a.download = `Land_Report_${Date.now()}.png`;
                 a.href = canvas.toDataURL();
                 a.click();
+                target.classList.remove('export-mode-active');
             });
         }
 
