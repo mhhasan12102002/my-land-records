@@ -494,13 +494,18 @@ padding:18px;
 </div>
 
 <div class="panel">
-<div class="section">Export & Backup</div>
+<div class="section">Export Center</div>
+<p style="color:#94a3b8;font-size:14px;margin-bottom:16px;">Professional Excel Style Export System</p>
 <div class="export-grid">
-<button class="export-btn pdf" onclick="exportPDF()">SAVE PDF</button>
-<button class="export-btn jpg" onclick="exportJPG()">SAVE JPG</button>
-<button class="export-btn csv" onclick="exportCSV()">SAVE CSV</button>
-<button class="export-btn backup" onclick="backupJSON()">BACKUP</button>
+<button class="export-btn pdf" onclick="exportPDF()">EXPORT PDF</button>
+<button class="export-btn jpg" onclick="exportJPG()">EXPORT IMAGE</button>
+<button class="export-btn csv" onclick="exportExcelStyle()">EXPORT EXCEL</button>
 </div>
+</div>
+
+<div class="panel">
+<div class="section">Due Collection List</div>
+<div id="dueList" class="list"></div>
 </div>
 
 </div>
@@ -522,28 +527,6 @@ padding:18px;
 
 <button class="save" onclick="saveRecord()">SAVE RECORD</button>
 </div>
-</div>
-
-<div class="bottom">
-<button class="nav-btn active">
-<div>🏠</div>
-<div>Home</div>
-</button>
-
-<button class="nav-btn" onclick="scrollToTop()">
-<div>📊</div>
-<div>Stats</div>
-</button>
-
-<button class="nav-btn" onclick="openModal()">
-<div>➕</div>
-<div>Add</div>
-</button>
-
-<button class="nav-btn" onclick="exportPDF()">
-<div>📄</div>
-<div>PDF</div>
-</button>
 </div>
 
 <script>
@@ -694,6 +677,7 @@ return `
 }).join('');
 }
 
+renderDueList();
 calculate();
 }
 
@@ -775,33 +759,113 @@ showToast('JPG Saved');
 });
 }
 
-function exportCSV(){
-let csv = 'Name,Gonda,Rate,Cash,Date\n';
-
-database.forEach(item=>{
-csv += `${item.name},${item.gonda},${item.rate},${item.cash},${item.date}\n`;
-});
-
-const blob = new Blob([csv],{type:'text/csv'});
-const a = document.createElement('a');
-a.href = URL.createObjectURL(blob);
-a.download = 'harvester-report.csv';
-a.click();
-
-showToast('CSV Saved');
+function exportExcelStyle(){
+let html = `
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body{
+font-family:Arial;
+padding:30px;
 }
 
-function backupJSON(){
-const blob = new Blob([
-JSON.stringify(database,null,2)
-],{type:'application/json'});
+table{
+width:100%;
+border-collapse:collapse;
+font-size:18px;
+}
 
+th{
+background:#2563eb;
+color:white;
+padding:14px;
+border:2px solid #000;
+}
+
+td{
+padding:12px;
+border:1px solid #000;
+font-weight:bold;
+}
+
+h1{
+text-align:center;
+margin-bottom:30px;
+}
+</style>
+</head>
+<body>
+<h1>HARVESTER PROFESSIONAL REPORT</h1>
+<table>
+<tr>
+<th>Name</th>
+<th>Gonda</th>
+<th>Rate</th>
+<th>Total</th>
+<th>Cash</th>
+<th>Due</th>
+<th>Date</th>
+</tr>
+`;
+
+database.forEach(item=>{
+const total = item.gonda * item.rate;
+const due = total - item.cash;
+
+html += `
+<tr>
+<td>${item.name}</td>
+<td>${item.gonda}</td>
+<td>${item.rate}</td>
+<td>${total}</td>
+<td>${item.cash}</td>
+<td>${due}</td>
+<td>${item.date}</td>
+</tr>
+`;
+});
+
+html += `</table></body></html>`;
+
+const blob = new Blob([html],{type:'application/vnd.ms-excel'});
 const a = document.createElement('a');
 a.href = URL.createObjectURL(blob);
-a.download = 'harvester-backup.json';
+a.download = 'harvester-report.xls';
 a.click();
 
-showToast('Backup Downloaded');
+showToast('Excel Report Exported');
+}
+
+function renderDueList(){
+const dueList = document.getElementById('dueList');
+
+const dueItems = database.filter(item=>{
+const total = item.gonda * item.rate;
+return total - item.cash > 0;
+});
+
+if(dueItems.length===0){
+dueList.innerHTML = '<div class="empty">No Due Remaining</div>';
+return;
+}
+
+dueList.innerHTML = dueItems.map(item=>{
+const total = item.gonda * item.rate;
+const due = total - item.cash;
+
+return `
+<div class="item">
+<div class="row">
+<div>
+<div class="name">${item.name}</div>
+<div class="date">Pending Payment</div>
+</div>
+<div class="price red">৳ ${due}</div>
+</div>
+</div>
+`;
+}).join('');
 }
 
 document.getElementById('search').addEventListener('input',render);
