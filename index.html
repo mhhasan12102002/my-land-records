@@ -3,201 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Land Ledger v21 - Strict Square</title>
+    <title>Land Admin v22 - Round to Excel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&display=swap');
-        
-        /* কঠোরভাবে সব রাউন্ড বর্ডার নিষিদ্ধ */
-        * { border-radius: 0px !important; font-family: 'Hind Siliguri', sans-serif; }
-        
-        body { background-color: #f0f2f5; color: #000; margin: 0; padding-bottom: 100px; }
-
-        /* বিশাল ইনপুট বক্স ডিজাইন */
-        .giant-input { 
-            border: 1px solid #cbd5e1; 
-            background: #fff; 
-            width: 100%; 
-            text-align: center; 
-            font-weight: 700; 
-            font-size: 24px; /* অনেক বড় ফন্ট */
-            outline: none; 
-            padding: 25px 10px; /* প্রচুর জায়গা */
-            color: #000;
+        body { 
+            font-family: 'Hind Siliguri', sans-serif;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover; background-attachment: fixed;
+            min-height: 100vh; margin: 0; padding: 20px;
         }
-        .giant-input:focus { border: 2px solid #2563eb; background: #f8fafc; }
 
-        /* এক্সেল শিট প্রিন্ট ফরম্যাট */
+        /* UI স্টাইল - সুন্দর রাউন্ড শেপ */
+        .ui-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 30px; /* সুন্দর রাউন্ড কোণা */
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            max-width: 650px; margin: auto;
+        }
+
+        .input-row {
+            display: flex; align-items: center;
+            background: white;
+            border-radius: 15px; /* রাউন্ড ইনপুট বক্স */
+            margin-bottom: 12px; padding: 5px 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .label-text { width: 100px; font-weight: 700; color: #475569; }
+        .data-input {
+            flex: 1; border: none; padding: 12px;
+            font-size: 18px; font-weight: 700; outline: none;
+            background: transparent;
+        }
+
+        /* এক্সেল স্টাইল প্রিন্ট ইঞ্জিন (No Round Shape) */
         @media print {
             .no-print { display: none !important; }
-            body { background: white !important; }
-            .sheet-container { border: none !important; box-shadow: none !important; width: 100% !important; }
-            table { width: 100% !important; border-collapse: collapse !important; border: 1.5px solid #000 !important; }
-            th { border: 1px solid #000 !important; background: #f3f4f6 !important; padding: 12px !important; font-size: 16px !important; font-weight: bold !important; color: #000 !important; }
-            td { border: 1px solid #000 !important; padding: 10px !important; font-size: 14px !important; color: #000 !important; font-weight: bold !important; }
-            .due-section { border: 2px solid #000 !important; margin-top: 20px; }
-            @page { size: A4 landscape; margin: 5mm; }
+            body { background: white !important; padding: 0 !important; }
+            .ui-card { 
+                background: white !important; border: none !important; 
+                max-width: 100% !important; border-radius: 0 !important; /* রাউন্ড বাতিল */
+                padding: 0 !important; box-shadow: none !important;
+            }
+            .excel-table { 
+                width: 100% !important; border-collapse: collapse !important; 
+                border: 1px solid black !important; 
+            }
+            .excel-table th, .excel-table td { 
+                border: 1px solid black !important; 
+                padding: 8px !important; text-align: center !important; 
+                border-radius: 0 !important; font-size: 12px !important;
+                color: black !important; background: white !important;
+            }
+            .print-title { display: block !important; text-align: center; margin-bottom: 15px; }
+            * { border-radius: 0 !important; } /* প্রিন্টে সব রাউন্ড বাতিল */
         }
 
-        .premium-bg { background: linear-gradient(to right, #0f172a, #1e293b); }
-        .data-card { background: white; border: 2px solid #000; box-shadow: 10px 10px 0px #000; }
+        .print-title { display: none; }
+        .export-mode table, .export-mode th, .export-mode td { 
+            border: 1px solid black !important; border-radius: 0 !important;
+            background: white !important; color: black !important;
+        }
     </style>
 </head>
-<body class="p-2 md:p-6">
+<body>
 
-    <div class="max-w-full mx-auto">
-        <div class="premium-bg p-8 mb-6 border-b-8 border-blue-600 no-print">
-            <div class="flex justify-between items-center flex-wrap gap-4">
-                <div>
-                    <h1 class="text-white text-4xl font-black tracking-tighter">LEDGER PRO v21</h1>
-                    <p class="text-blue-400 font-bold uppercase tracking-widest text-xs mt-1">Strict Sharp / Excel Print</p>
-                </div>
-                <div class="flex gap-4">
-                    <button onclick="window.print()" class="bg-white text-black px-8 py-4 font-black border-4 border-black hover:bg-yellow-400 transition">🖨️ PRINT SHEET</button>
-                    <button onclick="saveImg('png')" class="bg-blue-600 text-white px-8 py-4 font-black border-4 border-blue-900 shadow-lg">SAVE PNG</button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
-                <div class="bg-white p-4 border-4 border-black">
-                    <p class="text-xs font-bold text-slate-500 uppercase">তারিখ</p>
-                    <input type="date" id="dInp" onchange="upDate(this.value)" class="text-xl font-black text-blue-700 outline-none w-full">
-                </div>
-                <div class="bg-zinc-100 p-4 border-4 border-black">
-                    <p class="text-xs font-bold text-slate-500 uppercase">মোট বিক্রি</p>
-                    <h3 id="vTotal" class="text-2xl font-black">0</h3>
-                </div>
-                <div class="bg-emerald-100 p-4 border-4 border-black text-emerald-800">
-                    <p class="text-xs font-bold uppercase">মোট নগদ</p>
-                    <h3 id="vCash" class="text-2xl font-black">0</h3>
-                </div>
-                <div class="bg-rose-100 p-4 border-4 border-black text-rose-800">
-                    <p class="text-xs font-bold uppercase">মোট বাকি</p>
-                    <h3 id="vDue" class="text-2xl font-black">0</h3>
-                </div>
+    <div class="ui-card">
+        <div class="flex justify-between items-center mb-8 no-print">
+            <h1 class="text-2xl font-black text-slate-800 tracking-tight">Harvester Pro <span class="text-blue-600">v22</span></h1>
+            <div class="flex gap-2">
+                <button onclick="window.print()" class="bg-blue-600 text-white px-5 py-2 rounded-full font-bold shadow-lg">Print</button>
+                <button onclick="saveAsExcelImage()" class="bg-slate-800 text-white px-5 py-2 rounded-full font-bold shadow-lg">PNG/JPG</button>
             </div>
         </div>
 
-        <div id="masterSheet" class="data-card p-1 md:p-6">
-            <h2 class="hidden print:block text-3xl font-black mb-4 text-center">জমির হিসাব বিবরণী (ডিজিটাল লেজার)</h2>
+        <div class="no-print space-y-3">
+            <div class="input-row"><span class="label-text">তারিখ :</span><input type="date" id="iDate" class="data-input"></div>
+            <div class="input-row"><span class="label-text">নাম :</span><input type="text" id="iName" class="data-input" placeholder="..."></div>
+            <div class="input-row"><span class="label-text">গন্ডা :</span><input type="number" id="iGonda" class="data-input" placeholder="0" oninput="calc()"></div>
+            <div class="input-row"><span class="label-text">রেট :</span><input type="number" id="iRate" class="data-input" placeholder="0" oninput="calc()"></div>
+            <div class="input-row bg-slate-100"><span class="label-text">মোট টাকা :</span><input type="text" id="iTotal" class="data-input" readonly></div>
+            <div class="input-row"><span class="label-text">নগদ :</span><input type="number" id="iCash" class="data-input" placeholder="0" oninput="calc()"></div>
+            <div class="input-row bg-rose-50"><span class="label-text text-rose-600">বাকি টাকা :</span><input type="text" id="iDue" class="data-input text-rose-600" readonly></div>
             
+            <button onclick="addEntry()" class="w-full bg-emerald-500 text-white py-5 rounded-[20px] text-2xl font-black shadow-xl active:scale-95 transition-all mt-4">
+                + ADD NEW CUSTOMER
+            </button>
+        </div>
+
+        <div id="exportTarget" class="mt-8">
+            <div class="print-title">
+                <h2 style="font-size: 24px;">জমির হিসাব ও বাকি তালিকা</h2>
+                <p>তারিখ: <span id="pDateText"></span></p>
+            </div>
             <div class="overflow-x-auto">
-                <table class="w-full text-center border-collapse">
-                    <thead class="bg-black text-white no-print">
+                <table class="excel-table w-full text-center mt-4">
+                    <thead class="bg-slate-900 text-white no-print">
                         <tr>
-                            <th class="p-6 min-w-[300px]">ক্রেতার নাম (বড় করে টাইপ করুন)</th>
-                            <th class="p-6">জমি (গন্ডা)</th>
-                            <th class="p-6">রেট</th>
-                            <th class="p-6">মোট টাকা</th>
-                            <th class="p-6">নগদ সংগ্রহ</th>
-                            <th class="p-6 bg-rose-700">বাকি টাকা</th>
-                            <th class="p-6 no-print">#</th>
+                            <th class="p-4 border-r border-slate-700">নাম</th>
+                            <th class="p-4 border-r border-slate-700">গন্ডা</th>
+                            <th class="p-4 border-r border-slate-700">মোট</th>
+                            <th class="p-4 border-r border-slate-700">নগদ</th>
+                            <th class="p-4">বাকি</th>
+                            <th class="p-4 no-print">✕</th>
                         </tr>
                     </thead>
-                    <tbody id="sheetRows" class="bg-white">
+                    <tbody id="tableData" class="bg-white text-slate-800 font-bold">
                         </tbody>
                 </table>
             </div>
-
-            <div id="dueChartSection" class="mt-10 border-4 border-black p-6 bg-white due-section">
-                <h3 class="text-2xl font-black text-rose-700 border-b-4 border-black pb-2 mb-6 uppercase italic">বাকি পাওনা তালিকা (Due Chart):</h3>
-                <div id="dueFinalList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                    </div>
-            </div>
         </div>
 
-        <div class="mt-6 flex gap-4 no-print">
-            <button onclick="addCust()" class="flex-1 bg-black text-white p-8 font-black text-2xl border-b-8 border-zinc-700 active:translate-y-1 transition uppercase tracking-tighter">+ নতুন কাস্টমার এন্ট্রি করুন</button>
-            <button onclick="clearAll()" class="bg-white text-red-600 px-6 py-2 font-bold border-2 border-red-600">রিসেট</button>
+        <div class="grid grid-cols-3 gap-3 mt-8 no-print">
+            <div class="bg-white p-4 rounded-2xl text-center border-b-4 border-blue-500 shadow-md">
+                <p class="text-[10px] font-bold text-slate-500 uppercase">মোট বিক্রি</p>
+                <h4 id="s1" class="text-sm font-black">0</h4>
+            </div>
+            <div class="bg-white p-4 rounded-2xl text-center border-b-4 border-emerald-500 shadow-md">
+                <p class="text-[10px] font-bold text-slate-500 uppercase">মোট নগদ</p>
+                <h4 id="s2" class="text-sm font-black">0</h4>
+            </div>
+            <div class="bg-white p-4 rounded-2xl text-center border-b-4 border-rose-500 shadow-md">
+                <p class="text-[10px] font-bold text-slate-500 uppercase">মোট বাকি</p>
+                <h4 id="s3" class="text-sm font-black">0</h4>
+            </div>
         </div>
     </div>
 
     <script>
-        let database = JSON.parse(localStorage.getItem('land_v21_db')) || [];
-        let curDate = localStorage.getItem('land_v21_dt') || new Date().toISOString().split('T')[0];
+        let db = JSON.parse(localStorage.getItem('land_v22_db')) || [];
 
         function init() {
-            document.getElementById('dInp').value = curDate;
-            if(database.length === 0) addCust(); else render();
-        }
-
-        function upDate(v) { localStorage.setItem('land_v21_dt', v); location.reload(); }
-
-        function addCust() {
-            database.push({ id: Date.now(), n: '', j: '', r: '', a: '' });
+            const d = localStorage.getItem('land_v22_date') || new Date().toISOString().split('T')[0];
+            document.getElementById('iDate').value = d;
+            document.getElementById('pDateText').innerText = d;
             render();
         }
 
-        function edit(id, k, v) {
-            let i = database.findIndex(x => x.id === id);
-            database[i][k] = v;
-            localStorage.setItem('land_v21_db', JSON.stringify(database));
-            calculate();
+        function calc() {
+            const g = parseFloat(document.getElementById('iGonda').value) || 0;
+            const r = parseFloat(document.getElementById('iRate').value) || 0;
+            const c = parseFloat(document.getElementById('iCash').value) || 0;
+            const total = g * r;
+            const due = total - c;
+            document.getElementById('iTotal').value = total.toLocaleString();
+            document.getElementById('iDue').value = due.toLocaleString();
         }
 
-        function calculate() {
-            let totalS = 0, totalC = 0, totalD = 0;
-            let listD = "";
-
-            database.forEach(item => {
-                const rowTotal = (parseFloat(item.j)||0) * (parseFloat(item.r)||0);
-                const rowCash = parseFloat(item.a)||0;
-                const rowDue = rowTotal - rowCash;
-                totalS += rowTotal; totalC += rowCash; totalD += rowDue;
-
-                const tr = document.querySelector(`[data-id="${item.id}"]`);
-                if(tr) {
-                    tr.querySelector('.c-total').innerText = rowTotal.toLocaleString();
-                    tr.querySelector('.c-due').innerText = rowDue.toLocaleString();
-                }
-
-                if(rowDue > 0) {
-                    listD += `<div class="p-4 border-2 border-black bg-rose-50 flex justify-between items-center">
-                        <span class="font-bold text-lg uppercase">${item.n || 'N/A'}</span>
-                        <span class="font-black text-xl text-rose-700 underline">${rowDue.toLocaleString()} ৳</span>
-                    </div>`;
-                }
-            });
-
-            document.getElementById('vTotal').innerText = totalS.toLocaleString();
-            document.getElementById('vCash').innerText = totalC.toLocaleString();
-            document.getElementById('vDue').innerText = totalD.toLocaleString();
-            document.getElementById('dueFinalList').innerHTML = listD || "<p class='p-4 font-bold text-slate-400 uppercase'>সব পাওনা আদায় হয়েছে!</p>";
+        function addEntry() {
+            const name = document.getElementById('iName').value;
+            if(!name) return alert("ক্রেতার নাম লিখুন");
+            
+            const entry = {
+                id: Date.now(),
+                n: name,
+                g: document.getElementById('iGonda').value,
+                r: document.getElementById('iRate').value,
+                c: document.getElementById('iCash').value
+            };
+            
+            db.push(entry);
+            localStorage.setItem('land_v22_db', JSON.stringify(db));
+            ['iName','iGonda','iRate','iCash','iTotal','iDue'].forEach(id => document.getElementById(id).value = '');
+            render();
         }
 
         function render() {
-            const body = document.getElementById('sheetRows');
+            const body = document.getElementById('tableData');
             body.innerHTML = '';
-            database.forEach(item => {
-                const total = (parseFloat(item.j)||0) * (parseFloat(item.r)||0);
-                const due = total - (parseFloat(item.a)||0);
-                const tr = document.createElement('tr');
-                tr.setAttribute('data-id', item.id);
-                tr.innerHTML = `
-                    <td class="border-b-2 border-r-2 border-black"><input type="text" value="${item.n}" oninput="edit(${item.id},'n',this.value)" class="giant-input" placeholder="নাম"></td>
-                    <td class="border-b-2 border-r-2 border-black"><input type="number" value="${item.j}" oninput="edit(${item.id},'j',this.value)" class="giant-input" placeholder="0"></td>
-                    <td class="border-b-2 border-r-2 border-black"><input type="number" value="${item.r}" oninput="edit(${item.id},'r',this.value)" class="giant-input" placeholder="0"></td>
-                    <td class="border-b-2 border-r-2 border-black font-black text-blue-700 c-total text-2xl bg-blue-50">${total.toLocaleString()}</td>
-                    <td class="border-b-2 border-r-2 border-black"><input type="number" value="${item.a}" oninput="edit(${item.id},'a',this.value)" class="giant-input text-emerald-700" placeholder="0"></td>
-                    <td class="border-b-2 font-black text-rose-700 c-due text-2xl bg-rose-50">${due.toLocaleString()}</td>
-                    <td class="no-print border-b-2"><button onclick="delCust(${item.id})" class="text-red-600 font-black px-4 text-3xl hover:bg-red-50">✕</button></td>
+            let t1=0, t2=0, t3=0;
+
+            db.forEach(item => {
+                const total = (item.g * item.r) || 0;
+                const cash = parseFloat(item.c) || 0;
+                const due = total - cash;
+                t1 += total; t2 += cash; t3 += due;
+
+                body.innerHTML += `
+                    <tr class="border-b border-slate-100">
+                        <td class="p-3">${item.n}</td>
+                        <td class="p-3">${item.g}</td>
+                        <td class="p-3">${total.toLocaleString()}</td>
+                        <td class="p-3">${cash.toLocaleString()}</td>
+                        <td class="p-3 text-rose-600">${due.toLocaleString()}</td>
+                        <td class="no-print p-3"><button onclick="del(${item.id})" class="text-slate-300 hover:text-red-500">✕</button></td>
+                    </tr>
                 `;
-                body.appendChild(tr);
             });
-            calculate();
+
+            document.getElementById('s1').innerText = t1.toLocaleString();
+            document.getElementById('s2').innerText = t2.toLocaleString();
+            document.getElementById('s3').innerText = t3.toLocaleString();
         }
 
-        function delCust(id) { if(confirm('Delete Customer?')) { database = database.filter(x => x.id !== id); localStorage.setItem('land_v21_db', JSON.stringify(database)); render(); } }
-        function clearAll() { if(confirm('সব ডাটা মুছে যাবে!')) { database = []; localStorage.removeItem('land_v21_db'); addCust(); } }
+        function del(id) {
+            if(confirm('মুছে ফেলবেন?')) {
+                db = db.filter(x => x.id !== id);
+                localStorage.setItem('land_v22_db', JSON.stringify(db));
+                render();
+            }
+        }
 
-        function saveImg(f) {
-            const el = document.getElementById('masterSheet');
-            html2canvas(el, { scale: 4, backgroundColor: "#ffffff" }).then(canvas => {
-                const a = document.createElement('a');
-                a.download = `Land_Ledger_${Date.now()}.${f}`;
-                a.href = canvas.toDataURL();
-                a.click();
+        function saveAsExcelImage() {
+            const target = document.getElementById('exportTarget');
+            target.classList.add('export-mode'); // এক্সেল স্টাইল বর্ডার অন করা
+            
+            html2canvas(target, { scale: 3, backgroundColor: "#ffffff" }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `Land_Excel_Report_${Date.now()}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+                target.classList.remove('export-mode'); // এক্সপোর্ট শেষে ইউআই স্টাইলে ফিরে আসা
             });
         }
 
