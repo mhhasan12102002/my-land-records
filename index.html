@@ -1,647 +1,211 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-  <title>Harvester Pro V33 | Premium Business Suite</title>
-  <!-- GSAP + Font Awesome + Google Fonts -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, initial-scale=1.0">
+  <title>Harvester Pro | Cinematic Business Suite</title>
+  <!-- TailwindCSS + Core Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- GSAP, Chart.js, html2canvas, jsPDF, SheetJS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <!-- html2canvas + SheetJS (XLSX) for exports -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at 10% 20%, rgba(10, 20, 35, 1) 0%, rgba(5, 12, 22, 1) 100%);
-      color: #eef5ff;
-      padding-bottom: 32px;
-      min-height: 100vh;
-    }
-
-    /* premium glass container */
-    .app-container {
-      max-width: 560px;
-      margin: 0 auto;
-      padding: 20px 16px 90px 16px;
-    }
-
-    /* glassmorphism cards */
-    .glass-card {
-      background: rgba(20, 30, 45, 0.55);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(72, 187, 255, 0.2);
-      border-radius: 32px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-      transition: all 0.2s ease;
-    }
-
-    /* dashboard stats row */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-    .stat-item {
-      background: rgba(12, 22, 35, 0.7);
-      backdrop-filter: blur(8px);
-      border-radius: 24px;
-      padding: 12px 6px;
-      text-align: center;
-      border: 1px solid rgba(0, 255, 255, 0.2);
-      transition: transform 0.2s;
-    }
-    .stat-value {
-      font-size: 1.6rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: #7ad0ff;
-    }
-    .stat-label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      font-weight: 500;
-      opacity: 0.8;
-    }
-
-    /* header saas style */
-    .saas-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .logo h1 {
-      font-size: 1.7rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #ffffff, #5bc0ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .badge {
-      background: rgba(0, 160, 255, 0.3);
-      padding: 6px 12px;
-      border-radius: 60px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-
-    /* form section */
-    .form-panel {
-      padding: 18px;
-      margin-bottom: 24px;
-    }
-    .input-group {
-      margin-bottom: 14px;
-    }
-    .input-group label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      opacity: 0.8;
-      display: block;
-      margin-bottom: 6px;
-    }
-    input, select {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 12px 14px;
-      border-radius: 28px;
-      color: white;
-      font-size: 0.9rem;
-      outline: none;
-      transition: 0.2s;
-    }
-    input:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 8px rgba(59,130,246,0.5);
-    }
-    .row-2col {
-      display: flex;
-      gap: 12px;
-    }
-    .row-2col > div { flex: 1; }
-    .btn-primary {
-      background: linear-gradient(95deg, #2563eb, #1e40af);
-      border: none;
-      padding: 12px;
-      border-radius: 40px;
-      font-weight: 700;
-      color: white;
-      width: 100%;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .btn-secondary {
-      background: rgba(37, 99, 235, 0.2);
-      border: 1px solid #3b82f6;
-      padding: 10px;
-      border-radius: 40px;
-      color: white;
-    }
-    .flex-btns {
-      display: flex;
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    /* search + filters */
-    .search-filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .search-box {
-      flex: 2;
-      background: rgba(0,0,0,0.4);
-      border-radius: 40px;
-      padding: 0 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .search-box i { color: #7aa9ff; }
-    .search-box input {
-      background: transparent;
-      border: none;
-      padding: 12px 0;
-    }
-    .filter-chip {
-      background: rgba(59,130,246,0.2);
-      padding: 8px 18px;
-      border-radius: 40px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .filter-chip.active {
-      background: #2563eb;
-      color: white;
-    }
-
-    /* record cards (clean, not too tall) */
-    .records-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-height: 58vh;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-    .record-card {
-      background: rgba(15, 25, 40, 0.7);
-      backdrop-filter: blur(4px);
-      border-radius: 24px;
-      padding: 12px 16px;
-      border-left: 5px solid #3b82f6;
-      transition: all 0.2s;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .record-info {
-      flex: 3;
-    }
-    .cust-name {
-      font-weight: 700;
-      font-size: 1rem;
-    }
-    .record-meta {
-      font-size: 0.7rem;
-      opacity: 0.7;
-      display: flex;
-      gap: 12px;
-      margin-top: 4px;
-      flex-wrap: wrap;
-    }
-    .record-actions i {
-      margin-left: 12px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      opacity: 0.7;
-      transition: 0.2s;
-    }
-    .record-actions i:hover { opacity: 1; color: #5bc0ff; }
-    .due-badge {
-      background: rgba(220, 38, 38, 0.7);
-      padding: 2px 8px;
-      border-radius: 40px;
-      font-size: 0.7rem;
-    }
-
-    .fab {
-      position: fixed;
-      bottom: 28px;
-      right: 20px;
-      background: #2563eb;
-      width: 56px;
-      height: 56px;
-      border-radius: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-      cursor: pointer;
-      z-index: 99;
-      transition: 0.2s;
-    }
-    .fab i { font-size: 28px; color: white; }
-
-    /* modal advanced */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(5px);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      width: 90%;
-      max-width: 460px;
-      background: #0f172ad9;
-      backdrop-filter: blur(20px);
-      border-radius: 40px;
-      padding: 24px;
-      border: 1px solid #3b82f6;
-    }
-    .close-modal {
-      float: right;
-      font-size: 1.8rem;
-      cursor: pointer;
-    }
-    @media (max-width: 480px) {
-      .stats-grid { gap: 8px; }
-      .stat-value { font-size: 1.3rem; }
-    }
-    /* date filter */
-    .date-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .date-row input { font-size: 0.8rem; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Inter', 'Hind Siliguri', sans-serif; overflow-x: hidden; background: #050B14; }
+    /* Aurora + Particle Canvas */
+    #aurora-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    .glass-premium { background: rgba(12, 20, 35, 0.55); backdrop-filter: blur(16px); border: 1px solid rgba(66, 153, 225, 0.25); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.5); }
+    .card-glow { transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+    .card-glow:hover { transform: translateY(-2px); border-color: rgba(59,130,246,0.6); box-shadow: 0 25px 35px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(59,130,246,0.2); }
+    .stat-card { backdrop-filter: blur(12px); transition: transform 0.2s; cursor: pointer; }
+    .stat-card:active { transform: scale(0.96); }
+    .ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.3); transform: scale(0); animation: rippleAnim 0.5s linear; pointer-events: none; }
+    @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
+    .due-highlight { background: linear-gradient(95deg, rgba(220,38,38,0.2), rgba(185,28,28,0.1)); border-left: 4px solid #ef4444; }
+    .scrollbar-hide::-webkit-scrollbar { width: 3px; }
+    .scrollbar-hide::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+    .scrollbar-hide::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+    .fab-btn { background: linear-gradient(135deg, #2563eb, #1e40af); box-shadow: 0 8px 20px rgba(37,99,235,0.4); transition: all 0.2s; }
+    .fab-btn:active { transform: scale(0.92); }
+    input, select { transition: all 0.2s; }
+    input:focus { transform: scale(1.01); border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+    .modal-glass { background: rgba(5, 15, 30, 0.95); backdrop-filter: blur(20px); border: 1px solid #3b82f6; animation: modalPop 0.3s cubic-bezier(0.34, 1.2, 0.64, 1); }
+    @keyframes modalPop { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .record-item { transition: all 0.2s ease; cursor: pointer; }
+    .record-item:active { transform: scale(0.99); background: rgba(20, 35, 55, 0.9); }
+    .gradient-text { background: linear-gradient(115deg, #fff, #7ac7ff, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; }
   </style>
 </head>
-<body>
+<body class="text-white overflow-x-hidden">
 
-<div class="app-container">
-  <div class="saas-header">
-    <div class="logo"><h1>HARVESTER PRO <span style="font-size:0.9rem;">V33</span></h1></div>
-    <div class="badge"><i class="fas fa-chart-line"></i> PREMIUM SUITE</div>
-  </div>
+  <canvas id="aurora-bg"></canvas>
+  <div id="particles-container" class="fixed inset-0 pointer-events-none z-0"></div>
 
-  <!-- Dashboard stats -->
-  <div class="stats-grid" id="dashboardStats">
-    <div class="stat-item"><div class="stat-value" id="totalGonda">0</div><div class="stat-label">Gonda</div></div>
-    <div class="stat-item"><div class="stat-value" id="totalSales">0</div><div class="stat-label">Sales (৳)</div></div>
-    <div class="stat-item"><div class="stat-value" id="totalCash">0</div><div class="stat-label">Cash</div></div>
-    <div class="stat-item"><div class="stat-value" id="totalDue">0</div><div class="stat-label">Due</div></div>
-  </div>
-
-  <!-- Add / Edit form panel -->
-  <div class="glass-card form-panel" id="formPanel">
-    <div class="input-group"><label><i class="fas fa-user"></i> Customer Name</label><input type="text" id="custName" placeholder="e.g., Raju Traders" autocomplete="off"></div>
-    <div class="row-2col">
-      <div><label>Gonda (Qty)</label><input type="number" id="gondaQty" value="0" step="1" min="0"></div>
-      <div><label>Rate (per Gonda)</label><input type="number" id="rateVal" value="0" step="any"></div>
+  <div class="relative z-10 max-w-5xl mx-auto px-4 pb-28 pt-6 md:pt-8">
+    <!-- Header Cinematic -->
+    <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
+      <div>
+        <h1 class="text-3xl md:text-4xl font-black tracking-tight"><span class="gradient-text">HARVESTER PRO</span> <span class="text-xs bg-white/10 px-3 py-1 rounded-full ml-2">V33</span></h1>
+        <p class="text-white/50 text-sm mt-1">সিনেমাটিক বিজনেস স্যুট | অফলাইন পাওয়ার</p>
+      </div>
+      <div class="bg-white/5 backdrop-blur-sm px-4 py-2 rounded-2xl border border-white/10">
+        <i class="fas fa-chart-line text-blue-400"></i> <span class="text-sm font-semibold">প্রিমিয়াম SaaS</span>
+      </div>
     </div>
-    <div class="row-2col">
-      <div><label>Cash Paid</label><input type="number" id="cashPaid" value="0" step="any"></div>
-      <div><label>Due Amount</label><input type="text" id="dueAuto" readonly style="background:#1f2a3e; font-weight:bold;"></div>
+
+    <!-- Dashboard Analytics Grid + Chart -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
+      <div class="stat-card glass-premium rounded-2xl p-4 text-center" id="statGonda"><div class="text-2xl md:text-3xl font-black text-cyan-300" id="totalGonda">0</div><div class="text-[11px] uppercase tracking-wider opacity-70"><i class="fas fa-cubes mr-1"></i> গোন্ডা</div></div>
+      <div class="stat-card glass-premium rounded-2xl p-4 text-center" id="statSales"><div class="text-2xl md:text-3xl font-black text-emerald-300" id="totalSales">0</div><div class="text-[11px] uppercase tracking-wider opacity-70"><i class="fas fa-chart-simple"></i> মোট বিক্রয়</div></div>
+      <div class="stat-card glass-premium rounded-2xl p-4 text-center" id="statCash"><div class="text-2xl md:text-3xl font-black text-blue-300" id="totalCash">0</div><div class="text-[11px] uppercase tracking-wider opacity-70"><i class="fas fa-hand-holding-usd"></i> নগদ আদায়</div></div>
+      <div class="stat-card glass-premium rounded-2xl p-4 text-center" id="statDue"><div class="text-2xl md:text-3xl font-black text-rose-300" id="totalDue">0</div><div class="text-[11px] uppercase tracking-wider opacity-70"><i class="fas fa-clock"></i> বাকি</div></div>
     </div>
-    <div class="flex-btns">
-      <button class="btn-primary" id="saveBtn"><i class="fas fa-save"></i> Save Record</button>
-      <button class="btn-secondary" id="editCancelBtn" style="display:none;">Cancel Edit</button>
+
+    <!-- Collection Efficiency + Mini Chart -->
+    <div class="glass-premium rounded-3xl p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div><span class="text-xs opacity-60"><i class="fas fa-chart-pie"></i> কালেকশন দক্ষতা</span><div class="text-2xl font-black" id="efficiencyPercent">0%</div></div>
+      <div class="w-28 h-12"><canvas id="efficiencyGauge" class="w-full h-full"></canvas></div>
+      <div class="bg-white/5 px-3 py-1 rounded-full text-xs"><i class="fas fa-chart-line text-green-400"></i> রিয়েল-টাইম এনালাইটিক্স</div>
     </div>
+
+    <!-- Form & Core Actions -->
+    <div class="glass-premium rounded-3xl p-5 mb-6 transition-all" id="formCard">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3"><input type="text" id="custName" placeholder="ক্রেতার নাম *" class="bg-black/40 border border-white/20 rounded-2xl px-4 py-3 text-white outline-none w-full"></div>
+      <div class="grid grid-cols-2 gap-3 mb-3"><input type="number" id="gondaQty" value="0" step="1" class="bg-black/40 border border-white/20 rounded-2xl px-4 py-3 text-white outline-none"><input type="number" id="rateVal" value="0" step="any" class="bg-black/40 border border-white/20 rounded-2xl px-4 py-3 text-white outline-none"></div>
+      <div class="grid grid-cols-2 gap-3 mb-4"><input type="number" id="cashPaid" value="0" step="any" class="bg-black/40 border border-white/20 rounded-2xl px-4 py-3 text-white outline-none"><input type="text" id="dueAuto" readonly class="bg-blue-900/40 border border-blue-500/50 rounded-2xl px-4 py-3 text-white font-bold"></div>
+      <div class="flex gap-3"><button id="saveBtn" class="bg-gradient-to-r from-blue-600 to-indigo-700 py-3 rounded-2xl font-bold w-full text-white shadow-lg transition-all"><i class="fas fa-save mr-2"></i> সংরক্ষণ</button><button id="editCancelBtn" class="bg-white/10 border border-white/20 py-3 rounded-2xl w-28 hidden">বাতিল</button></div>
+    </div>
+
+    <!-- Search, Filters, Due Toggle -->
+    <div class="flex flex-wrap gap-3 mb-5">
+      <div class="flex-1 bg-black/30 backdrop-blur-sm rounded-full flex items-center px-4 border border-white/10"><i class="fas fa-search text-blue-300"></i><input type="text" id="searchInput" placeholder="ক্রেতা খুঁজুন ..." class="bg-transparent p-3 w-full outline-none text-sm"></div>
+      <button id="dueOnlyToggle" class="bg-rose-500/20 px-5 rounded-full text-sm font-semibold border border-rose-500/40 flex items-center gap-2"><i class="fas fa-exclamation-circle"></i> শুধু বাকি</button>
+      <button id="resetFilters" class="bg-white/5 px-5 rounded-full text-sm"><i class="fas fa-undo-alt"></i></button>
+    </div>
+    <div class="flex gap-3 mb-5 flex-wrap"><input type="date" id="startDate" class="bg-black/40 border border-white/20 rounded-full px-4 py-2 text-sm"><input type="date" id="endDate" class="bg-black/40 border border-white/20 rounded-full px-4 py-2 text-sm"><button id="applyDateFilter" class="bg-blue-600/40 px-5 rounded-full text-sm"><i class="fas fa-calendar"></i> ফিল্টার</button></div>
+
+    <!-- Tabs: All Records & Due Collection -->
+    <div class="flex gap-2 mb-4 border-b border-white/10"><button id="tabAll" class="py-2 px-5 text-sm font-semibold border-b-2 border-blue-500 text-blue-300">সমস্ত লেনদেন</button><button id="tabDue" class="py-2 px-5 text-sm font-semibold text-white/60">বাকি সংগ্রহ তালিকা</button></div>
+
+    <!-- Records + Due List Container -->
+    <div id="recordsContainer" class="space-y-3 max-h-[420px] overflow-y-auto scrollbar-hide pr-1"></div>
   </div>
 
-  <!-- Smart search + due only toggle + date filter -->
-  <div class="search-filters">
-    <div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Search customer..."></div>
-    <div class="filter-chip" id="dueOnlyChip"><i class="fas fa-exclamation-triangle"></i> Due Only</div>
-    <div class="filter-chip" id="resetFilterChip"><i class="fas fa-undo-alt"></i> Reset</div>
-  </div>
-  <!-- date-wise filtering -->
-  <div class="date-row">
-    <input type="date" id="startDate" placeholder="From date">
-    <input type="date" id="endDate" placeholder="To date">
-    <button class="btn-secondary" id="applyDateFilter" style="padding: 0 16px;"><i class="fas fa-calendar-alt"></i> Filter</button>
-  </div>
+  <!-- Floating Action Button + Export Modal -->
+  <div class="fab-btn fixed bottom-6 right-5 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl z-50 cursor-pointer" id="fabExport"><i class="fas fa-file-export text-2xl"></i></div>
+  <div id="exportModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden justify-center items-center"><div class="modal-glass rounded-3xl p-6 w-11/12 max-w-md"><div class="flex justify-between mb-4"><h3 class="text-xl font-bold"><i class="fas fa-download"></i> এক্সপোর্ট সেন্টার</h3><span id="closeModalBtn" class="text-2xl cursor-pointer">&times;</span></div><button id="pdfExportBtn" class="w-full bg-gradient-to-r from-red-600 to-red-800 py-3 rounded-xl mb-3 font-bold">📄 PDF (অ্যাকাউন্টিং)</button><button id="excelExportBtn" class="w-full bg-gradient-to-r from-green-700 to-emerald-800 py-3 rounded-xl mb-3 font-bold">📊 এক্সেল (প্রফেশনাল)</button><button id="jpgExportBtn" class="w-full bg-gradient-to-r from-purple-700 to-fuchsia-800 py-3 rounded-xl font-bold">🖼️ JPG (রিপোর্ট ইমেজ)</button></div></div>
 
-  <!-- Records container -->
-  <div class="records-list" id="recordsContainer"></div>
-</div>
+  <script>
+    // ---------- GLOBAL STATE ----------
+    let records = [];
+    let editId = null;
+    let dueOnlyActive = false;
+    let activeTab = "all"; // "all" or "dueCollection"
+    let startDateFilter = "", endDateFilter = "";
+    let efficiencyChart = null;
 
-<div class="fab" id="exportFab"><i class="fas fa-download"></i></div>
+    // DOM Elements
+    const loadData = () => { const stored = localStorage.getItem("harvester_pro_cinema"); if(stored) records = JSON.parse(stored); else records = []; renderEverything(); };
+    const saveLocal = () => { localStorage.setItem("harvester_pro_cinema", JSON.stringify(records)); renderEverything(); };
 
-<!-- context export modal -->
-<div id="exportModal" class="modal">
-  <div class="modal-content">
-    <span class="close-modal">&times;</span>
-    <h3 style="margin-bottom: 15px;"><i class="fas fa-file-export"></i> Export Report</h3>
-    <button id="pdfExportBtn" class="btn-primary" style="margin-bottom: 12px;"><i class="fas fa-file-pdf"></i> PDF (Corporate Report)</button>
-    <button id="excelExportBtn" class="btn-primary" style="margin-bottom: 12px; background:#1f7b4d;"><i class="fas fa-file-excel"></i> Excel (Structured)</button>
-    <button id="jpgExportBtn" class="btn-primary" style="background:#6b21a5;"><i class="fas fa-camera"></i> JPG (Financial Snapshot)</button>
-  </div>
-</div>
+    const computeDue = (g, r, c) => { let total = g * r; let due = total - c; return due > 0 ? due : 0; };
+    const updateDueFieldManual = () => { let g = +document.getElementById('gondaQty').value || 0; let r = +document.getElementById('rateVal').value || 0; let c = +document.getElementById('cashPaid').value || 0; document.getElementById('dueAuto').value = computeDue(g,r,c).toFixed(2); };
+    document.getElementById('gondaQty').addEventListener('input', updateDueFieldManual);
+    document.getElementById('rateVal').addEventListener('input', updateDueFieldManual);
+    document.getElementById('cashPaid').addEventListener('input', updateDueFieldManual);
 
-<script>
-  // ---------- STORAGE KEYS ----------
-  let records = [];
-  let editModeId = null;
-  let dueOnlyActive = false;
-  let currentStartDate = "", currentEndDate = "";
-
-  // Load from localStorage
-  function loadData() {
-    const stored = localStorage.getItem("harvester_pro_v33");
-    if(stored) {
-      records = JSON.parse(stored);
-    } else {
-      records = [];
+    // Filter logic
+    function getFiltered() {
+      let filtered = [...records];
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      if(search) filtered = filtered.filter(r => r.name.toLowerCase().includes(search));
+      if(dueOnlyActive) filtered = filtered.filter(r => (r.gonda * r.rate - r.cash) > 0.01);
+      if(startDateFilter || endDateFilter) filtered = filtered.filter(r => { if(!r.date) return false; let d = r.date.split('T')[0]; if(startDateFilter && d < startDateFilter) return false; if(endDateFilter && d > endDateFilter) return false; return true; });
+      if(activeTab === "dueCollection") filtered = filtered.filter(r => (r.gonda * r.rate - r.cash) > 0.01).sort((a,b) => ((b.gonda*b.rate - b.cash) - (a.gonda*a.rate - a.cash)));
+      return filtered;
     }
-    renderDashboard();
-    renderRecords();
-  }
 
-  function saveToLocal() {
-    localStorage.setItem("harvester_pro_v33", JSON.stringify(records));
-    renderDashboard();
-    renderRecords();
-  }
-
-  // calculate total, due
-  function computeDue(gonda, rate, cash) {
-    let total = gonda * rate;
-    let due = total - cash;
-    return due > 0 ? due : 0;
-  }
-
-  function updateDueField() {
-    let g = parseFloat(document.getElementById('gondaQty').value) || 0;
-    let r = parseFloat(document.getElementById('rateVal').value) || 0;
-    let c = parseFloat(document.getElementById('cashPaid').value) || 0;
-    let total = g * r;
-    let due = total - c;
-    if(due < 0) due = 0;
-    document.getElementById('dueAuto').value = due.toFixed(2);
-  }
-
-  // event listeners for live calc
-  document.getElementById('gondaQty').addEventListener('input', updateDueField);
-  document.getElementById('rateVal').addEventListener('input', updateDueField);
-  document.getElementById('cashPaid').addEventListener('input', updateDueField);
-
-  // dashboard aggregator
-  function renderDashboard() {
-    let totalGonda = 0, totalSales = 0, totalCash = 0, totalDue = 0;
-    records.forEach(rec => {
-      totalGonda += rec.gonda;
-      let saleVal = rec.gonda * rec.rate;
-      totalSales += saleVal;
-      totalCash += rec.cash;
-      totalDue += (saleVal - rec.cash > 0 ? saleVal - rec.cash : 0);
-    });
-    document.getElementById('totalGonda').innerText = totalGonda;
-    document.getElementById('totalSales').innerText = totalSales.toFixed(2);
-    document.getElementById('totalCash').innerText = totalCash.toFixed(2);
-    document.getElementById('totalDue').innerText = totalDue.toFixed(2);
-  }
-
-  // filter records (search, due only, date range)
-  function getFilteredRecords() {
-    let filtered = [...records];
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    if(searchTerm) {
-      filtered = filtered.filter(r => r.customerName.toLowerCase().includes(searchTerm));
+    // Dashboard Render + efficiency
+    function renderDashboard() {
+      let totalG = 0, totalSales = 0, totalCashVal = 0, totalDueVal = 0;
+      records.forEach(r => { totalG += r.gonda; let sale = r.gonda * r.rate; totalSales += sale; totalCashVal += r.cash; totalDueVal += (sale - r.cash > 0 ? sale - r.cash : 0); });
+      document.getElementById('totalGonda').innerText = totalG;
+      document.getElementById('totalSales').innerText = totalSales.toFixed(2);
+      document.getElementById('totalCash').innerText = totalCashVal.toFixed(2);
+      document.getElementById('totalDue').innerText = totalDueVal.toFixed(2);
+      let efficiency = totalSales === 0 ? 0 : ((totalCashVal / totalSales) * 100);
+      document.getElementById('efficiencyPercent').innerText = efficiency.toFixed(1) + "%";
+      if(efficiencyChart) efficiencyChart.data.datasets[0].data = [efficiency, 100-efficiency]; efficiencyChart?.update();
     }
-    if(dueOnlyActive) {
-      filtered = filtered.filter(r => {
-        let total = r.gonda * r.rate;
-        let due = total - r.cash;
-        return due > 0.01;
-      });
-    }
-    // date-wise filter
-    if(currentStartDate || currentEndDate) {
-      filtered = filtered.filter(r => {
-        if(!r.date) return false;
-        let recDate = r.date.split('T')[0];
-        if(currentStartDate && recDate < currentStartDate) return false;
-        if(currentEndDate && recDate > currentEndDate) return false;
-        return true;
-      });
-    }
-    return filtered;
-  }
 
-  // render clean record cards (optimized)
-  function renderRecords() {
-    const container = document.getElementById('recordsContainer');
-    const filtered = getFilteredRecords();
-    if(filtered.length === 0) {
-      container.innerHTML = `<div class="glass-card" style="padding:30px; text-align:center;">✨ No records found</div>`;
-      return;
-    }
-    let html = '';
-    filtered.forEach(rec => {
-      let totalVal = rec.gonda * rec.rate;
-      let dueAmount = totalVal - rec.cash;
-      if(dueAmount < 0) dueAmount = 0;
-      let dueClass = dueAmount > 0 ? 'due-badge' : '';
-      html += `
-        <div class="record-card" data-id="${rec.id}">
-          <div class="record-info">
-            <div class="cust-name">${escapeHtml(rec.customerName)}</div>
-            <div class="record-meta">
-              <span><i class="fas fa-box"></i> ${rec.gonda} Gonda</span>
-              <span><i class="fas fa-tag"></i> ৳${rec.rate}/unit</span>
-              <span><i class="fas fa-coins"></i> Total ৳${totalVal.toFixed(2)}</span>
-              <span><i class="fas fa-hand-holding-usd"></i> Cash ৳${rec.cash.toFixed(2)}</span>
-              <span class="${dueClass}"><i class="fas fa-exclamation-circle"></i> Due ৳${dueAmount.toFixed(2)}</span>
-              <span><i class="far fa-calendar-alt"></i> ${rec.date ? rec.date.split('T')[0] : 'N/A'}</span>
+    // Record Rendering (Ultra optimized)
+    function renderRecords() {
+      const container = document.getElementById('recordsContainer');
+      const filtered = getFiltered();
+      if(filtered.length === 0) { container.innerHTML = `<div class="glass-premium rounded-2xl p-10 text-center opacity-70"><i class="fas fa-inbox text-3xl mb-2 block"></i> কোন তথ্য নেই</div>`; return; }
+      let html = '';
+      filtered.forEach(rec => {
+        let totalVal = rec.gonda * rec.rate;
+        let due = totalVal - rec.cash;
+        let dueCls = due > 0 ? "border-l-4 border-red-500 bg-red-500/5" : "";
+        let dueBadge = due > 0 ? `<span class="bg-red-500/30 text-red-200 px-2 py-0.5 rounded-full text-[11px]"><i class="fas fa-exclamation-circle"></i> বাকি ৳${due.toFixed(2)}</span>` : `<span class="text-emerald-300 text-[11px]"><i class="fas fa-check-circle"></i> পরিশোধিত</span>`;
+        html += `
+          <div class="glass-premium rounded-2xl p-4 record-item transition-all ${dueCls}">
+            <div class="flex justify-between items-start flex-wrap">
+              <div><div class="font-bold text-base">${escapeHtml(rec.name)}</div>
+              <div class="flex flex-wrap gap-3 text-xs mt-1 opacity-70"><span><i class="fas fa-cubes"></i> ${rec.gonda} গোন্ডা</span><span><i class="fas fa-tag"></i> ৳${rec.rate}</span><span><i class="fas fa-chart-line"></i> মোট ৳${totalVal.toFixed(2)}</span><span><i class="fas fa-wallet"></i> নগদ ৳${rec.cash.toFixed(2)}</span>${dueBadge}<span><i class="far fa-calendar"></i> ${rec.date?.split('T')[0] || 'N/A'}</span></div></div>
+              <div class="flex gap-3 mt-2 sm:mt-0"><button class="editBtn text-blue-300 text-lg" data-id="${rec.id}"><i class="fas fa-pen"></i></button><button class="deleteBtn text-rose-300 text-lg" data-id="${rec.id}"><i class="fas fa-trash"></i></button></div>
             </div>
-          </div>
-          <div class="record-actions">
-            <i class="fas fa-edit edit-record" data-id="${rec.id}"></i>
-            <i class="fas fa-trash-alt delete-record" data-id="${rec.id}"></i>
-          </div>
-        </div>
-      `;
-    });
-    container.innerHTML = html;
-    // attach delete & edit events
-    document.querySelectorAll('.delete-record').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        let id = btn.getAttribute('data-id');
-        if(confirm('Delete this record?')) {
-          records = records.filter(r => r.id != id);
-          saveToLocal();
-        }
-        e.stopPropagation();
+          </div>`;
       });
-    });
-    document.querySelectorAll('.edit-record').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        let id = btn.getAttribute('data-id');
-        const record = records.find(r => r.id == id);
-        if(record) {
-          editModeId = id;
-          document.getElementById('custName').value = record.customerName;
-          document.getElementById('gondaQty').value = record.gonda;
-          document.getElementById('rateVal').value = record.rate;
-          document.getElementById('cashPaid').value = record.cash;
-          updateDueField();
-          document.getElementById('saveBtn').innerHTML = '<i class="fas fa-pen"></i> Update Record';
-          document.getElementById('editCancelBtn').style.display = 'block';
-          gsap.fromTo('#formPanel', {y: 10, opacity:0.8}, {y:0, opacity:1, duration:0.3});
-        }
-      });
-    });
-  }
-
-  function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-
-  // prevent duplicate (name + exact same values? better duplicate name detection)
-  function isDuplicateNameExceptEdit(name, excludeId) {
-    return records.some(r => r.customerName.toLowerCase() === name.toLowerCase() && r.id != excludeId);
-  }
-
-  // save or update
-  function saveRecord() {
-    let name = document.getElementById('custName').value.trim();
-    if(!name) { alert("Customer name required"); return; }
-    let gonda = parseFloat(document.getElementById('gondaQty').value) || 0;
-    let rate = parseFloat(document.getElementById('rateVal').value) || 0;
-    let cash = parseFloat(document.getElementById('cashPaid').value) || 0;
-    if(gonda < 0) gonda = 0;
-    if(rate < 0) rate = 0;
-    let total = gonda * rate;
-    let due = total - cash;
-    if(due < 0) due = 0;
-    let today = new Date().toISOString();
-    if(editModeId !== null) {
-      if(isDuplicateNameExceptEdit(name, editModeId)) { alert("Customer name already exists (duplicate entry prevented)."); return; }
-      let index = records.findIndex(r => r.id == editModeId);
-      if(index !== -1) {
-        records[index] = { ...records[index], customerName: name, gonda, rate, cash, date: today };
-        editModeId = null;
-      }
-    } else {
-      if(isDuplicateNameExceptEdit(name, null)) { alert("Duplicate entry! Customer already exists."); return; }
-      let newId = Date.now().toString() + Math.floor(Math.random()*1000);
-      records.push({ id: newId, customerName: name, gonda, rate, cash, date: today });
+      container.innerHTML = html;
+      document.querySelectorAll('.editBtn').forEach(btn => btn.addEventListener('click', (e) => { let id = btn.getAttribute('data-id'); startEdit(id); e.stopPropagation(); }));
+      document.querySelectorAll('.deleteBtn').forEach(btn => btn.addEventListener('click', (e) => { if(confirm("মুছে ফেলবেন?")) { records = records.filter(r => r.id != btn.getAttribute('data-id')); saveLocal(); } e.stopPropagation(); }));
     }
-    saveToLocal();
-    resetForm();
-    renderRecords();
-    gsap.fromTo('#recordsContainer', {opacity:0.8}, {opacity:1, duration:0.2});
-  }
 
-  function resetForm() {
-    document.getElementById('custName').value = '';
-    document.getElementById('gondaQty').value = '0';
-    document.getElementById('rateVal').value = '0';
-    document.getElementById('cashPaid').value = '0';
-    updateDueField();
-    editModeId = null;
-    document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save"></i> Save Record';
-    document.getElementById('editCancelBtn').style.display = 'none';
-  }
+    function startEdit(id) { const rec = records.find(r => r.id == id); if(rec) { editId = id; document.getElementById('custName').value = rec.name; document.getElementById('gondaQty').value = rec.gonda; document.getElementById('rateVal').value = rec.rate; document.getElementById('cashPaid').value = rec.cash; updateDueFieldManual(); document.getElementById('saveBtn').innerHTML = '<i class="fas fa-pen"></i> আপডেট'; document.getElementById('editCancelBtn').style.display = 'block'; gsap.fromTo('#formCard', {y:8, opacity:0.9},{y:0, opacity:1, duration:0.3}); } }
+    function resetForm() { editId = null; document.getElementById('custName').value = ''; document.getElementById('gondaQty').value = '0'; document.getElementById('rateVal').value = '0'; document.getElementById('cashPaid').value = '0'; updateDueFieldManual(); document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save"></i> সংরক্ষণ'; document.getElementById('editCancelBtn').style.display = 'none'; }
+    function isDuplicate(name, excludeId) { return records.some(r => r.name.toLowerCase().trim() === name.toLowerCase().trim() && r.id != excludeId); }
+    function saveHandler() { let name = document.getElementById('custName').value.trim(); if(!name) { alert("ক্রেতার নাম দিন"); return; } let gonda = +document.getElementById('gondaQty').value || 0; let rate = +document.getElementById('rateVal').value || 0; let cash = +document.getElementById('cashPaid').value || 0; if(isDuplicate(name, editId)) { alert("ডুপ্লিকেট এন্ট্রি: এই নাম আগে আছে!"); return; } let today = new Date().toISOString(); if(editId) { let idx = records.findIndex(r => r.id == editId); if(idx !== -1) records[idx] = { ...records[idx], name, gonda, rate, cash, date: today }; editId = null; } else { records.push({ id: Date.now().toString() + Math.random(), name, gonda, rate, cash, date: today }); } saveLocal(); resetForm(); }
+    
+    function escapeHtml(str) { return str.replace(/[&<>]/g, (m) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
+    function renderEverything() { renderDashboard(); renderRecords(); }
 
-  // EXPORT SYSTEMS: PDF corporate, Excel structured, JPG professional
-  async function exportAsPDF() {
-    const filtered = getFilteredRecords();
-    let totalSalesAgg = filtered.reduce((s,r)=> s+(r.gonda*r.rate),0);
-    let totalCashAgg = filtered.reduce((s,r)=> s+r.cash,0);
-    let totalDueAgg = totalSalesAgg - totalCashAgg;
-    let htmlContent = `<html><head><style>body{font-family:Inter,sans-serif;padding:30px;} h1{color:#1e3a8a;} table{border-collapse:collapse;width:100%} th,td{border:1px solid #ccc;padding:10px;text-align:left} .totals{background:#f0f4ff;margin-top:25px;padding:16px;border-radius:12px;}</style></head><body>
-      <h1>📑 HARVESTER PRO FINANCIAL REPORT</h1><p>Generated: ${new Date().toLocaleString()}</p>
-      <table><thead><tr><th>Customer</th><th>Gonda</th><th>Rate</th><th>Total (৳)</th><th>Cash (৳)</th><th>Due (৳)</th><th>Date</th></tr></thead><tbody>`;
-    filtered.forEach(r => { let ttl = r.gonda*r.rate; let due = ttl - r.cash; if(due<0) due=0;
-      htmlContent+=`<tr><td>${escapeHtml(r.customerName)}</td><td>${r.gonda}</td><td>${r.rate}</td><td>${ttl.toFixed(2)}</td><td>${r.cash.toFixed(2)}</td><td>${due.toFixed(2)}</td><td>${r.date.split('T')[0]}</td></tr>`;
-    });
-    htmlContent+=`</tbody></table><div class="totals"><strong>📊 Summary:</strong> Total Sales: ৳${totalSalesAgg.toFixed(2)} | Total Cash: ৳${totalCashAgg.toFixed(2)} | Total Due: ৳${totalDueAgg>0?totalDueAgg.toFixed(2):0}</div></body></html>`;
-    let win = window.open();
-    win.document.write(htmlContent);
-    win.document.close();
-    win.print();
-  }
+    // EXPORT CENTER (Corporate)
+    async function exportPDF() { const filtered = getFiltered(); let totalS = filtered.reduce((a,b)=>a+(b.gonda*b.rate),0), totalC = filtered.reduce((a,b)=>a+b.cash,0), totalD = totalS - totalC; const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4'); doc.setFont('helvetica'); doc.setFontSize(18); doc.text('HARVESTER PRO FINANCIAL REPORT', 20, 20); doc.setFontSize(10); doc.text(`Date: ${new Date().toLocaleString('bn')}`, 20, 30); let finalY = 40; const headers = ['Customer', 'Gonda', 'Rate', 'Total', 'Cash', 'Due', 'Date']; let rows = filtered.map(r => { let total = r.gonda * r.rate; let due = total - r.cash; if(due<0) due=0; return [r.name, r.gonda.toString(), r.rate.toString(), total.toFixed(2), r.cash.toFixed(2), due.toFixed(2), r.date?.split('T')[0]||''] }); doc.autoTable({ head: [headers], body: rows, startY: finalY, theme: 'striped', headStyles: { fillColor: [37,99,235] } }); let finalYTable = doc.lastAutoTable.finalY + 10; doc.setFontSize(12); doc.text(`📊 Summary | Total Sales: ৳${totalS.toFixed(2)}  Cash: ৳${totalC.toFixed(2)}  Due: ৳${totalD>0?totalD.toFixed(2):0}`, 20, finalYTable); doc.save('Harvester_Report.pdf'); }
+    function exportExcel() { let filtered = getFiltered(); let sheet = [["ক্রেতার নাম","গোন্ডা","দর","মোট (৳)","নগদ (৳)","বাকি (৳)","তারিখ"]]; filtered.forEach(r => { let ttl=r.gonda*r.rate; let due=ttl - r.cash; if(due<0)due=0; sheet.push([r.name, r.gonda, r.rate, ttl, r.cash, due, r.date?.split('T')[0]||'']); }); const ws = XLSX.utils.aoa_to_sheet(sheet); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "HarvesterPro"); XLSX.writeFile(wb, `harvester_${Date.now()}.xlsx`); }
+    async function exportJPG() { let filtered = getFiltered(); let totalS = filtered.reduce((a,b)=>a+(b.gonda*b.rate),0), totalC = filtered.reduce((a,b)=>a+b.cash,0), totalD = totalS - totalC; let div = document.createElement('div'); div.style.position='absolute'; div.style.left='-9999px'; div.style.background='#0B1120'; div.style.color='white'; div.style.padding='28px'; div.style.width='800px'; div.style.fontFamily='Inter, sans-serif'; div.innerHTML = `<h1 style="color:#60A5FA;">🌾 HARVESTER PRO - FINANCIAL SNAPSHOT</h1><hr/><table style="width:100%; border-collapse:collapse; margin-top:20px;">${filtered.map(r=>{let ttl=r.gonda*r.rate; let due=ttl-r.cash; return `<tr><td style="padding:8px; border-bottom:1px solid #334155;">${r.name}</td><td>${r.gonda} G</td><td>৳${r.rate}</td><td>৳${ttl.toFixed(2)}</td><td>৳${r.cash}</td><td style="color:#f87171;">Due: ${due>0?due.toFixed(2):0}</td></tr>`}).join('')}</table><div style="background:#1E293B; margin-top:20px; padding:16px; border-radius:24px;"><strong>📌 Total Sales:</strong> ৳${totalS.toFixed(2)}  |  <strong>Cash:</strong> ৳${totalC.toFixed(2)}  |  <strong>Due:</strong> ৳${totalD>0?totalD.toFixed(2):0}</div><div style="margin-top:12px; font-size:10px;">Harvester Pro · ${new Date().toLocaleString()}</div>`; document.body.appendChild(div); try { let canvas = await html2canvas(div, { scale: 2.5, backgroundColor: '#0B1120' }); let link = document.createElement('a'); link.download = `harvester_report_${Date.now()}.jpg`; link.href = canvas.toDataURL('image/jpeg', 0.95); link.click(); } catch(e){} document.body.removeChild(div); }
 
-  function exportToExcel() {
-    const filtered = getFilteredRecords();
-    let sheetData = [["Customer Name", "Gonda", "Rate", "Total (৳)", "Cash (৳)", "Due (৳)", "Date"]];
-    filtered.forEach(r => {
-      let total = r.gonda * r.rate;
-      let due = total - r.cash > 0 ? total - r.cash : 0;
-      sheetData.push([r.customerName, r.gonda, r.rate, total, r.cash, due, r.date ? r.date.split('T')[0] : ""]);
-    });
-    const ws = XLSX.utils.aoa_to_sheet(sheetData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "HarvesterPro_Report");
-    XLSX.writeFile(wb, `harvester_report_${new Date().toISOString().slice(0,19)}.xlsx`);
-  }
+    // Aurora + Particle Effect
+    function initAurora() { const canvas = document.getElementById('aurora-bg'); const ctx = canvas.getContext('2d'); let w = window.innerWidth, h = window.innerHeight; canvas.width = w; canvas.height = h; let hue = 200; function draw() { if (!ctx) return; ctx.clearRect(0, 0, w, h); let grd = ctx.createLinearGradient(0, 0, w, h); grd.addColorStop(0, `hsla(${hue}, 70%, 20%, 0.4)`); grd.addColorStop(0.5, `hsla(${hue+40}, 80%, 15%, 0.5)`); grd.addColorStop(1, `hsla(${hue+80}, 70%, 10%, 0.6)`); ctx.fillStyle = grd; ctx.fillRect(0, 0, w, h); for(let i=0;i<30;i++) { ctx.beginPath(); ctx.arc((w/2)+Math.sin(Date.now()*0.001 + i)*150, (h/2)+Math.cos(Date.now()*0.0008 + i)*100, 120, 0, Math.PI*2); ctx.fillStyle = `hsla(${hue+i*10}, 80%, 50%, 0.03)`; ctx.fill(); } requestAnimationFrame(draw); } draw(); window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; w=canvas.width; h=canvas.height; }); }
+    initAurora();
 
-  async function exportAsJPG() {
-    let filtered = getFilteredRecords();
-    let totalSales = filtered.reduce((s,r)=>s+(r.gonda*r.rate),0);
-    let totalCashF = filtered.reduce((s,r)=>s+r.cash,0);
-    let totalDueF = totalSales - totalCashF;
-    let tempDiv = document.createElement('div');
-    tempDiv.style.position = 'absolute'; tempDiv.style.left = '-9999px'; tempDiv.style.top = '0';
-    tempDiv.style.background = '#0f172a'; tempDiv.style.color = 'white'; tempDiv.style.padding = '30px'; tempDiv.style.fontFamily = 'Inter, sans-serif'; tempDiv.style.width = '800px';
-    tempDiv.innerHTML = `<h1 style="color:#5bc0ff;">🌾 HARVESTER PRO FINANCIAL REPORT</h1><hr/><table style="width:100%; border-collapse:collapse;">${filtered.map(r=>{let ttl=r.gonda*r.rate; let due=ttl-r.cash; return `<tr><td>${r.customerName}</td><td>${r.gonda} G</td><td>Rate ${r.rate}</td><td>Total ${ttl}</td><td>Cash ${r.cash}</td><td>Due ${due>0?due:0}</td></tr>`}).join('')}</table><div style="background:#1e2a3a; margin-top:20px; padding:16px; border-radius:20px;"><strong>📌 Totals:</strong> Sales: ৳${totalSales.toFixed(2)} | Cash: ৳${totalCashF.toFixed(2)} | Due: ৳${totalDueF>0?totalDueF.toFixed(2):0}</div>`;
-    document.body.appendChild(tempDiv);
-    try {
-      let canvas = await html2canvas(tempDiv, { scale: 2, backgroundColor: '#0f172a' });
-      let link = document.createElement('a');
-      link.download = `harvester_report_${Date.now()}.jpg`;
-      link.href = canvas.toDataURL('image/jpeg', 0.95);
-      link.click();
-    } catch(e) { alert("JPG error"); }
-    document.body.removeChild(tempDiv);
-  }
+    // GSAP cinematic intro
+    gsap.fromTo('.glass-premium', { opacity: 0, y: 30 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.8, ease: "power3.out" });
+    gsap.fromTo('.stat-card', { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, stagger: 0.05, duration: 0.6, delay: 0.2 });
+    
+    // Chart.js Efficiency gauge
+    const ctxGauge = document.getElementById('efficiencyGauge').getContext('2d'); efficiencyChart = new Chart(ctxGauge, { type: 'doughnut', data: { datasets: [{ data: [0, 100], backgroundColor: ['#3b82f6', '#1e293b'], borderWidth: 0, cutout: '70%' }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { tooltip: { enabled: false }, legend: { display: false } } } });
 
-  // event listeners
-  document.getElementById('saveBtn').addEventListener('click', saveRecord);
-  document.getElementById('editCancelBtn').addEventListener('click', resetForm);
-  document.getElementById('dueOnlyChip').addEventListener('click', () => { dueOnlyActive = !dueOnlyActive; document.getElementById('dueOnlyChip').classList.toggle('active'); renderRecords(); });
-  document.getElementById('resetFilterChip').addEventListener('click', () => { dueOnlyActive = false; document.getElementById('searchInput').value = ''; currentStartDate=''; currentEndDate=''; document.getElementById('startDate').value=''; document.getElementById('endDate').value=''; document.getElementById('dueOnlyChip').classList.remove('active'); renderRecords(); });
-  document.getElementById('applyDateFilter').addEventListener('click', () => { currentStartDate = document.getElementById('startDate').value; currentEndDate = document.getElementById('endDate').value; renderRecords(); });
-  document.getElementById('searchInput').addEventListener('input', () => renderRecords());
-
-  const exportFab = document.getElementById('exportFab');
-  const modal = document.getElementById('exportModal');
-  exportFab.onclick = () => { modal.style.display = 'flex'; gsap.fromTo('.modal-content',{scale:0.9},{scale:1,duration:0.2}); };
-  document.querySelector('.close-modal').onclick = () => modal.style.display = 'none';
-  window.onclick = (e) => { if(e.target === modal) modal.style.display = 'none'; };
-  document.getElementById('pdfExportBtn').onclick = () => { modal.style.display='none'; exportAsPDF(); };
-  document.getElementById('excelExportBtn').onclick = () => { modal.style.display='none'; exportToExcel(); };
-  document.getElementById('jpgExportBtn').onclick = () => { modal.style.display='none'; exportAsJPG(); };
-
-  // init animation
-  gsap.from('.app-container', { duration: 0.5, opacity:0, y:20, ease:"power2.out" });
-  loadData();
-</script>
+    // Event Bindings
+    document.getElementById('saveBtn').addEventListener('click', saveHandler);
+    document.getElementById('editCancelBtn').addEventListener('click', resetForm);
+    document.getElementById('dueOnlyToggle').addEventListener('click', () => { dueOnlyActive = !dueOnlyActive; document.getElementById('dueOnlyToggle').classList.toggle('bg-rose-500/40'); renderRecords(); });
+    document.getElementById('resetFilters').addEventListener('click', () => { dueOnlyActive = false; document.getElementById('searchInput').value = ''; startDateFilter=''; endDateFilter=''; document.getElementById('startDate').value=''; document.getElementById('endDate').value=''; document.getElementById('dueOnlyToggle').classList.remove('bg-rose-500/40'); activeTab='all'; document.getElementById('tabAll').classList.add('border-blue-500','text-blue-300'); document.getElementById('tabDue').classList.remove('border-blue-500','text-blue-300'); renderRecords(); });
+    document.getElementById('applyDateFilter').addEventListener('click', () => { startDateFilter = document.getElementById('startDate').value; endDateFilter = document.getElementById('endDate').value; renderRecords(); });
+    document.getElementById('searchInput').addEventListener('input', () => renderRecords());
+    document.getElementById('tabAll').addEventListener('click', () => { activeTab='all'; document.getElementById('tabAll').classList.add('border-blue-500','text-blue-300'); document.getElementById('tabDue').classList.remove('border-blue-500','text-blue-300'); renderRecords(); });
+    document.getElementById('tabDue').addEventListener('click', () => { activeTab='dueCollection'; document.getElementById('tabDue').classList.add('border-blue-500','text-blue-300'); document.getElementById('tabAll').classList.remove('border-blue-500','text-blue-300'); renderRecords(); });
+    const modal = document.getElementById('exportModal'); const fab = document.getElementById('fabExport'); fab.onclick = () => { modal.classList.remove('hidden'); modal.style.display = 'flex'; gsap.fromTo('.modal-glass', {scale:0.9, opacity:0}, {scale:1, opacity:1, duration:0.25}); }; document.getElementById('closeModalBtn').onclick = () => modal.classList.add('hidden'); window.onclick = (e) => { if(e.target === modal) modal.classList.add('hidden'); }; document.getElementById('pdfExportBtn').onclick = () => { modal.classList.add('hidden'); exportPDF(); }; document.getElementById('excelExportBtn').onclick = () => { modal.classList.add('hidden'); exportExcel(); }; document.getElementById('jpgExportBtn').onclick = () => { modal.classList.add('hidden'); exportJPG(); };
+    loadData();
+    // Ripple effect added
+    document.querySelectorAll('button, .stat-card').forEach(el => el.addEventListener('click', (e) => { let ripple = document.createElement('span'); ripple.classList.add('ripple'); ripple.style.left = e.clientX - e.target.getBoundingClientRect().left + 'px'; ripple.style.top = e.clientY - e.target.getBoundingClientRect().top + 'px'; el.style.position = 'relative'; el.appendChild(ripple); setTimeout(() => ripple.remove(), 500); }));
+  </script>
 </body>
 </html>
