@@ -2,202 +2,431 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <title>HARVESTER PRO | Cinematic Financial OS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, initial-scale=1.0, maximum-scale=1.0">
+  <title>HARVESTER PRO TITANIUM X | Cinematic Financial OS</title>
   <!-- Core Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', 'Hind Siliguri', sans-serif; overflow-x: hidden; background: #03050B; min-height: 100vh; }
+    body { font-family: 'Inter', 'Hind Siliguri', sans-serif; overflow-x: hidden; background: #02040A; min-height: 100vh; }
     
-    /* Cinematic Aurora Canvas */
-    #canvas-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-    #noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-radial-gradient(circle at 20% 30%, rgba(0,0,0,0) 0px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.05) 4px); pointer-events: none; z-index: 1; opacity: 0.4; }
-    .cursor-glow { position: fixed; width: 500px; height: 500px; background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; pointer-events: none; z-index: 2; transform: translate(-50%, -50%); transition: transform 0.05s ease-out; }
+    /* Aurora Canvas Background */
+    #auroraCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    .cursorGlow { position: fixed; width: 500px; height: 500px; background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; pointer-events: none; z-index: 2; transform: translate(-50%, -50%); transition: transform 0.05s ease-out; }
     
     /* Premium Glass Layers */
-    .glass-deep { background: rgba(8, 15, 28, 0.65); backdrop-filter: blur(18px); border: 1px solid rgba(66, 153, 225, 0.25); box-shadow: 0 25px 40px -15px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05); }
-    .glass-card { background: rgba(12, 22, 40, 0.55); backdrop-filter: blur(14px); border: 1px solid rgba(59,130,246,0.2); transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
-    .glass-card:hover { border-color: rgba(59,130,246,0.5); box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4), 0 0 0 1px rgba(59,130,246,0.15); transform: translateY(-2px); }
+    .glassPremium { background: rgba(6, 12, 24, 0.7); backdrop-filter: blur(18px); border: 1px solid rgba(59, 130, 246, 0.25); box-shadow: 0 25px 45px -12px rgba(0,0,0,0.5); }
+    .glassCard { background: rgba(10, 18, 32, 0.6); backdrop-filter: blur(14px); border: 1px solid rgba(59,130,246,0.2); transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
+    .glassCard:active { transform: scale(0.98); }
     
-    /* Typography & Spacing */
-    .gradient-text-hero { background: linear-gradient(135deg, #FFFFFF, #7AC7FF, #3B82F6, #A855F7); background-size: 300% 300%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: gradientShift 8s ease infinite; }
-    @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    /* Typography */
+    .gradientText { background: linear-gradient(135deg, #FFFFFF, #7AC7FF, #3B82F6, #A855F7); background-size: 300% 300%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: gradientFlow 6s ease infinite; }
+    @keyframes gradientFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
     
     /* Scrollbar */
-    .scroll-elegant::-webkit-scrollbar { width: 4px; }
-    .scroll-elegant::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 10px; }
-    .scroll-elegant::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+    .scrollCustom::-webkit-scrollbar { width: 3px; }
+    .scrollCustom::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 10px; }
+    .scrollCustom::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
     
-    /* Animations & Effects */
-    .record-card { transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1); cursor: pointer; }
-    .record-card:active { transform: scale(0.98); }
-    .ripple-effect { position: absolute; border-radius: 50%; background: rgba(59,130,246,0.4); transform: scale(0); animation: rippleAnim 0.6s linear; pointer-events: none; }
+    /* Record Cards - Compact */
+    .recordCard { transition: all 0.2s ease; cursor: pointer; }
+    .recordCard:active { transform: scale(0.99); }
+    .dueHigh { background: linear-gradient(95deg, rgba(220,38,38,0.15), rgba(185,28,28,0.03)); border-left: 3px solid #ef4444; }
+    .dueMedium { background: linear-gradient(95deg, rgba(245,158,11,0.1), rgba(245,158,11,0.02)); border-left: 3px solid #f59e0b; }
+    
+    /* Ripple Effect */
+    .ripple { position: absolute; border-radius: 50%; background: rgba(59,130,246,0.5); transform: scale(0); animation: rippleAnim 0.5s linear; pointer-events: none; }
     @keyframes rippleAnim { to { transform: scale(6); opacity: 0; } }
-    .fab-pulse { animation: pulseGlow 2s infinite; }
-    @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(59,130,246,0.7); } 70% { box-shadow: 0 0 0 15px rgba(59,130,246,0); } 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); } }
-    .modal-glass { background: rgba(5, 15, 35, 0.98); backdrop-filter: blur(28px); border: 1px solid rgba(59,130,246,0.5); animation: modalRise 0.35s cubic-bezier(0.34, 1.2, 0.64, 1); }
-    @keyframes modalRise { from { opacity: 0; transform: scale(0.92) translateY(25px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-    .stat-number { transition: all 0.2s; }
-    .due-urgent { background: linear-gradient(95deg, rgba(220,38,38,0.2), rgba(185,28,28,0.05)); border-left: 3px solid #ef4444; }
     
-    input, select { transition: all 0.2s ease; background: rgba(0,0,0,0.45); border: 1.5px solid rgba(255,255,255,0.1); }
-    input:focus { transform: scale(1.01); border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.25); background: rgba(0,0,0,0.7); outline: none; }
+    /* FAB Pulse */
+    .fabPulse { animation: pulseRing 2s infinite; }
+    @keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(59,130,246,0.5); } 70% { box-shadow: 0 0 0 15px rgba(59,130,246,0); } 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); } }
+    
+    /* Modal */
+    .modalGlass { background: rgba(3, 10, 25, 0.98); backdrop-filter: blur(28px); border: 1px solid rgba(59,130,246,0.5); animation: modalEntry 0.35s cubic-bezier(0.34, 1.2, 0.64, 1); }
+    @keyframes modalEntry { from { opacity: 0; transform: scale(0.92) translateY(25px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    
+    /* Inputs */
+    input, select { transition: all 0.2s ease; background: rgba(0,0,0,0.5); border: 1.5px solid rgba(255,255,255,0.1); color: white; }
+    input:focus { transform: scale(1.01); border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); background: rgba(0,0,0,0.7); outline: none; }
     button { cursor: pointer; transition: all 0.2s ease; }
     button:active { transform: scale(0.96); }
+    
+    /* Stats */
+    .statCard { transition: all 0.2s; }
+    .statCard:active { transform: scale(0.96); }
+    
+    /* Insight Badge */
+    .insightPill { background: rgba(59,130,246,0.15); border-radius: 40px; padding: 4px 12px; font-size: 10px; font-weight: 600; backdrop-filter: blur(4px); }
   </style>
 </head>
 <body>
 
-  <canvas id="canvas-bg"></canvas>
-  <div id="noise-overlay"></div>
-  <div class="cursor-glow" id="cursorGlow"></div>
+  <canvas id="auroraCanvas"></canvas>
+  <div class="cursorGlow" id="cursorGlow"></div>
 
-  <div class="relative z-10 max-w-5xl mx-auto px-4 pb-32 pt-5 md:pt-8">
-    <!-- Header Cinematic -->
-    <div class="flex justify-between items-center mb-7 flex-wrap gap-4">
-      <div class="animate__animated">
-        <h1 class="text-4xl md:text-5xl font-black tracking-tight"><span class="gradient-text-hero">HARVESTER PRO</span><span class="text-xs bg-white/10 backdrop-blur px-3 py-1.5 rounded-full ml-3 align-middle">V33</span></h1>
-        <p class="text-white/40 text-sm mt-1 font-medium"><i class="fas fa-crown text-yellow-500/60 mr-1"></i> Enterprise Financial OS</p>
+  <div class="relative z-10 max-w-5xl mx-auto px-4 pb-32 pt-5 md:pt-7">
+    
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
+      <div>
+        <h1 class="text-3xl md:text-4xl font-black tracking-tight"><span class="gradientText">HARVESTER PRO</span><span class="text-[10px] bg-white/10 backdrop-blur px-2.5 py-1 rounded-full ml-2 align-middle">Ti X</span></h1>
+        <div class="flex items-center gap-2 mt-1"><i class="fas fa-crown text-yellow-500/60 text-xs"></i><span class="text-white/40 text-xs font-semibold" id="greetingText">Loading...</span></div>
       </div>
-      <div class="glass-deep rounded-2xl px-4 py-2 text-xs font-semibold border border-white/10"><i class="fas fa-bolt text-blue-400 mr-1"></i> Offline · Cinematic Core</div>
+      <div class="glassPremium rounded-2xl px-3 py-1.5 text-[10px] font-bold"><i class="fas fa-bolt text-blue-400 mr-1"></i> OFFLINE · TITANIUM</div>
     </div>
 
-    <!-- Ultra Dashboard Grid -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-7">
-      <div class="glass-card rounded-2xl p-4 text-center stat-card" data-stat="gonda"><div class="text-3xl md:text-4xl font-black text-cyan-300 stat-number" id="totalGonda">0</div><div class="text-[10px] uppercase tracking-wider opacity-60 mt-1"><i class="fas fa-cubes mr-1"></i> TOTAL GONDA</div></div>
-      <div class="glass-card rounded-2xl p-4 text-center stat-card" data-stat="sales"><div class="text-3xl md:text-4xl font-black text-emerald-300 stat-number" id="totalSales">0</div><div class="text-[10px] uppercase tracking-wider opacity-60 mt-1"><i class="fas fa-chart-line mr-1"></i> TOTAL SALES</div></div>
-      <div class="glass-card rounded-2xl p-4 text-center stat-card" data-stat="cash"><div class="text-3xl md:text-4xl font-black text-blue-300 stat-number" id="totalCash">0</div><div class="text-[10px] uppercase tracking-wider opacity-60 mt-1"><i class="fas fa-wallet mr-1"></i> TOTAL CASH</div></div>
-      <div class="glass-card rounded-2xl p-4 text-center stat-card" data-stat="due"><div class="text-3xl md:text-4xl font-black text-rose-300 stat-number" id="totalDue">0</div><div class="text-[10px] uppercase tracking-wider opacity-60 mt-1"><i class="fas fa-clock mr-1"></i> TOTAL DUE</div></div>
+    <!-- Financial Health + Insight -->
+    <div class="grid grid-cols-2 gap-3 mb-6">
+      <div class="glassPremium rounded-2xl p-3">
+        <div class="text-[10px] opacity-50 uppercase">Financial Health</div>
+        <div class="text-2xl font-black" id="healthPercent">0%</div>
+        <div class="w-full bg-white/10 rounded-full h-1.5 mt-2"><div class="bg-gradient-to-r from-emerald-400 to-blue-500 h-1.5 rounded-full transition-all duration-500" id="healthBarFill" style="width:0%"></div></div>
+      </div>
+      <div class="glassPremium rounded-2xl p-3">
+        <div class="text-[10px] opacity-50 uppercase"><i class="fas fa-brain mr-1"></i> AI Insight</div>
+        <div class="text-xs font-semibold mt-1" id="aiInsightText">Ready</div>
+      </div>
     </div>
 
-    <!-- Efficiency + Mini Analytics -->
-    <div class="glass-deep rounded-3xl p-4 mb-7 flex flex-wrap items-center justify-between gap-4">
-      <div><span class="text-xs opacity-50 uppercase tracking-wider"><i class="fas fa-chart-simple"></i> Collection Efficiency</span><div class="text-3xl font-black" id="efficiencyValue">0%</div></div>
-      <div class="w-24 h-24"><canvas id="efficiencyChart" width="100" height="100"></canvas></div>
-      <div class="flex gap-3"><div class="bg-white/5 px-3 py-1.5 rounded-full text-[11px]"><i class="fas fa-arrow-trend-up text-green-400"></i> Real-Time Sync</div></div>
+    <!-- Dashboard Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-7">
+      <div class="glassCard rounded-2xl p-3.5 text-center statCard"><div class="text-2xl md:text-3xl font-black text-cyan-300" id="statGonda">0</div><div class="text-[9px] uppercase tracking-wider opacity-60 mt-0.5"><i class="fas fa-cubes mr-1"></i> GONDA</div></div>
+      <div class="glassCard rounded-2xl p-3.5 text-center statCard"><div class="text-2xl md:text-3xl font-black text-emerald-300" id="statSales">0</div><div class="text-[9px] uppercase tracking-wider opacity-60 mt-0.5"><i class="fas fa-chart-line mr-1"></i> SALES</div></div>
+      <div class="glassCard rounded-2xl p-3.5 text-center statCard"><div class="text-2xl md:text-3xl font-black text-blue-300" id="statCash">0</div><div class="text-[9px] uppercase tracking-wider opacity-60 mt-0.5"><i class="fas fa-wallet mr-1"></i> CASH</div></div>
+      <div class="glassCard rounded-2xl p-3.5 text-center statCard"><div class="text-2xl md:text-3xl font-black text-rose-300" id="statDue">0</div><div class="text-[9px] uppercase tracking-wider opacity-60 mt-0.5"><i class="fas fa-clock mr-1"></i> DUE</div></div>
     </div>
 
-    <!-- Form Section Premium -->
-    <div class="glass-card rounded-3xl p-5 mb-7 transition-all" id="formCard">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3"><input type="text" id="custName" placeholder="Customer Name *" class="rounded-2xl px-4 py-3.5 text-white w-full"></div>
-      <div class="grid grid-cols-2 gap-3 mb-3"><input type="number" id="gondaQty" value="0" step="1" placeholder="Gonda" class="rounded-2xl px-4 py-3.5"><input type="number" id="rateVal" value="0" step="any" placeholder="Rate" class="rounded-2xl px-4 py-3.5"></div>
-      <div class="grid grid-cols-2 gap-3 mb-4"><input type="number" id="cashPaid" value="0" step="any" placeholder="Cash Paid" class="rounded-2xl px-4 py-3.5"><input type="text" id="dueAuto" readonly placeholder="Due" class="rounded-2xl px-4 py-3.5 bg-blue-900/30 border-blue-500/50 font-bold"></div>
-      <div class="flex gap-3"><button id="saveBtn" class="bg-gradient-to-r from-blue-600 to-indigo-700 py-3.5 rounded-2xl font-bold w-full shadow-xl transition-all"><i class="fas fa-save mr-2"></i> Save Record</button><button id="editCancelBtn" class="bg-white/10 border border-white/20 rounded-2xl w-28 hidden">Cancel</button></div>
+    <!-- Efficiency -->
+    <div class="glassPremium rounded-3xl p-4 mb-7 flex flex-wrap items-center justify-between gap-3">
+      <div><span class="text-[10px] opacity-50 uppercase"><i class="fas fa-chart-simple"></i> Collection Efficiency</span><div class="text-2xl font-black" id="efficiencyValue">0%</div></div>
+      <div class="w-20 h-20"><canvas id="efficiencyDonut" width="80" height="80"></canvas></div>
+      <div class="insightPill"><i class="fas fa-chart-line text-green-400 mr-1"></i> Live</div>
     </div>
 
-    <!-- Filters & Search -->
-    <div class="flex flex-wrap gap-3 mb-5"><div class="flex-1 glass-deep rounded-full flex items-center px-5"><i class="fas fa-search text-blue-400"></i><input type="text" id="searchInput" placeholder="Search customer..." class="bg-transparent p-3.5 w-full outline-none text-sm"></div><button id="dueOnlyBtn" class="bg-rose-500/20 px-5 rounded-full text-sm font-semibold border border-rose-500/40"><i class="fas fa-exclamation-triangle"></i> Due Only</button><button id="resetFiltersBtn" class="bg-white/5 px-5 rounded-full text-sm"><i class="fas fa-undo-alt"></i></button></div>
-    <div class="flex gap-3 mb-6 flex-wrap"><input type="date" id="startDateFilter" class="bg-black/40 border border-white/20 rounded-full px-4 py-2.5 text-sm"><input type="date" id="endDateFilter" class="bg-black/40 border border-white/20 rounded-full px-4 py-2.5 text-sm"><button id="applyDateFilterBtn" class="bg-blue-600/40 px-6 rounded-full text-sm font-medium"><i class="fas fa-calendar-alt"></i> Apply Date</button></div>
+    <!-- Form Panel -->
+    <div class="glassCard rounded-3xl p-5 mb-7" id="formPanel">
+      <div class="grid grid-cols-1 gap-3 mb-3"><input type="text" id="customerName" placeholder="Customer Name *" class="rounded-2xl px-4 py-3.5 w-full"></div>
+      <div class="grid grid-cols-2 gap-3 mb-3"><input type="number" id="gondaInput" value="0" step="1" placeholder="Gonda" class="rounded-2xl px-4 py-3.5"><input type="number" id="rateInput" value="0" step="any" placeholder="Rate (৳)" class="rounded-2xl px-4 py-3.5"></div>
+      <div class="grid grid-cols-2 gap-3 mb-4"><input type="number" id="cashInput" value="0" step="any" placeholder="Cash Paid" class="rounded-2xl px-4 py-3.5"><input type="text" id="duePreview" readonly placeholder="Due will appear" class="rounded-2xl px-4 py-3.5 bg-blue-900/40 border-blue-500/50 font-bold"></div>
+      <div class="flex gap-3"><button id="saveButton" class="bg-gradient-to-r from-blue-600 to-indigo-700 py-3.5 rounded-2xl font-bold w-full shadow-xl"><i class="fas fa-save mr-2"></i> Save Record</button><button id="cancelButton" class="bg-white/10 border border-white/20 rounded-2xl w-28 hidden">Cancel</button></div>
+    </div>
 
-    <!-- Tab Navigation: All Records / Due Collection -->
-    <div class="flex gap-2 mb-5 border-b border-white/10 pb-1"><button id="tabAll" class="px-5 py-2.5 text-sm font-semibold border-b-2 border-blue-500 text-blue-300 transition-all"><i class="fas fa-list-ul mr-1"></i> All Records</button><button id="tabDueList" class="px-5 py-2.5 text-sm font-semibold text-white/50 transition-all"><i class="fas fa-hand-holding-usd mr-1"></i> Due Collection Priority</button></div>
+    <!-- Search & Filters -->
+    <div class="flex flex-wrap gap-3 mb-4">
+      <div class="flex-1 glassPremium rounded-full flex items-center px-4"><i class="fas fa-search text-blue-400"></i><input type="text" id="searchInput" placeholder="Search customer..." class="bg-transparent p-3.5 w-full outline-none text-sm"></div>
+      <button id="dueFilterBtn" class="bg-rose-500/20 px-5 rounded-full text-sm font-semibold border border-rose-500/40"><i class="fas fa-exclamation-triangle"></i> Due Only</button>
+      <button id="resetBtn" class="bg-white/5 px-4 rounded-full text-sm"><i class="fas fa-undo-alt"></i></button>
+    </div>
+    <div class="flex gap-3 mb-6 flex-wrap">
+      <input type="date" id="startDateInput" class="bg-black/40 border border-white/20 rounded-full px-4 py-2.5 text-sm">
+      <input type="date" id="endDateInput" class="bg-black/40 border border-white/20 rounded-full px-4 py-2.5 text-sm">
+      <button id="dateFilterBtn" class="bg-blue-600/40 px-5 rounded-full text-sm font-medium"><i class="fas fa-calendar-alt"></i> Apply</button>
+    </div>
 
-    <!-- Scrollable Records Container -->
-    <div id="recordsContainer" class="space-y-3 max-h-[440px] overflow-y-auto scroll-elegant pr-1"></div>
+    <!-- Tabs -->
+    <div class="flex gap-2 mb-5 border-b border-white/10 pb-1">
+      <button id="tabAll" class="px-5 py-2.5 text-sm font-semibold border-b-2 border-blue-500 text-blue-300"><i class="fas fa-list-ul mr-1"></i> All Records</button>
+      <button id="tabDue" class="px-5 py-2.5 text-sm font-semibold text-white/40"><i class="fas fa-hand-holding-usd mr-1"></i> Due Priority</button>
+    </div>
+
+    <!-- Records Container -->
+    <div id="recordsContainer" class="space-y-2.5 max-h-[400px] overflow-y-auto scrollCustom pr-1"></div>
   </div>
 
-  <!-- Floating Action Button + Modal Export -->
-  <div class="fixed bottom-7 right-5 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl z-50 cursor-pointer fab-pulse" id="fabExport" style="background: linear-gradient(135deg, #2563eb, #1e3a8a);"><i class="fas fa-file-export text-2xl text-white"></i></div>
-  <div id="exportModal" class="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 hidden justify-center items-center"><div class="modal-glass rounded-3xl p-6 w-11/12 max-w-md"><div class="flex justify-between items-center mb-5"><h3 class="text-2xl font-black"><i class="fas fa-download text-blue-400"></i> Export Center</h3><span id="closeModalBtn" class="text-3xl cursor-pointer hover:text-white/70">&times;</span></div><button id="pdfExportAction" class="w-full bg-gradient-to-r from-red-600 to-rose-800 py-3.5 rounded-xl mb-3 font-bold shadow-lg"><i class="fas fa-file-pdf mr-2"></i> PDF Corporate Report</button><button id="excelExportAction" class="w-full bg-gradient-to-r from-green-700 to-emerald-800 py-3.5 rounded-xl mb-3 font-bold shadow-lg"><i class="fas fa-file-excel mr-2"></i> Excel Structured Sheet</button><button id="jpgExportAction" class="w-full bg-gradient-to-r from-purple-700 to-fuchsia-800 py-3.5 rounded-xl font-bold shadow-lg"><i class="fas fa-camera mr-2"></i> JPG High-Res Snapshot</button></div></div>
+  <!-- FAB -->
+  <div class="fixed bottom-6 right-5 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl z-50 cursor-pointer fabPulse" id="fabBtn" style="background: linear-gradient(135deg, #2563eb, #1e3a8a);"><i class="fas fa-file-export text-2xl text-white"></i></div>
+  
+  <!-- Export Modal -->
+  <div id="exportModal" class="fixed inset-0 bg-black/85 backdrop-blur-xl z-50 hidden justify-center items-center">
+    <div class="modalGlass rounded-3xl p-6 w-11/12 max-w-md">
+      <div class="flex justify-between items-center mb-5"><h3 class="text-2xl font-black"><i class="fas fa-download text-blue-400"></i> Export Center</h3><span id="closeModalBtn" class="text-3xl cursor-pointer hover:text-white/70">&times;</span></div>
+      <button id="pdfExport" class="w-full bg-gradient-to-r from-red-600 to-rose-800 py-3.5 rounded-xl mb-3 font-bold shadow-lg"><i class="fas fa-file-pdf mr-2"></i> PDF Report</button>
+      <button id="excelExport" class="w-full bg-gradient-to-r from-green-700 to-emerald-800 py-3.5 rounded-xl mb-3 font-bold shadow-lg"><i class="fas fa-file-excel mr-2"></i> Excel Sheet</button>
+      <button id="jpgExport" class="w-full bg-gradient-to-r from-purple-700 to-fuchsia-800 py-3.5 rounded-xl font-bold shadow-lg"><i class="fas fa-camera mr-2"></i> JPG Snapshot</button>
+    </div>
+  </div>
 
   <script>
-    // ---------- GLOBAL STATE ----------
+    // ========== DATA STATE ==========
     let records = [];
     let editId = null;
-    let dueOnlyActive = false;
+    let dueOnlyMode = false;
     let currentTab = "all";
-    let startDate = "", endDate = "";
+    let startDateVal = "";
+    let endDateVal = "";
     let efficiencyChart = null;
+
+    // ========== HELPER FUNCTIONS ==========
+    function saveToLocal() { localStorage.setItem("harvester_titanium_data", JSON.stringify(records)); renderAll(); }
     
-    // DOM Binding
-    const loadStorage = () => { const stored = localStorage.getItem("harvester_pro_financial_os"); if(stored) records = JSON.parse(stored); else records = []; renderFull(); };
-    const saveStorage = () => { localStorage.setItem("harvester_pro_financial_os", JSON.stringify(records)); renderFull(); };
+    function loadFromLocal() { 
+      const stored = localStorage.getItem("harvester_titanium_data"); 
+      if(stored) records = JSON.parse(stored); 
+      else records = []; 
+      renderAll(); 
+    }
     
-    // Helper Calculations
-    const computeTotal = (g, r) => g * r;
-    const computeDue = (total, cash) => (total - cash > 0) ? total - cash : 0;
-    const updateLiveDue = () => { let g = +document.getElementById('gondaQty').value || 0; let r = +document.getElementById('rateVal').value || 0; let c = +document.getElementById('cashPaid').value || 0; let total = computeTotal(g,r); document.getElementById('dueAuto').value = computeDue(total, c).toFixed(2); };
-    document.getElementById('gondaQty').addEventListener('input', updateLiveDue);
-    document.getElementById('rateVal').addEventListener('input', updateLiveDue);
-    document.getElementById('cashPaid').addEventListener('input', updateLiveDue);
+    function updateDuePreview() {
+      let g = parseFloat(document.getElementById('gondaInput').value) || 0;
+      let r = parseFloat(document.getElementById('rateInput').value) || 0;
+      let c = parseFloat(document.getElementById('cashInput').value) || 0;
+      let total = g * r;
+      let due = total - c > 0 ? total - c : 0;
+      document.getElementById('duePreview').value = due.toFixed(2);
+    }
     
-    // Filter Logic
-    const getFilteredRecords = () => {
+    document.getElementById('gondaInput').addEventListener('input', updateDuePreview);
+    document.getElementById('rateInput').addEventListener('input', updateDuePreview);
+    document.getElementById('cashInput').addEventListener('input', updateDuePreview);
+    
+    // ========== FILTER LOGIC ==========
+    function getFilteredRecords() {
       let filtered = [...records];
-      const search = document.getElementById('searchInput').value.toLowerCase().trim();
+      let search = document.getElementById('searchInput').value.toLowerCase();
       if(search) filtered = filtered.filter(r => r.name.toLowerCase().includes(search));
-      if(dueOnlyActive) filtered = filtered.filter(r => (r.gonda * r.rate - r.cash) > 0.5);
-      if(startDate || endDate) filtered = filtered.filter(r => { if(!r.date) return false; let d = r.date.split('T')[0]; if(startDate && d < startDate) return false; if(endDate && d > endDate) return false; return true; });
-      if(currentTab === "due") filtered = filtered.filter(r => (r.gonda * r.rate - r.cash) > 0.5).sort((a,b) => ((b.gonda*b.rate - b.cash) - (a.gonda*a.rate - a.cash)));
-      else filtered = filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+      if(dueOnlyMode) filtered = filtered.filter(r => (r.gonda * r.rate - r.cash) > 0.5);
+      if(startDateVal || endDateVal) {
+        filtered = filtered.filter(r => {
+          if(!r.date) return false;
+          let d = r.date.split('T')[0];
+          if(startDateVal && d < startDateVal) return false;
+          if(endDateVal && d > endDateVal) return false;
+          return true;
+        });
+      }
+      if(currentTab === "due") {
+        filtered = filtered.filter(r => (r.gonda * r.rate - r.cash) > 0.5);
+        filtered.sort((a,b) => ((b.gonda*b.rate - b.cash) - (a.gonda*a.rate - a.cash)));
+      } else {
+        filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+      }
       return filtered;
-    };
+    }
     
-    // Render Dashboard + Efficiency
-    const updateDashboard = () => {
+    // ========== DASHBOARD & CHARTS ==========
+    function updateDashboard() {
       let totalG = 0, totalSales = 0, totalCashSum = 0, totalDueSum = 0;
-      records.forEach(r => { totalG += r.gonda; let sale = r.gonda * r.rate; totalSales += sale; totalCashSum += r.cash; totalDueSum += (sale - r.cash > 0 ? sale - r.cash : 0); });
-      document.getElementById('totalGonda').innerText = totalG;
-      document.getElementById('totalSales').innerText = totalSales.toFixed(2);
-      document.getElementById('totalCash').innerText = totalCashSum.toFixed(2);
-      document.getElementById('totalDue').innerText = totalDueSum.toFixed(2);
+      records.forEach(r => {
+        totalG += r.gonda;
+        let sale = r.gonda * r.rate;
+        totalSales += sale;
+        totalCashSum += r.cash;
+        totalDueSum += (sale - r.cash > 0 ? sale - r.cash : 0);
+      });
+      document.getElementById('statGonda').innerText = totalG;
+      document.getElementById('statSales').innerText = totalSales.toFixed(2);
+      document.getElementById('statCash').innerText = totalCashSum.toFixed(2);
+      document.getElementById('statDue').innerText = totalDueSum.toFixed(2);
+      
       let efficiency = totalSales === 0 ? 0 : (totalCashSum / totalSales) * 100;
       document.getElementById('efficiencyValue').innerText = efficiency.toFixed(1) + "%";
-      if(efficiencyChart) { efficiencyChart.data.datasets[0].data = [efficiency, 100 - efficiency]; efficiencyChart.update(); }
-      // Animate counters
-      gsap.fromTo('.stat-number', { innerText: 0 }, { innerText: (i, target) => target.id === 'totalGonda' ? totalG : (target.id === 'totalSales' ? totalSales.toFixed(0) : (target.id === 'totalCash' ? totalCashSum.toFixed(0) : totalDueSum.toFixed(0))), duration: 1, snap: { innerText: 1 }, ease: "power2.out", stagger: 0.05 });
-    };
+      let health = Math.min(100, Math.floor(efficiency));
+      document.getElementById('healthPercent').innerText = health + "%";
+      document.getElementById('healthBarFill').style.width = health + "%";
+      
+      if(efficiencyChart) {
+        efficiencyChart.data.datasets[0].data = [efficiency, 100 - efficiency];
+        efficiencyChart.update();
+      }
+      
+      // AI Insight
+      if(records.length > 0) {
+        let maxDue = 0, maxDueName = "";
+        records.forEach(r => { let due = (r.gonda * r.rate) - r.cash; if(due > maxDue) { maxDue = due; maxDueName = r.name; } });
+        if(maxDue > 0) document.getElementById('aiInsightText').innerHTML = `<i class="fas fa-lightbulb text-yellow-400"></i> Collect from ${maxDueName} (৳${maxDue.toFixed(0)})`;
+        else document.getElementById('aiInsightText').innerHTML = `<i class="fas fa-check-circle text-green-400"></i> All dues cleared!`;
+      } else {
+        document.getElementById('aiInsightText').innerHTML = "Add records to see insights";
+      }
+      
+      // Greeting
+      let hour = new Date().getHours();
+      if(hour < 12) document.getElementById('greetingText').innerHTML = "☀️ Good Morning, Titan";
+      else if(hour < 18) document.getElementById('greetingText').innerHTML = "🌤️ Good Afternoon, King";
+      else document.getElementById('greetingText').innerHTML = "🌙 Good Evening, Master";
+    }
     
-    // Render Records (Ultra Optimized + Cards)
-    const renderRecords = () => {
+    // ========== RENDER COMPACT CARDS ==========
+    function renderRecords() {
       const container = document.getElementById('recordsContainer');
       const filtered = getFilteredRecords();
-      if(filtered.length === 0) { container.innerHTML = `<div class="glass-deep rounded-2xl p-12 text-center opacity-60"><i class="fas fa-database text-4xl mb-3"></i><p>No financial records found</p></div>`; return; }
+      if(filtered.length === 0) {
+        container.innerHTML = `<div class="glassPremium rounded-2xl p-10 text-center opacity-60"><i class="fas fa-database text-3xl mb-2"></i><p class="text-sm">No records found</p></div>`;
+        return;
+      }
       let html = '';
       filtered.forEach(rec => {
         let total = rec.gonda * rec.rate;
         let due = total - rec.cash;
-        let dueClass = due > 0 ? "due-urgent" : "";
-        let dueBadge = due > 0 ? `<span class="bg-red-500/30 text-red-200 px-2 py-0.5 rounded-full text-[10px] font-semibold"><i class="fas fa-exclamation-circle"></i> Due ৳${due.toFixed(2)}</span>` : `<span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full text-[10px]"><i class="fas fa-check-circle"></i> Settled</span>`;
-        html += `
-          <div class="glass-card rounded-2xl p-4 record-card transition-all ${dueClass}">
-            <div class="flex justify-between items-start flex-wrap gap-2">
-              <div class="flex-1"><div class="font-extrabold text-base flex items-center gap-2"><i class="fas fa-user-astronaut text-blue-300"></i> ${escapeHtml(rec.name)}</div>
-              <div class="flex flex-wrap gap-3 text-[11px] mt-2 opacity-75"><span><i class="fas fa-cubes"></i> ${rec.gonda} Gonda</span><span><i class="fas fa-tag"></i> ৳${rec.rate}</span><span><i class="fas fa-chart-simple"></i> Total ৳${total.toFixed(2)}</span><span><i class="fas fa-money-bill-wave"></i> Cash ৳${rec.cash.toFixed(2)}</span>${dueBadge}<span><i class="far fa-calendar-alt"></i> ${rec.date ? rec.date.split('T')[0] : '-'}</span></div></div>
-              <div class="flex gap-3"><button class="editRecordBtn text-blue-300 text-lg w-8 h-8 rounded-full hover:bg-white/10 transition" data-id="${rec.id}"><i class="fas fa-pen"></i></button><button class="deleteRecordBtn text-rose-300 text-lg w-8 h-8 rounded-full hover:bg-white/10 transition" data-id="${rec.id}"><i class="fas fa-trash"></i></button></div>
+        let dueClass = due > 500 ? "dueHigh" : (due > 0 ? "dueMedium" : "");
+        let dueBadge = due > 0 ? `<span class="bg-red-500/25 text-red-200 px-2 py-0.5 rounded-full text-[9px] font-bold">Due ৳${due.toFixed(2)}</span>` : `<span class="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full text-[9px]">Paid</span>`;
+        html += `<div class="glassCard rounded-xl p-3 recordCard ${dueClass}">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <div class="font-extrabold text-sm flex items-center gap-1.5"><i class="fas fa-user-tie text-blue-300 text-xs"></i> ${escapeHtml(rec.name)}</div>
+              <div class="flex flex-wrap gap-2 text-[10px] mt-1.5 opacity-80">
+                <span><i class="fas fa-cubes"></i> ${rec.gonda}</span>
+                <span><i class="fas fa-tag"></i> ৳${rec.rate}</span>
+                <span><i class="fas fa-chart-line"></i> ৳${total.toFixed(2)}</span>
+                <span><i class="fas fa-wallet"></i> ৳${rec.cash}</span>
+                ${dueBadge}
+                <span><i class="far fa-calendar-alt"></i> ${rec.date ? rec.date.split('T')[0] : '-'}</span>
+              </div>
             </div>
-          </div>`;
+            <div class="flex gap-2">
+              <button class="editRecord text-blue-300 text-sm w-7 h-7 rounded-full hover:bg-white/10" data-id="${rec.id}"><i class="fas fa-pen"></i></button>
+              <button class="deleteRecord text-rose-300 text-sm w-7 h-7 rounded-full hover:bg-white/10" data-id="${rec.id}"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+        </div>`;
       });
       container.innerHTML = html;
-      document.querySelectorAll('.editRecordBtn').forEach(btn => btn.addEventListener('click', (e) => { let id = btn.getAttribute('data-id'); startEdit(id); e.stopPropagation(); }));
-      document.querySelectorAll('.deleteRecordBtn').forEach(btn => btn.addEventListener('click', (e) => { if(confirm("Delete this record?")) { records = records.filter(r => r.id != btn.getAttribute('data-id')); saveStorage(); } e.stopPropagation(); }));
-    };
+      
+      document.querySelectorAll('.editRecord').forEach(btn => {
+        btn.addEventListener('click', (e) => { let id = btn.getAttribute('data-id'); startEdit(id); e.stopPropagation(); });
+      });
+      document.querySelectorAll('.deleteRecord').forEach(btn => {
+        btn.addEventListener('click', (e) => { if(confirm("Delete permanently?")) { records = records.filter(r => r.id != btn.getAttribute('data-id')); saveToLocal(); } e.stopPropagation(); });
+      });
+    }
     
-    const startEdit = (id) => { const rec = records.find(r => r.id == id); if(rec) { editId = id; document.getElementById('custName').value = rec.name; document.getElementById('gondaQty').value = rec.gonda; document.getElementById('rateVal').value = rec.rate; document.getElementById('cashPaid').value = rec.cash; updateLiveDue(); document.getElementById('saveBtn').innerHTML = '<i class="fas fa-pen-fancy"></i> Update Record'; document.getElementById('editCancelBtn').style.display = 'block'; gsap.fromTo('#formCard', { y: 10, boxShadow: "0 0 0px #3b82f6" }, { y: 0, boxShadow: "0 0 15px rgba(59,130,246,0.3)", duration: 0.4 }); } };
-    const resetForm = () => { editId = null; document.getElementById('custName').value = ''; document.getElementById('gondaQty').value = '0'; document.getElementById('rateVal').value = '0'; document.getElementById('cashPaid').value = '0'; updateLiveDue(); document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save"></i> Save Record'; document.getElementById('editCancelBtn').style.display = 'none'; };
-    const isDuplicateName = (name, excludeId) => records.some(r => r.name.toLowerCase().trim() === name.toLowerCase().trim() && r.id != excludeId);
-    const saveRecordHandler = () => { let name = document.getElementById('custName').value.trim(); if(!name) { alert("Customer name required"); return; } let gonda = +document.getElementById('gondaQty').value || 0; let rate = +document.getElementById('rateVal').value || 0; let cash = +document.getElementById('cashPaid').value || 0; if(gonda<0) gonda=0; if(rate<0) rate=0; if(isDuplicateName(name, editId)) { alert("⚠️ Duplicate entry prevented! Customer already exists."); return; } let today = new Date().toISOString(); if(editId) { let idx = records.findIndex(r => r.id == editId); if(idx !== -1) records[idx] = { ...records[idx], name, gonda, rate, cash, date: today }; editId = null; } else { records.push({ id: Date.now().toString() + Math.random().toString(36), name, gonda, rate, cash, date: today }); } saveStorage(); resetForm(); gsap.fromTo('#recordsContainer', { opacity: 0.9 }, { opacity: 1, duration: 0.2 }); };
-    const escapeHtml = (str) => str.replace(/[&<>]/g, (m) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m]));
-    const renderFull = () => { updateDashboard(); renderRecords(); };
+    function escapeHtml(str) { return str.replace(/[&<>]/g, (m) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
     
-    // -------- EXPORT SYSTEMS (Premium Corporate) ----------
-    const exportToPDF = async () => { const filtered = getFilteredRecords(); let totalS = filtered.reduce((a,b)=>a+(b.gonda*b.rate),0), totalC = filtered.reduce((a,b)=>a+b.cash,0), totalD = totalS - totalC; const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4'); doc.setFont('helvetica'); doc.setFontSize(20); doc.setTextColor(37, 99, 235); doc.text('🌾 HARVESTER PRO FINANCIAL STATEMENT', 20, 20); doc.setFontSize(10); doc.setTextColor(100,100,120); doc.text(`Generated: ${new Date().toLocaleString()}`, 20, 30); const headers = [['Customer','Gonda','Rate','Total (৳)','Cash (৳)','Due (৳)','Date']]; const rows = filtered.map(r => { let total = r.gonda * r.rate; let due = total - r.cash; if(due<0) due=0; return [r.name, r.gonda.toString(), r.rate.toString(), total.toFixed(2), r.cash.toFixed(2), due.toFixed(2), r.date?.split('T')[0]||''] }); doc.autoTable({ head: headers, body: rows, startY: 40, theme: 'striped', headStyles: { fillColor: [37,99,235], textColor: [255,255,255], fontStyle: 'bold' }, styles: { fontSize: 9, cellPadding: 3 } }); let finalY = doc.lastAutoTable.finalY + 10; doc.setFontSize(12); doc.setTextColor(0,0,0); doc.text(`📊 SUMMARY | Total Sales: ৳${totalS.toFixed(2)}   Cash: ৳${totalC.toFixed(2)}   Due: ৳${totalD>0?totalD.toFixed(2):0}`, 20, finalY); doc.save('Harvester_Pro_Report.pdf'); };
-    const exportToExcel = () => { let filtered = getFilteredRecords(); let sheetData = [["Customer Name","Gonda","Rate","Total (৳)","Cash (৳)","Due (৳)","Date"]]; filtered.forEach(r => { let total = r.gonda * r.rate; let due = total - r.cash >0 ? total - r.cash : 0; sheetData.push([r.name, r.gonda, r.rate, total, r.cash, due, r.date?.split('T')[0]||'']); }); const ws = XLSX.utils.aoa_to_sheet(sheetData); ws['!cols'] = [{wch:20},{wch:8},{wch:8},{wch:12},{wch:12},{wch:12},{wch:12}]; const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "HarvesterPro"); XLSX.writeFile(wb, `Harvester_Pro_${Date.now()}.xlsx`); };
-    const exportToJPG = async () => { let filtered = getFilteredRecords(); let totalS = filtered.reduce((a,b)=>a+(b.gonda*b.rate),0), totalC = filtered.reduce((a,b)=>a+b.cash,0), totalD = totalS - totalC; let div = document.createElement('div'); div.style.position='absolute'; div.style.left='-9999px'; div.style.top='0'; div.style.background='#0B1120'; div.style.color='#E2E8F0'; div.style.padding='30px'; div.style.width='860px'; div.style.fontFamily="'Inter', 'Hind Siliguri', sans-serif"; div.innerHTML = `<div style="border-bottom:2px solid #3b82f6; margin-bottom:20px;"><h1 style="color:#60A5FA; font-size:28px;">🌾 HARVESTER PRO</h1><p style="color:#94A3B8;">Premium Financial Snapshot</p></div><table style="width:100%; border-collapse:collapse;">${filtered.map(r=>{let ttl=r.gonda*r.rate; let due=ttl-r.cash; return `<tr style="border-bottom:1px solid #334155;"><td style="padding:12px;">${r.name}</td><td>${r.gonda} G</td><td>৳${r.rate}</td><td>৳${ttl.toFixed(2)}</td><td>৳${r.cash}</td><td style="color:#F87171;">Due: ${due>0?due.toFixed(2):0}</td></tr>`}).join('')}</table><div style="background:#1E293B; margin-top:24px; padding:20px; border-radius:24px;"><strong>📈 Totals:</strong> Sales: ৳${totalS.toFixed(2)}  |  Cash: ৳${totalC.toFixed(2)}  |  Due: ৳${totalD>0?totalD.toFixed(2):0}</div><div style="margin-top:12px; font-size:10px; text-align:center;">Harvester Pro · ${new Date().toLocaleString()}</div>`; document.body.appendChild(div); try { let canvas = await html2canvas(div, { scale: 2.8, backgroundColor: '#0B1120' }); let link = document.createElement('a'); link.download = `Harvester_Report_${Date.now()}.jpg`; link.href = canvas.toDataURL('image/jpeg', 0.96); link.click(); } catch(e){} document.body.removeChild(div); };
+    function startEdit(id) {
+      const rec = records.find(r => r.id == id);
+      if(rec) {
+        editId = id;
+        document.getElementById('customerName').value = rec.name;
+        document.getElementById('gondaInput').value = rec.gonda;
+        document.getElementById('rateInput').value = rec.rate;
+        document.getElementById('cashInput').value = rec.cash;
+        updateDuePreview();
+        document.getElementById('saveButton').innerHTML = '<i class="fas fa-pen-fancy"></i> Update';
+        document.getElementById('cancelButton').style.display = 'block';
+        gsap.fromTo('#formPanel', { y: 8 }, { y: 0, boxShadow: "0 0 15px rgba(59,130,246,0.3)", duration: 0.3 });
+      }
+    }
     
-    // ---------- ANIMATIONS + AURORA BACKGROUND ----------
-    function initAurora() { const canvas = document.getElementById('canvas-bg'); const ctx = canvas.getContext('2d'); let w = window.innerWidth, h = window.innerHeight; canvas.width = w; canvas.height = h; let hue = 210; function drawAurora() { if (!ctx) return; ctx.clearRect(0, 0, w, h); let grad = ctx.createLinearGradient(0, 0, w*0.8, h); grad.addColorStop(0, `hsla(${hue}, 75%, 15%, 0.5)`); grad.addColorStop(0.5, `hsla(${hue+40}, 80%, 12%, 0.6)`); grad.addColorStop(1, `hsla(${hue+80}, 70%, 8%, 0.7)`); ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h); for(let i=0;i<12;i++) { ctx.beginPath(); ctx.ellipse(w/2 + Math.sin(Date.now()*0.0005 + i)*120, h/2 + Math.cos(Date.now()*0.0004 + i)*90, 180, 110, 0, 0, Math.PI*2); ctx.fillStyle = `hsla(${hue + i*12}, 80%, 55%, 0.035)`; ctx.fill(); } requestAnimationFrame(drawAurora); } drawAurora(); window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; w=canvas.width; h=canvas.height; }); } initAurora();
+    function cancelEdit() {
+      editId = null;
+      document.getElementById('customerName').value = '';
+      document.getElementById('gondaInput').value = '0';
+      document.getElementById('rateInput').value = '0';
+      document.getElementById('cashInput').value = '0';
+      updateDuePreview();
+      document.getElementById('saveButton').innerHTML = '<i class="fas fa-save"></i> Save Record';
+      document.getElementById('cancelButton').style.display = 'none';
+    }
     
-    // Mouse Glow
-    document.addEventListener('mousemove', (e) => { const glow = document.getElementById('cursorGlow'); if(glow) glow.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`; });
+    function isDuplicateExcept(name, excludeId) {
+      return records.some(r => r.name.toLowerCase().trim() === name.toLowerCase().trim() && r.id != excludeId);
+    }
     
-    // GSAP Intro
-    gsap.fromTo('.glass-card, .glass-deep, .stat
+    function saveRecord() {
+      let name = document.getElementById('customerName').value.trim();
+      if(!name) { alert("Customer name required"); return; }
+      let gonda = parseFloat(document.getElementById('gondaInput').value) || 0;
+      let rate = parseFloat(document.getElementById('rateInput').value) || 0;
+      let cash = parseFloat(document.getElementById('cashInput').value) || 0;
+      if(isDuplicateExcept(name, editId)) { alert("Duplicate entry prevented!"); return; }
+      let today = new Date().toISOString();
+      if(editId) {
+        let idx = records.findIndex(r => r.id == editId);
+        if(idx !== -1) records[idx] = { ...records[idx], name, gonda, rate, cash, date: today };
+        editId = null;
+      } else {
+        records.push({ id: Date.now().toString() + Math.random().toString(36), name, gonda, rate, cash, date: today });
+      }
+      saveToLocal();
+      cancelEdit();
+      gsap.fromTo('#recordsContainer', { opacity: 0.95 }, { opacity: 1, duration: 0.2 });
+    }
+    
+    function renderAll() { updateDashboard(); renderRecords(); }
+    
+    // ========== EXPORT FUNCTIONS ==========
+    async function exportPDF() {
+      const filtered = getFilteredRecords();
+      let totalS = filtered.reduce((a,b)=>a+(b.gonda*b.rate),0);
+      let totalC = filtered.reduce((a,b)=>a+b.cash,0);
+      let totalD = totalS - totalC;
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('l', 'mm', 'a4');
+      doc.setFont('helvetica');
+      doc.setFontSize(16);
+      doc.setTextColor(37,99,235);
+      doc.text('HARVESTER PRO TITANIUM X - FINANCIAL REPORT', 20, 20);
+      doc.setFontSize(9);
+      doc.setTextColor(100,100,120);
+      doc.text(`Generated: ${new Date().toLocaleString()}`, 20, 30);
+      const headers = [['Customer','Gonda','Rate','Total','Cash','Due','Date']];
+      const rows = filtered.map(r => { let total = r.gonda * r.rate; let due = total - r.cash >0 ? total - r.cash : 0; return [r.name, r.gonda, r.rate, total.toFixed(2), r.cash.toFixed(2), due.toFixed(2), r.date?.split('T')[0]||''] });
+      doc.autoTable({ head: headers, body: rows, startY: 40, theme: 'striped', headStyles: { fillColor: [37,99,235] }, styles: { fontSize: 8 } });
+      let finalY = doc.lastAutoTable.finalY + 10;
+      doc.setFontSize(11);
+      doc.text(`Total Sales: ৳${totalS.toFixed(2)} | Cash: ৳${totalC.toFixed(2)} | Due: ৳${totalD>0?totalD.toFixed(2):0}`, 20, finalY);
+      doc.save('Harvester_Report.pdf');
+    }
+    
+    function exportExcel() {
+      const filtered = getFilteredRecords();
+      let sheet = [["Customer","Gonda","Rate","Total (৳)","Cash (৳)","Due (৳)","Date"]];
+      filtered.forEach(r => { let total = r.gonda * r.rate; let due = total - r.cash >0 ? total - r.cash : 0; sheet.push([r.name, r.gonda, r.rate, total, r.cash, due, r.date?.split('T')[0]||'']); });
+      const ws = XLSX.utils.aoa_to_sheet(sheet);
+      ws['!cols'] = [{wch:20},{wch:8},{wch:8},{wch:12},{wch:12},{wch:12},{wch:12}];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "TitaniumX");
+      XLSX.writeFile(wb, `Harvester_${Date.now()}.xlsx`);
+    }
+    
+    async function exportJPG() {
+      const filtered = getFilteredRecords();
+      let totalS = filtered.reduce((a,b)=>a+(b.gonda*b.rate),0);
+      let totalC = filtered.reduce((a,b)=>a+b.cash,0);
+      let totalD = totalS - totalC;
+      let div = document.createElement('div');
+      div.style.position = 'absolute';
+      div.style.left = '-9999px';
+      div.style.top = '0';
+      div.style.background = '#0A0F1A';
+      div.style.color = 'white';
+      div.style.padding = '28px';
+      div.style.width = '800px';
+      div.style.fontFamily = "Inter, sans-serif";
+      div.innerHTML = `<div style="border-bottom:2px solid #3b82f6; margin-bottom:20px;"><h1 style="color:#60A5FA;">HARVESTER PRO TITANIUM X</h1><p>Financial Intelligence Report</p></div>
+      <table style="width:100%; border-collapse:collapse;">
+        ${filtered.map(r => { let total = r.gonda * r.rate; let due = total - r.cash; return `<tr style="border-bottom:1px solid #334155;"><td style="padding:10px;">${r.name}</td><td>${r.gonda} G</td><td>৳${r.rate}</td><td>৳${total.toFixed(2)}</td><td>৳${r.cash}</td><td style="color:#f87171;">Due: ${due>0?due.toFixed(2):0}</td></tr>`; }).join('')}
+      </table>
+      <div style="background:#1E293B; margin-top:20px; padding:16px; border-radius:20px;"><strong>Totals:</strong> Sales: ৳${totalS.toFixed(2)} | Cash: ৳${totalC.toFixed(2)} | Due: ৳${totalD>0?totalD.toFixed(2):0}</div>
+      <div style="margin-top:12px; font-size:10px;">Generated: ${new Date().toLocaleString()}</div>`;
+      document.body.appendChild(div);
+      try {
+        let canvas = await html2canvas(div, { scale: 2.5, backgroundColor: '#0A0F1A' });
+        let link = document.createElement('a');
+        link.download = `Harvester_Report_${Date.now()}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+      } catch(e) { alert("JPG export failed"); }
+      document.body.removeChild(div);
+    }
+    
+    // ========== AURORA BACKGROUND ==========
+    function initAurora() {
+      const canvas = document.getElementById('auroraCanvas');
+      const ctx = canvas.getContext('2d');
+      let w = window.innerWidth, h = window.innerHeight;
+      canvas.width = w; canvas.height = h;
+      let hue = 210;
+      function draw() {
+        if(!ctx) return;
+        ctx.clearRect(0, 0, w, h);
+        let grad = ctx.createLinearGradient(0, 0, w*0.7, h);
+        grad.addColorStop(0, `hsla(${hue}, 70%, 12%, 0.5)`);
+        grad.addColorStop(0.5, `hsla(${hue+40}, 75%, 10%, 
