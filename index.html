@@ -1,568 +1,464 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-  <title>HARVESTER PRO TITANIUM X | Premium Business OS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>HARVESTER PRO TITANIUM X | Financial OS</title>
+  <!-- Google Fonts + Inter + SF Pro style -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <!-- GSAP Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Chart.js for mini analytics -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- html2canvas + jspdf for exports -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #0a0c15;
-      min-height: 100vh;
-      overflow-x: hidden;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
-    
-    /* Animated Gradient Background */
-    .animated-bg {
+
+    body {
+      background: radial-gradient(circle at 10% 20%, #0a0c12, #030507);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #f0f2f8;
+      overflow-x: hidden;
+      padding-bottom: 90px;
+    }
+
+    /* animated aurora + floating blobs */
+    .aurora-bg {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 0;
-      background: linear-gradient(125deg, #0f0c29, #302b63, #24243e);
-      background-size: 400% 400%;
-      animation: gradientShift 15s ease infinite;
+      z-index: -2;
+      overflow: hidden;
     }
-    
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    
-    /* Floating Orbs */
-    .orb {
-      position: fixed;
+    .blob {
+      position: absolute;
+      width: 70vw;
+      height: 70vw;
+      background: radial-gradient(circle, rgba(0, 229, 255, 0.2), rgba(0, 119, 255, 0.05));
+      filter: blur(80px);
       border-radius: 50%;
-      filter: blur(60px);
-      opacity: 0.4;
-      z-index: 0;
-      animation: float 20s infinite ease-in-out;
+      animation: floatBlob 18s infinite alternate ease-in-out;
     }
-    
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(50px, 50px) scale(1.1); }
+    .blob2 { background: radial-gradient(circle, rgba(210, 0, 255, 0.2), rgba(255, 0, 150, 0.05)); width: 60vw; height: 60vw; bottom: 0; right: 0; animation-duration: 22s; }
+    .blob3 { background: radial-gradient(circle, rgba(255, 180, 0, 0.15), rgba(255, 80, 0, 0.05)); width: 50vw; height: 50vw; top: 30%; left: -20%; animation-duration: 25s; }
+    @keyframes floatBlob {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+      100% { transform: translate(8%, 10%) scale(1.2); opacity: 0.8; }
     }
-    
-    .orb-1 { width: 400px; height: 400px; background: #3b82f6; top: -100px; left: -100px; animation-duration: 18s; }
-    .orb-2 { width: 500px; height: 500px; background: #a855f7; bottom: -150px; right: -100px; animation-duration: 22s; }
-    .orb-3 { width: 350px; height: 350px; background: #06b6d4; top: 50%; left: 50%; animation-duration: 25s; }
-    
-    /* Glassmorphism Container */
-    .glass {
-      background: rgba(15, 20, 35, 0.65);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 28px;
+
+    /* main container */
+    .app-container {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 20px 16px 32px;
+      position: relative;
+      z-index: 2;
     }
-    
+
+    /* glass cards & luxury components */
     .glass-card {
-      background: rgba(20, 25, 45, 0.55);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(59, 130, 246, 0.2);
-      border-radius: 24px;
-      transition: all 0.3s ease;
+      background: rgba(18, 22, 35, 0.55);
+      backdrop-filter: blur(16px);
+      border-radius: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 0.5px rgba(255, 255, 255, 0.05) inset;
+      transition: transform 0.25s ease, box-shadow 0.3s;
     }
-    
-    .glass-card:hover {
-      border-color: rgba(59, 130, 246, 0.5);
-      transform: translateY(-2px);
+    .glass-card:active { transform: scale(0.98); }
+
+    /* header cinematic */
+    .titanium-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 20px;
+      padding: 8px 0;
     }
-    
-    /* Premium Typography */
-    .gradient-text {
-      background: linear-gradient(135deg, #fff, #60a5fa, #a855f7);
+    .logo h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FFFFFF, #5bc0ff, #b76eff);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      font-weight: 800;
+      letter-spacing: -0.5px;
     }
-    
-    /* Record Cards - Compact */
-    .record-item {
-      background: rgba(25, 30, 50, 0.7);
-      backdrop-filter: blur(8px);
-      border-radius: 20px;
-      padding: 12px 16px;
-      margin-bottom: 10px;
-      border-left: 3px solid #3b82f6;
-      transition: all 0.2s;
-    }
-    
-    .record-item:active { transform: scale(0.98); }
-    .due-critical { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
-    .due-warning { border-left-color: #f59e0b; background: rgba(245, 158, 11, 0.08); }
-    
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
-    
-    /* Inputs */
-    input, select {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 20px;
-      padding: 12px 16px;
-      color: white;
-      font-size: 14px;
-      outline: none;
-      transition: all 0.2s;
-    }
-    
-    input:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
-    }
-    
-    button {
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    
-    button:active { transform: scale(0.96); }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
-      border: none;
-      border-radius: 24px;
+    .logo p { font-size: 0.7rem; opacity: 0.7; letter-spacing: 1px; }
+
+    /* dynamic greeting */
+    .dynamic-greeting {
+      background: rgba(0, 0, 0, 0.35);
       padding: 12px 20px;
+      border-radius: 40px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(12px);
       font-weight: 600;
-      color: white;
-      width: 100%;
+      border-left: 3px solid #3b82f6;
     }
-    
-    .stat-box {
-      background: rgba(15, 20, 35, 0.6);
+
+    /* analytics grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: rgba(12, 16, 28, 0.7);
       backdrop-filter: blur(8px);
-      border-radius: 20px;
-      padding: 12px;
-      text-align: center;
+      border-radius: 1.5rem;
+      padding: 16px 12px;
+      border: 1px solid rgba(72, 187, 255, 0.2);
+      transition: all 0.2s;
     }
-    
-    .stat-value {
-      font-size: 28px;
-      font-weight: 800;
+    .stat-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; }
+    .stat-number { font-size: 1.8rem; font-weight: 800; line-height: 1.2; margin-top: 6px; word-break: break-word; }
+    .trend { font-size: 0.7rem; display: flex; align-items: center; gap: 4px; margin-top: 6px; color: #4ade80; }
+
+    /* financial health meter */
+    .health-meter {
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 40px;
+      padding: 12px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(12px);
     }
-    
-    .fab {
+    .meter-bar {
+      width: 60%;
+      height: 6px;
+      background: #2a2e45;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .meter-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #f97316, #10b981);
+      border-radius: 10px;
+    }
+
+    /* floating insight */
+    .smart-insight {
+      background: linear-gradient(105deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2));
+      border-radius: 28px;
+      padding: 12px 18px;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,240,0.1);
+    }
+
+    /* add record form */
+    .form-panel {
+      padding: 20px;
+      margin-bottom: 28px;
+    }
+    .form-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .input-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .input-row input, .input-row select {
+      flex: 1;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 14px 16px;
+      border-radius: 28px;
+      color: white;
+      font-size: 0.9rem;
+      outline: none;
+      transition: 0.2s;
+    }
+    .input-row input:focus { border-color: #3b82f6; box-shadow: 0 0 12px rgba(59,130,246,0.3); }
+    .btn-primary {
+      background: linear-gradient(95deg, #3b82f6, #9333ea);
+      border: none;
+      padding: 14px;
+      border-radius: 48px;
+      font-weight: 700;
+      color: white;
+      font-size: 1rem;
+      transition: all 0.2s;
+      box-shadow: 0 5px 12px rgba(59,130,246,0.3);
+    }
+    .btn-primary:active { transform: scale(0.97); }
+
+    /* search & filters */
+    .search-section {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      flex: 2;
+      background: rgba(0,0,0,0.55);
+      border-radius: 60px;
+      padding: 12px 18px;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+    }
+    .filter-btn {
+      background: rgba(30,35,55,0.8);
+      border-radius: 60px;
+      padding: 0 16px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Record cards - compact */
+    .records-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 12px;
+      max-height: 460px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .record-card {
+      background: rgba(12, 18, 28, 0.75);
+      backdrop-filter: blur(12px);
+      border-radius: 1.2rem;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.2s;
+    }
+    .record-info h4 { font-size: 1rem; font-weight: 700; }
+    .record-info p { font-size: 0.7rem; opacity: 0.7; display: flex; gap: 12px; margin-top: 4px; }
+    .record-amounts { text-align: right; }
+    .due-badge { font-weight: 800; color: #facc15; }
+    .due-high { color: #ff4d4d; text-shadow: 0 0 4px rgba(255,0,0,0.5); }
+    .action-buttons { display: flex; gap: 8px; margin-left: 12px; }
+    .icon-btn { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+
+    /* export bar */
+    .export-bar {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .export-btn {
+      background: rgba(0,0,0,0.6);
+      padding: 8px 12px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* FAB pulse */
+    .fab-add {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
+      bottom: 24px;
+      right: 24px;
+      background: linear-gradient(145deg, #3b82f6, #7e22ce);
       width: 56px;
       height: 56px;
-      border-radius: 28px;
-      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      border-radius: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+      font-size: 28px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+      z-index: 20;
       cursor: pointer;
-      z-index: 100;
+      border: 1px solid rgba(255,255,255,0.3);
     }
-    
-    .modal-overlay {
+
+    /* modal */
+    .modal {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(8px);
-      z-index: 200;
-      display: none;
-      justify-content: center;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(12px);
+      display: flex;
       align-items: center;
+      justify-content: center;
+      z-index: 100;
+      visibility: hidden;
+      opacity: 0;
+      transition: 0.2s;
     }
-    
-    .modal-content {
-      background: rgba(20, 25, 45, 0.98);
-      backdrop-filter: blur(20px);
-      border-radius: 32px;
-      padding: 24px;
-      width: 90%;
-      max-width: 400px;
-      border: 1px solid #3b82f6;
-    }
-    
-    /* Compact layout */
-    .container-custom {
-      max-width: 550px;
-      margin: 0 auto;
-      padding: 16px;
-      position: relative;
-      z-index: 10;
-      padding-bottom: 100px;
-    }
-    
-    .records-list {
-      max-height: 420px;
-      overflow-y: auto;
-    }
-    
+    .modal.active { visibility: visible; opacity: 1; }
+    .modal-content { width: 85%; background: #10141e; border-radius: 2rem; padding: 24px; }
+
     @media (max-width: 480px) {
-      .stat-value { font-size: 22px; }
-      .container-custom { padding: 12px; padding-bottom: 90px; }
+      .stat-number { font-size: 1.3rem; }
+      .record-card { flex-wrap: wrap; }
     }
   </style>
 </head>
 <body>
-
-<!-- Animated Background -->
-<div class="animated-bg"></div>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
-
-<div class="container-custom">
+<div class="aurora-bg"><div class="blob"></div><div class="blob blob2"></div><div class="blob blob3"></div></div>
+<div class="app-container">
+  <div class="titanium-header">
+    <div class="logo"><h1>⚡HARVESTER<br>PRO X</h1><p>TITANIUM OS</p></div>
+    <div class="health-meter" id="healthMeterWidget" style="width:auto; padding:8px 14px;">💎 HEALTH <span id="healthPercent">0</span>%</div>
+  </div>
+  <div class="dynamic-greeting" id="greetingMsg">🌙 Good Evening, Titan</div>
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card"><div class="stat-label">TOTAL SALES</div><div class="stat-number" id="totalSales">0</div></div>
+    <div class="stat-card"><div class="stat-label">CASH COLLECTED</div><div class="stat-number" id="totalCash">0</div></div>
+    <div class="stat-card"><div class="stat-label">TOTAL DUE</div><div class="stat-number" id="totalDue">0</div><div class="trend" id="dueTrend">⚖️ pending</div></div>
+    <div class="stat-card"><div class="stat-label">GONDA (KG)</div><div class="stat-number" id="totalGonda">0</div></div>
+  </div>
+  <div class="smart-insight" id="smartInsight">✨ AI Insight: Loading intelligence...</div>
   
-  <!-- Header -->
-  <div class="flex justify-between items-center mb-6">
-    <div>
-      <h1 class="text-2xl md:text-3xl font-black"><span class="gradient-text">HARVESTER PRO</span><span class="text-xs bg-white/10 px-2 py-1 rounded-full ml-2">Ti X</span></h1>
-      <p class="text-white/40 text-xs mt-1"><i class="fas fa-crown text-yellow-500/60"></i> Premium Financial OS</p>
+  <!-- Form Panel (compact) -->
+  <div class="glass-card form-panel">
+    <div class="form-grid">
+      <div class="input-row"><input type="text" id="custName" placeholder="Customer name"></div>
+      <div class="input-row"><input type="number" id="gonda" placeholder="Gonda (KG)" step="any"></div>
+      <div class="input-row"><input type="number" id="rate" placeholder="Rate / KG" step="any"></div>
+      <div class="input-row"><input type="number" id="cash" placeholder="Cash paid" step="any"></div>
+      <div class="input-row"><input type="date" id="dateRec" value="2026-05-03"></div>
+      <div class="input-row"><button class="btn-primary" id="addRecordBtn">➕ ADD RECORD</button></div>
     </div>
-    <div class="glass px-3 py-1.5 rounded-full text-[10px] font-bold"><i class="fas fa-bolt text-blue-400"></i> OFFLINE</div>
+    <div id="liveCalcPreview" style="text-align:center; margin-top: 12px; font-size:0.8rem;">💵 Total: 0 | Due: 0</div>
   </div>
-
-  <!-- Stats Dashboard -->
-  <div class="grid grid-cols-2 gap-3 mb-5">
-    <div class="stat-box"><div class="stat-value text-cyan-300" id="totalGonda">0</div><div class="text-[10px] text-white/50">GONDA</div></div>
-    <div class="stat-box"><div class="stat-value text-emerald-300" id="totalSales">0</div><div class="text-[10px] text-white/50">SALES (৳)</div></div>
-    <div class="stat-box"><div class="stat-value text-blue-300" id="totalCash">0</div><div class="text-[10px] text-white/50">CASH</div></div>
-    <div class="stat-box"><div class="stat-value text-rose-300" id="totalDue">0</div><div class="text-[10px] text-white/50">DUE</div></div>
-  </div>
-
-  <!-- Efficiency Card -->
-  <div class="glass rounded-2xl p-4 mb-5 flex justify-between items-center">
-    <div><span class="text-[10px] text-white/50">Collection Efficiency</span><div class="text-2xl font-bold" id="efficiency">0%</div></div>
-    <div class="w-16 h-16"><canvas id="efficiencyChart" width="64" height="64"></canvas></div>
-    <div class="text-right"><i class="fas fa-chart-line text-green-400"></i><div class="text-[10px] text-white/50" id="smartTip">Ready</div></div>
-  </div>
-
-  <!-- Form Panel -->
-  <div class="glass-card p-4 mb-5">
-    <input type="text" id="custName" placeholder="Customer Name *" class="w-full mb-3">
-    <div class="grid grid-cols-2 gap-3 mb-3">
-      <input type="number" id="gonda" value="0" step="1" placeholder="Gonda">
-      <input type="number" id="rate" value="0" step="any" placeholder="Rate (৳)">
-    </div>
-    <div class="grid grid-cols-2 gap-3 mb-3">
-      <input type="number" id="cash" value="0" step="any" placeholder="Cash Paid">
-      <input type="text" id="duePreview" readonly placeholder="Due" class="bg-blue-900/30 border-blue-500/50 font-bold">
-    </div>
-    <div class="flex gap-2">
-      <button class="btn-primary" id="saveBtn"><i class="fas fa-save"></i> Save</button>
-      <button class="bg-white/10 rounded-2xl px-4 hidden" id="cancelBtn">Cancel</button>
-    </div>
-  </div>
-
-  <!-- Search & Filters -->
-  <div class="flex gap-2 mb-3">
-    <div class="flex-1 glass rounded-full flex items-center px-4"><i class="fas fa-search text-blue-400"></i><input type="text" id="search" placeholder="Search..." class="bg-transparent border-0 w-full py-3"></div>
-    <button id="dueFilter" class="bg-rose-500/20 px-4 rounded-full text-sm border border-rose-500/30"><i class="fas fa-exclamation-triangle"></i> Due</button>
-    <button id="resetFilter" class="bg-white/5 px-3 rounded-full"><i class="fas fa-undo"></i></button>
-  </div>
-  <div class="flex gap-2 mb-4">
-    <input type="date" id="startDate" class="text-sm flex-1">
-    <input type="date" id="endDate" class="text-sm flex-1">
-    <button id="dateFilter" class="bg-blue-600/40 px-4 rounded-full text-sm"><i class="fas fa-calendar"></i> Go</button>
-  </div>
-
-  <!-- Tabs -->
-  <div class="flex gap-3 mb-3 border-b border-white/10 pb-2">
-    <button id="tabAll" class="text-sm font-semibold pb-2 border-b-2 border-blue-500 text-blue-300">All Records</button>
-    <button id="tabDueList" class="text-sm font-semibold pb-2 text-white/50">Due Priority</button>
-  </div>
-
-  <!-- Records Container -->
+  
+  <!-- Search & filter -->
+  <div class="search-section"><input type="text" id="searchInput" class="search-input" placeholder="🔍 search customer..."><button id="filterDueBtn" class="filter-btn">⚠️ DUE ONLY</button><button id="filterAllBtn" class="filter-btn">ALL</button></div>
+  
   <div class="records-list" id="recordsContainer"></div>
+  
+  <div class="export-bar"><button id="exportPDFBtn" class="export-btn">📄 PDF REPORT</button><button id="exportImageBtn" class="export-btn">🖼️ HD IMAGE</button><button id="exportExcelBtn" class="export-btn">📊 EXCEL SHEET</button></div>
 </div>
+<div class="fab-add" id="fabAdd">+</div>
 
-<!-- FAB -->
-<div class="fab" id="fab"><i class="fas fa-file-export text-white text-xl"></i></div>
-
-<!-- Export Modal -->
-<div class="modal-overlay" id="modal">
-  <div class="modal-content">
-    <div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold"><i class="fas fa-download text-blue-400"></i> Export</h3><span id="closeModal" class="text-2xl cursor-pointer">&times;</span></div>
-    <button id="pdfExport" class="w-full bg-red-600 py-3 rounded-xl mb-2 font-semibold">📄 PDF Report</button>
-    <button id="excelExport" class="w-full bg-green-700 py-3 rounded-xl mb-2 font-semibold">📊 Excel Sheet</button>
-    <button id="jpgExport" class="w-full bg-purple-700 py-3 rounded-xl font-semibold">🖼️ JPG Image</button>
-  </div>
-</div>
+<!-- Edit Modal -->
+<div id="editModal" class="modal"><div class="modal-content"><h3>✏️ Edit Record</h3><input id="editId" type="hidden"><input id="editName" placeholder="Name"><input id="editGonda" placeholder="Gonda"><input id="editRate" placeholder="Rate"><input id="editCash" placeholder="Cash"><input id="editDate" type="date"><button id="saveEditBtn" class="btn-primary" style="margin-top:16px;">SAVE</button><button id="closeModal" style="margin-top:8px;background:none;">Cancel</button></div></div>
 
 <script>
-  // ========== DATA ==========
+  // ---------- DATA MODEL ----------
   let records = [];
-  let editId = null;
-  let dueOnly = false;
-  let activeTab = "all";
-  let startDateVal = "", endDateVal = "";
-  let efficiencyChart = null;
+  let editTargetId = null;
+  const STORAGE_KEY = "harvester_pro_data";
 
-  // Load from localStorage
-  function loadData() {
-    let stored = localStorage.getItem("harvester_pro_titanium");
-    if(stored) records = JSON.parse(stored);
-    else records = [];
-    renderAll();
-  }
+  function loadData() { const stored = localStorage.getItem(STORAGE_KEY); if(stored) records = JSON.parse(stored); else records = []; renderAll(); }
+  function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); renderAll(); }
 
-  function saveData() {
-    localStorage.setItem("harvester_pro_titanium", JSON.stringify(records));
-    renderAll();
-  }
+  // helpers
+  function calcTotal(gonda, rate) { return (parseFloat(gonda) || 0) * (parseFloat(rate) || 0); }
+  function calcDue(total, cash) { return Math.max(0, total - (parseFloat(cash) || 0)); }
 
-  // Calculate due preview
-  function updateDue() {
+  // live preview
+  function updateLivePreview() {
     let g = parseFloat(document.getElementById('gonda').value) || 0;
     let r = parseFloat(document.getElementById('rate').value) || 0;
-    let c = parseFloat(document.getElementById('cash').value) || 0;
-    let total = g * r;
-    let due = total - c > 0 ? total - c : 0;
-    document.getElementById('duePreview').value = due.toFixed(2);
-  }
-
-  document.getElementById('gonda').addEventListener('input', updateDue);
-  document.getElementById('rate').addEventListener('input', updateDue);
-  document.getElementById('cash').addEventListener('input', updateDue);
-
-  // Filter logic
-  function getFiltered() {
-    let filtered = [...records];
-    let searchTerm = document.getElementById('search').value.toLowerCase();
-    if(searchTerm) filtered = filtered.filter(r => r.name.toLowerCase().includes(searchTerm));
-    if(dueOnly) filtered = filtered.filter(r => (r.gonda * r.rate - r.cash) > 0.5);
-    if(startDateVal || endDateVal) {
-      filtered = filtered.filter(r => {
-        if(!r.date) return false;
-        let d = r.date.split('T')[0];
-        if(startDateVal && d < startDateVal) return false;
-        if(endDateVal && d > endDateVal) return false;
-        return true;
-      });
-    }
-    if(activeTab === "due") {
-      filtered = filtered.filter(r => (r.gonda * r.rate - r.cash) > 0);
-      filtered.sort((a,b) => ((b.gonda*b.rate - b.cash) - (a.gonda*a.rate - a.cash)));
-    } else {
-      filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
-    }
-    return filtered;
-  }
-
-  // Dashboard update
-  function updateDashboard() {
-    let totalG = 0, totalSales = 0, totalCash = 0, totalDue = 0;
-    records.forEach(r => {
-      totalG += r.gonda;
-      let sale = r.gonda * r.rate;
-      totalSales += sale;
-      totalCash += r.cash;
-      totalDue += (sale - r.cash > 0 ? sale - r.cash : 0);
-    });
-    document.getElementById('totalGonda').innerText = totalG;
-    document.getElementById('totalSales').innerText = totalSales.toFixed(2);
-    document.getElementById('totalCash').innerText = totalCash.toFixed(2);
-    document.getElementById('totalDue').innerText = totalDue.toFixed(2);
-    
-    let efficiency = totalSales === 0 ? 0 : (totalCash / totalSales) * 100;
-    document.getElementById('efficiency').innerText = efficiency.toFixed(1) + "%";
-    
-    if(efficiencyChart) {
-      efficiencyChart.data.datasets[0].data = [efficiency, 100 - efficiency];
-      efficiencyChart.update();
-    }
-    
-    // Smart tip
-    if(records.length > 0) {
-      let maxDue = 0, maxName = "";
-      records.forEach(r => { let d = (r.gonda * r.rate) - r.cash; if(d > maxDue) { maxDue = d; maxName = r.name; } });
-      if(maxDue > 0) document.getElementById('smartTip').innerHTML = `<i class="fas fa-brain"></i> Collect from ${maxName}`;
-      else document.getElementById('smartTip').innerHTML = `<i class="fas fa-check-circle"></i> All cleared!`;
-    } else {
-      document.getElementById('smartTip').innerHTML = "Add records to start";
-    }
-  }
-
-  // Render records - COMPACT
-  function renderRecords() {
-    let container = document.getElementById('recordsContainer');
-    let filtered = getFiltered();
-    if(filtered.length === 0) {
-      container.innerHTML = `<div class="glass rounded-2xl p-8 text-center text-white/50"><i class="fas fa-database text-3xl mb-2"></i><p>No records found</p></div>`;
-      return;
-    }
-    let html = "";
-    filtered.forEach(r => {
-      let total = r.gonda * r.rate;
-      let due = total - r.cash;
-      let dueClass = due > 500 ? "due-critical" : (due > 0 ? "due-warning" : "");
-      let dueBadge = due > 0 ? `<span class="bg-red-500/30 px-2 py-0.5 rounded-full text-[10px]">Due ৳${due.toFixed(2)}</span>` : `<span class="bg-emerald-500/20 px-2 py-0.5 rounded-full text-[10px]">Paid</span>`;
-      html += `<div class="record-item ${dueClass}">
-        <div class="flex justify-between items-start">
-          <div><div class="font-bold text-sm"><i class="fas fa-user text-blue-300 mr-1"></i> ${escapeHtml(r.name)}</div>
-          <div class="flex flex-wrap gap-2 text-[10px] text-white/60 mt-1">
-            <span>${r.gonda} Gonda</span><span>@৳${r.rate}</span><span>Total ৳${total.toFixed(2)}</span><span>Cash ৳${r.cash.toFixed(2)}</span>${dueBadge}<span>${r.date?.split('T')[0] || '-'}</span>
-          </div></div>
-          <div class="flex gap-2"><button class="editBtn text-blue-300" data-id="${r.id}"><i class="fas fa-pen text-sm"></i></button><button class="deleteBtn text-rose-300" data-id="${r.id}"><i class="fas fa-trash text-sm"></i></button></div>
-        </div>
-      </div>`;
-    });
-    container.innerHTML = html;
-    
-    document.querySelectorAll('.editBtn').forEach(btn => {
-      btn.addEventListener('click', (e) => { let id = btn.getAttribute('data-id'); startEdit(id); e.stopPropagation(); });
-    });
-    document.querySelectorAll('.deleteBtn').forEach(btn => {
-      btn.addEventListener('click', (e) => { if(confirm("Delete?")) { records = records.filter(r => r.id != btn.getAttribute('data-id')); saveData(); } e.stopPropagation(); });
-    });
-  }
-
-  function escapeHtml(str) { return str.replace(/[&<>]/g, (m) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
-
-  function startEdit(id) {
-    let rec = records.find(r => r.id == id);
-    if(rec) {
-      editId = id;
-      document.getElementById('custName').value = rec.name;
-      document.getElementById('gonda').value = rec.gonda;
-      document.getElementById('rate').value = rec.rate;
-      document.getElementById('cash').value = rec.cash;
-      updateDue();
-      document.getElementById('saveBtn').innerHTML = '<i class="fas fa-pen"></i> Update';
-      document.getElementById('cancelBtn').classList.remove('hidden');
-    }
-  }
-
-  function cancelEdit() {
-    editId = null;
-    document.getElementById('custName').value = '';
-    document.getElementById('gonda').value = '0';
-    document.getElementById('rate').value = '0';
-    document.getElementById('cash').value = '0';
-    updateDue();
-    document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save"></i> Save';
-    document.getElementById('cancelBtn').classList.add('hidden');
-  }
-
-  function isDuplicate(name, excludeId) {
-    return records.some(r => r.name.toLowerCase().trim() === name.toLowerCase().trim() && r.id != excludeId);
-  }
-
-  function saveRecord() {
-    let name = document.getElementById('custName').value.trim();
-    if(!name) { alert("Customer name required"); return; }
-    let gonda = parseFloat(document.getElementById('gonda').value) || 0;
-    let rate = parseFloat(document.getElementById('rate').value) || 0;
     let cash = parseFloat(document.getElementById('cash').value) || 0;
-    if(isDuplicate(name, editId)) { alert("Duplicate customer name!"); return; }
-    let today = new Date().toISOString();
-    if(editId) {
-      let idx = records.findIndex(r => r.id == editId);
-      if(idx !== -1) records[idx] = { ...records[idx], name, gonda, rate, cash, date: today };
-      editId = null;
-    } else {
-      records.push({ id: Date.now().toString() + Math.random(), name, gonda, rate, cash, date: today });
-    }
-    saveData();
-    cancelEdit();
+    let total = g * r;
+    let due = Math.max(0, total - cash);
+    document.getElementById('liveCalcPreview').innerHTML = `💵 Total: ${total.toFixed(2)} | 🔻 Due: ${due.toFixed(2)}`;
+    if(due>0) document.getElementById('liveCalcPreview').style.textShadow = "0 0 5px #f97316";
+    else document.getElementById('liveCalcPreview').style.textShadow = "none";
   }
+  document.getElementById('gonda').addEventListener('input', updateLivePreview);
+  document.getElementById('rate').addEventListener('input', updateLivePreview);
+  document.getElementById('cash').addEventListener('input', updateLivePreview);
 
-  function renderAll() { updateDashboard(); renderRecords(); }
-
-  // ========== EXPORTS ==========
-  async function exportPDF() {
-    let filtered = getFiltered();
-    let totalS = filtered.reduce((a,b)=>a+(b.gonda*b.rate),0);
-    let totalC = filtered.reduce((a,b)=>a+b.cash,0);
-    let { jsPDF } = window.jspdf;
-    let doc = new jsPDF('l', 'mm', 'a4');
-    doc.setFont('helvetica');
-    doc.setFontSize(16);
-    doc.text('HARVESTER PRO - FINANCIAL REPORT', 20, 20);
-    doc.setFontSize(9);
-    doc.text(`Generated: ${new Date().toLocaleString()}`, 20, 30);
-    let headers = [['Customer','Gonda','Rate','Total','Cash','Due','Date']];
-    let rows = filtered.map(r => { let total = r.gonda * r.rate; let due = total - r.cash >0 ? total - r.cash : 0; return [r.name, r.gonda, r.rate, total.toFixed(2), r.cash.toFixed(2), due.toFixed(2), r.date?.split('T')[0]||''] });
-    doc.autoTable({ head: headers, body: rows, startY: 40, theme: 'striped', headStyles: { fillColor: [37,99,235] } });
-    let finalY = doc.lastAutoTable.finalY + 10;
-    doc.text(`Total Sales: ৳${totalS.toFixed(2)} | Cash: ৳${totalC.toFixed(2)} | Due: ৳${(totalS-totalC).toFixed(2)}`, 20, finalY);
-    doc.save('Harvester_Report.pdf');
+  // analytics/dashboard update
+  function computeStats() {
+    let totalSales = 0, totalCash = 0, totalDue = 0, totalGonda = 0;
+    records.forEach(r => { let t = (parseFloat(r.gonda)||0)*(parseFloat(r.rate)||0); totalSales += t; totalCash += parseFloat(r.cash)||0; totalDue += calcDue(t, r.cash); totalGonda += parseFloat(r.gonda)||0; });
+    return { totalSales, totalCash, totalDue, totalGonda };
   }
-
-  function exportExcel() {
-    let filtered = getFiltered();
-    let sheet = [["Customer","Gonda","Rate","Total (৳)","Cash (৳)","Due (৳)","Date"]];
-    filtered.forEach(r => { let total = r.gonda * r.rate; let due = total - r.cash >0 ? total - r.cash : 0; sheet.push([r.name, r.gonda, r.rate, total, r.cash, due, r.date?.split('T')[0]||'']); });
-    let ws = XLSX.utils.aoa_to_sheet(sheet);
-    let wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "HarvesterPro");
-    XLSX.writeFile(wb, `Harvester_${Date.now()}.xlsx`);
+  function updateDashboard() {
+    let s = computeStats();
+    document.getElementById('totalSales').innerText = s.totalSales.toFixed(2);
+    document.getElementById('totalCash').innerText = s.totalCash.toFixed(2);
+    document.getElementById('totalDue').innerText = s.totalDue.toFixed(2);
+    document.getElementById('totalGonda').innerText = s.totalGonda.toFixed(1);
+    let health = 100;
+    if(s.totalSales>0) health = Math.min(100, (s.totalCash / s.totalSales) * 100);
+    document.getElementById('healthPercent').innerText = Math.floor(health);
+    let meterFill = document.querySelector('.meter-fill'); if(meterFill) meterFill.style.width = health+"%";
+    // financial insight
+    let insightMsg = "";
+    if(s.totalDue > 5000) insightMsg = "⚠️ High due amount — prioritize collection from top debtors.";
+    else if(s.totalDue > 1000) insightMsg = "📊 Moderate due. Try contacting largest due client today.";
+    else insightMsg = "🏆 Excellent! Your collection efficiency is elite.";
+    document.getElementById('smartInsight').innerHTML = `✨ ${insightMsg}  Best customer: ${getBestCustomer()}`;
   }
-
-  async function exportJPG() {
-    let filtered = getFiltered();
-    let totalS = filtered.reduce((a,b)=>a+(b.gonda*b.rate),0);
-    let totalC = filtered.reduce((a,b)=>a+b.cash,0);
-    let div = document.createElement('div');
-    div.style.position = 'absolute';
-    div.style.left = '-9999px';
-    div.style.top = '0';
-    div.style.background = '#0a0c15';
-    div.style.color = 'white';
-    div.style.padding = '30px';
-    div.style.width = '800px';
-    div.style.fontFamily = "Inter, sans-serif";
-    div.innerHTML = `<h1 style="color:#60a5fa;">HARVESTER PRO TITANIUM X</h1><hr/><table style="width:100%; margin-top:20px;">${filtered.map(r=>{let total=r.gonda*r.rate; let due=total-r.cash; return `<tr><td>${r.name}</td><td>${r.gonda} G</td><td>৳${r.rate}</td><td>৳${total.toFixed(2)}</td><td>৳${r.cash}</td><td>Due: ${due>0?due.toFixed(2):0}</td></tr>`}).join('')}</table><div style="background:#1e293b; margin-top:20px; padding:15px;">Total Sales: ৳${totalS.toFixed(2)} | Cash: ৳${totalC.toFixed(2)} | Due: ৳${(totalS-totalC).toFixed(2)}</div>`;
-    document.body.appendChild(div);
-    let canvas = await html2canvas(div, { scale: 2 });
-    let link = document.createElement('a');
-    link.download = `Harvester_${Date.now()}.jpg`;
-    link.href = canvas.toDataURL('image/jpeg', 0.95);
-    link.click();
-    document.body.removeChild(div);
+  function getBestCustomer() { if(!records.length) return "none"; let best = records.reduce((a,b)=>((parseFloat(b.cash)||0) > (parseFloat(a.cash)||0) ? b : a), records[0]); return best.customerName || "N/A"; }
+  
+  // render records compact
+  let currentFilter = "all", searchQuery = "";
+  function renderAll() {
+    let filtered = records.filter(rec => {
+      let matchSearch = rec.customerName?.toLowerCase().includes(searchQuery.toLowerCase()) || '';
+      if(currentFilter === "due") return matchSearch && calcDue((rec.gonda*rec.rate), rec.cash) > 0;
+      return matchSearch;
+    });
+    const container = document.getElementById('recordsContainer');
+    container.innerHTML = '';
+    if(filtered.length===0){ container.innerHTML='<div class="glass-card" style="padding: 30px; text-align:center;">✨ No records — add your first transaction ✨</div>'; updateDashboard(); return; }
+    filtered.forEach(rec => {
+      let total = (rec.gonda*rec.rate);
+      let due = calcDue(total, rec.cash);
+      let dueClass = due>500 ? "due-high" : "";
+      const card = document.createElement('div'); card.className = "record-card";
+      card.innerHTML = `<div class="record-info"><h4>${escapeHtml(rec.customerName)}</h4><p>📅 ${rec.date || "N/A"} | ⚖️ ${rec.gonda}kg | 💰 ${rec.rate}/kg</p></div>
+      <div class="record-amounts"><div>💰 ${total.toFixed(2)}</div><div>💵 Cash: ${(rec.cash||0).toFixed(2)}</div><div class="due-badge ${dueClass}">🔻 Due: ${due.toFixed(2)}</div></div>
+      <div class="action-buttons"><button class="icon-btn edit-btn" data-id="${rec.id}">✏️</button><button class="icon-btn del-btn" data-id="${rec.id}">🗑️</button></div>`;
+      container.appendChild(card);
+    });
+    document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', (e) => { let id = btn.getAttribute('data-id'); openEditModal(id); }));
+    document.querySelectorAll('.del-btn').forEach(btn => btn.addEventListener('click', (e) => { let id = btn.getAttribute('data-id'); if(confirm('Delete record?')) deleteRecordById(id); }));
+    updateDashboard();
+    gsap.fromTo(".record-card", {opacity:0, y:15}, {opacity:1, y:0, stagger:0.03, duration:0.4, ease:"back.out(0.6)"});
   }
+  function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;});}
+  function deleteRecordById(id){ records = records.filter(r=>r.id!=id); saveData(); renderAll(); }
+  function openEditModal(id){ let rec = records.find(r=>r.id==id); if(!rec) return; editTargetId = id; document.getElementById('editName').value = rec.customerName; document.getElementById('editGonda').value = rec.gonda; document.getElementById('editRate').value = rec.rate; document.getElementById('editCash').value = rec.cash; document.getElementById('editDate').value = rec.date; document.getElementById('editModal').classList.add('active'); }
+  function saveEdit(){ let newName = document.getElementById('editName').value; let newGonda = parseFloat(document.getElementById('editGonda').value); let newRate = parseFloat(document.getElementById('editRate').value); let newCash = parseFloat(document.getElementById('editCash').value); let newDate = document.getElementById('editDate').value; if(!newName) return; let idx = records.findIndex(r=>r.id==editTargetId); if(idx!==-1){ records[idx].customerName = newName; records[idx].gonda = newGonda; records[idx].rate = newRate; records[idx].cash = newCash; records[idx].date = newDate; saveData(); } document.getElementById('editModal').classList.remove('active'); renderAll(); }
+  document.getElementById('saveEditBtn').onclick = saveEdit; document.getElementById('closeModal').onclick = ()=>document.getElementById('editModal').classList.remove('active');
+  function addNewRecord(){ let name = document.getElementById('custName').value.trim(); let gonda = parseFloat(document.getElementById('gonda').value); let rate = parseFloat(document.getElementById('rate').value); let cash = parseFloat(document.getElementById('cash').value); let date = document.getElementById('dateRec').value; if(!name || isNaN(gonda) || isNaN(rate)){ alert("Enter valid details"); return; } let total = gonda*rate; let due = total - cash; if(due<0) due=0; let newRecord = { id: Date.now().toString(), customerName: name, gonda: gonda, rate: rate, cash: cash||0, date: date, total: total }; records.unshift(newRecord); saveData(); document.getElementById('custName').value=''; document.getElementById('gonda').value=''; document.getElementById('rate').value=''; document.getElementById('cash').value=''; updateLivePreview(); renderAll(); gsap.to(".form-panel", {scale:1.02, duration:0.2, yoyo:true, repeat:1}); }
+  document.getElementById('addRecordBtn').onclick = addNewRecord; document.getElementById('fabAdd').onclick = ()=> { document.querySelector('.form-panel').scrollIntoView({behavior:'smooth'}); gsap.to(".fab-add",{scale:0.9, yoyo:true, repeat:1}); };
+  document.getElementById('searchInput').addEventListener('input', (e)=>{ searchQuery = e.target.value; renderAll(); });
+  document.getElementById('filterDueBtn').onclick = ()=>{ currentFilter="due"; renderAll(); };
+  document.getElementById('filterAllBtn').onclick = ()=>{ currentFilter="all"; renderAll(); };
 
-  // ========== EVENT LISTENERS ==========
-  document.getElementById('saveBtn').addEventListener('click', saveRecord);
-  document.getElementById('cancelBtn').addEventListener('click', cancelEdit);
-  document.getElementById('dueFilter').addEventListener('click', () => { dueOnly = !dueOnly; document.getElementById('dueFilter').classList.toggle('bg-rose-500/40'); renderRecords(); });
-  document.getElementById('resetFilter').addEventListener('click', () => { dueOnly = false; document.getElementById('search').value = ''; startDateVal = ''; endDateVal = ''; document.getElementById('startDate').value = ''; document.getElementById('endDate').value = ''; document.getElementById('dueFilter').classList.remove('bg-rose-500/40'); activeTab = "all"; document.getElementById('tabAll').click(); renderRecords(); });
-  document.getElementById('dateFilter').addEventListener('click', () => { startDateVal = document.getElementById('startDate').value; endDateVal = document.getElementById('endDate').value; renderRecords(); });
-  document.getElementById('search').addEventListener('input', () => renderRecords());
-  document.getElementById('tabAll').addEventListener('click', () => { activeTab = "all"; document.getElementById('tabAll').classList.add('border-blue-500','text-blue-300'); document.getElementById('tabDueList').classList.remove('border-blue-500','text-blue-300'); renderRecords(); });
-  document.getElementById('tabDueList').addEventListener('click', () => { activeTab = "due"; document.getElementById('tabDueList').classList.add('border-blue-500','text-blue-300'); document.getElementById('tabAll').classList.remove('border-blue-500','text-blue-300'); renderRecords(); });
-  
-  // Efficiency Chart
-  let ctx = document.getElementById('efficiencyChart').getContext('2d');
-  efficiencyChart = new Chart(ctx, { type: 'doughnut', data: { datasets: [{ data: [0, 100], backgroundColor: ['#3b82f6', '#1e293b'], borderWidth: 0, cutout: '70%' }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } } });
-  
-  // Modal
-  let modal = document.getElementById('modal');
-  document.getElementById('fab').onclick = () => modal.style.display = 'flex';
-  document.getElementById('closeModal').onclick = () => modal.style.display = 'none';
-  window.onclick = (e) => { if(e.target === modal) modal.style.display = 'none'; };
-  document.getElementById('pdfExport').onclick = () => { modal.style.display = 'none'; exportPDF(); };
-  document.getElementById('excelExport').onclick = () => { modal.style.display = 'none'; exportExcel(); };
-  document.getElementById('jpgExport').onclick = () => { modal.style.display = 'none'; exportJPG(); };
-  
-  // GSAP Intro Animation
-  gsap.from('.glass, .glass-card, .stat-box', { opacity: 0, y: 20, duration: 0.5, stagger: 0.08 });
-  
-  loadData();
+  // ---------- EXPORT SYSTEMS ----------
+  async function generateReportElement() { let stats = computeStats(); let div = document.createElement('div'); div.style.width='800px'; div.style.background='white'; div.style.padding='40px'; div.style.fontFamily='Inter'; div.innerHTML = `<h1 style="color:#0f172a;">⚡ HARVESTER PRO TITANIUM X</h1><h3>Financial Report | ${new Date().toLocaleString()}</h3><hr/><table style="width:100%; border-collapse:collapse;">${records.map(r=>`<tr><td>${r.customerName}</td><td>${r.gonda}kg</td><td>${r.rate}</td><td>${(r.gonda*r.rate).toFixed(2)}</td><td>${(r.cash||0).toFixed(2)}</td><td>${calcDue(r.gonda*r.rate, r.cash).toFixed(2)}</td></tr>`).join('')}</table><br/><div>Total Sales: ${stats.totalSales.toFixed(2)} | Cash: ${stats.totalCash.toFixed(2)} | Due: ${stats.totalDue.toFixed(2)}</div>`; return div; }
+  document.getElementById('exportPDFBtn').onclick = async ()=>{ const { jsPDF } = window.jspdf; let element = await generateReportElement(); document.body.appendChild(element); html2canvas(element, {scale:2}).then(canvas=>{ let imgData = canvas.toDataURL('image/png'); let pdf = new jsPDF('p','mm','a4'); pdf.addImage(imgData,'PNG',10,10,190,0); pdf.save('harvester_report.pdf'); document.body.removeChild(element); }); };
+  document.getElementById('exportImageBtn').onclick = async ()=>{ let element = await generateReportElement(); document.body.appendChild(element); html2canvas(element, {scale:3}).then(canvas=>{ let link = document.createElement('a'); link.download='harvester_hd.png'; link.href=canvas.toDataURL(); link.click(); document.body.removeChild(element); }); };
+  document.getElementById('exportExcelBtn').onclick = ()=>{ let csvRows=[["Customer","Gonda","Rate","Total","Cash","Due"]]; records.forEach(r=>{ let total = r.gonda*r.rate; let due = total-(r.cash||0); csvRows.push([r.customerName, r.gonda, r.rate, total.toFixed(2), (r.cash||0).toFixed(2), due.toFixed(2)]); }); let csv = csvRows.map(row=>row.join(",")).join("\n"); let blob = new Blob([csv],{type:'text/csv'}); let a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='financial_sheet.csv'; a.click(); };
+
+  // greeting dynamic
+  function setGreeting(){ let hour = new Date().getHours(); let msg = hour<12 ? "🌞 Good Morning, Business King 👑" : hour<18 ? "⚡ Good Afternoon, Titan" : "🌙 Good Evening, Visionary Leader"; document.getElementById('greetingMsg').innerHTML = msg + " | Harvester OS"; }
+  setGreeting(); setInterval(setGreeting, 3600000);
+  // add animations and intro
+  window.onload = ()=>{ loadData(); gsap.from(".glass-card", {opacity:0, y:30, duration:0.8, stagger:0.1, ease:"power3.out"}); gsap.from(".stat-card",{scale:0.9, opacity:0, duration:0.6, stagger:0.05}); };
+  // financial health meter element wrapper
+  const meterDiv = document.createElement('div'); meterDiv.className='meter-bar'; meterDiv.innerHTML='<div class="meter-fill" style="width:0%"></div>'; document.getElementById('healthMeterWidget').appendChild(meterDiv);
+  function updateMeterFill(){ let fillDiv = document.querySelector('.meter-fill'); if(fillDiv){ let health = parseFloat(document.getElementById('healthPercent').innerText); fillDiv.style.width = health+'%'; } }
+  setInterval(updateMeterFill, 200);
+  updateLivePreview();
 </script>
 </body>
 </html>
